@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/Kendo/Themes/kendoUI")
+    @RenderSection("styles", required: false)
+    @Scripts.Render("~/bundles/kendo")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">Positions<span class="caret" /></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Goalkeepers", "Goalkeeprs", "Statistics")</li>
+                            <li>@Html.ActionLink("Defenders", "Defenders", "Statistics")</li>
+                            <li>@Html.ActionLink("Midfielders", "Midfielders", "Statistics")</li>
+                            <li>@Html.ActionLink("Forwards", "Forwards", "Statistics")</li>
+                            <li>@Html.ActionLink("All Positions", "AllPositions", "Statistics")</li>
+                        </ul>
+                    </li>
+                    <li>@Html.ActionLink("Update Data", "UpdateData", "Home")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content">
+        <div id="clubs">
+            <ul>
+                <li>
+                    <a title="Arsenal" href="http://www.arsenal.com/home/" target="_blank">
+                        <img src="~/Images/badge_1.png" alt="">
+                        <img src="~/Images/badge_1.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Aston Villa" href="http://www.avfc.co.uk/" target="_blank">
+                        <img src="~/Images/badge_2.png" alt="">
+                        <img src="~/Images/badge_2.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Cardiff City" href="http://www.cardiffcityfc.co.uk/ target=" _blank">
+                        <img src="~/Images/cardiff_logo.png" alt="">
+                        <img src="~/Images/cardiff_logo.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Chelsea" href="http://www.chelseafc.com/" target="_blank">
+                        <img src="~/Images/badge_3.png" alt="">
+                        <img src="~/Images/badge_3.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Crystal Palace" href="http://www.cpfc.co.uk/" target="_blank">
+                        <img src="~/Images/crystal_logo.png" alt="">
+                        <img src="~/Images/crystal_logo.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Everton" href="http://www.evertonfc.com/home/" target="_blank">
+                        <img src="~/Images/badge_4.png" alt="">
+                        <img src="~/Images/badge_4.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Fuhlam" href="http://www.fulhamfc.com/" target="_blank">
+                        <img src="~/Images/badge_5.png" alt="">
+                        <img src="~/Images/badge_5.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Hull City" href="http://www.hullcityafc.net/" target="_blank">
+                        <img src="~/Images/hull_logo.png" alt="">
+                        <img src="~/Images/hull_logo.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Liverpool" href="http://www.liverpoolfc.com/" target="_blank">
+                        <img src="~/Images/badge_6.png" alt="">
+                        <img src="~/Images/badge_6.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Man City" href="http://www.mcfc.co.uk/" target="_blank">
+                        <img src="~/Images/badge_7.png" alt="">
+                        <img src="~/Images/badge_7.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Man Umited" href="http://www.manutd.com/" target="_blank">
+                        <img src="~/Images/badge_8.png" alt="">
+                        <img src="~/Images/badge_8.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Newcastle" href="http://www.nufc.co.uk/page/Home" target="_blank">
+                        <img src="~/Images/badge_9.png" alt="">
+                        <img src="~/Images/badge_9.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Norwich" href="http://www.canaries.co.uk/" target="_blank">
+                        <img src="~/Images/badge_10.png" alt="">
+                        <img src="~/Images/badge_10.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Southampton" href="http://www.saintsfc.co.uk/" target="_blank">
+                        <img src="~/Images/badge_13.png" alt="">
+                        <img src="~/Images/badge_13.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Stoke City" href="http://www.stokecityfc.com/" target="_blank">
+                        <img src="~/Images/badge_14.png" alt="">
+                        <img src="~/Images/badge_14.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Sunderland" href="http://www.safc.com/" target="_blank">
+                        <img src="~/Images/badge_15.png" alt="">
+                        <img src="~/Images/badge_15.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Swansea" href="http://www.swanseacity.net/" target="_blank">
+                        <img src="~/Images/badge_16.png" alt="">
+                        <img src="~/Images/badge_16.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="Tottenham" href="http://www.tottenhamhotspur.com/spurs/index.page" target="_blank">
+                        <img src="~/Images/badge_17.png" alt="">
+                        <img src="~/Images/badge_17.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="West Brom" href="http://www.wba.co.uk/" target="_blank">
+                        <img src="~/Images/badge_18.png" alt="">
+                        <img src="~/Images/badge_18.png" alt="" class="big">
+                    </a>
+                </li>
+                <li>
+                    <a title="West Ham" href="http://www.whufc.com/page/Home" target="_blank">
+                        <img src="~/Images/badge_19.png" alt="">
+                        <img src="~/Images/badge_19.png" alt="" class="big">
+                    </a>
+                </li>
+            </ul>
+        </div>
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Footbal Fantasy League Statistics</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
