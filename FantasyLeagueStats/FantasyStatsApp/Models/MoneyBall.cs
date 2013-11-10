@@ -10,25 +10,21 @@ namespace FantasyStatsApp.Models
     public class MoneyBall
     {
         public static void UpdateBasicData(
-            string stats)
+            List<string> stats)
         {
-            string[] playersStats = stats.Substring(1)
-                .Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             var context = new ApplicationDbContext();
-            foreach (var player in playersStats)
+            for (int i = 0; i < stats.Count; i += 8)
             {
-                string[] playerInfo = player.Split(' ');
-                int index = playerInfo.Length - 1;
                 var playerModel = new PlayerModel()
                 {
-                    Selected = double.Parse(playerInfo[index - 4].TrimEnd('%')),
-                    Points = int.Parse(playerInfo[index - 1]),
-                    Team = playerInfo[index - 6],
-                    MinutesPlayed = int.Parse(playerInfo[index].TrimEnd('\r'))
+                    Name = stats[i],
+                    Selected = double.Parse(stats[i + 3].TrimEnd('%')),
+                    Points = int.Parse(stats[i + 6]),
+                    Team = stats[i + 1],
+                    MinutesPlayed = int.Parse(stats[i + 7])
                 };
-                playerModel.SetName(playerInfo, index - 6);
-                playerModel.SetPosition(playerInfo[index - 5]);
-                playerModel.SetPrice(playerInfo[index - 3]);
+                playerModel.SetPosition(stats[i + 2]);
+                playerModel.SetPrice(stats[i + 4]);
 
                 var playerExists = context.Players.FirstOrDefault(x => x.Name == playerModel.Name);
                 var team = context.Teams.FirstOrDefault(x => x.Initials == playerModel.Team);
@@ -58,18 +54,16 @@ namespace FantasyStatsApp.Models
         }
 
         public static void UpdatePointsPerGameData(
-            string statsPointsPerGame)
+            List<string> stats)
         {
-            string[] playersStats = statsPointsPerGame.Substring(1)
-                .Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             var context = new ApplicationDbContext();
-            foreach (var player in playersStats)
+            for (int i = 0; i < stats.Count; i += 8)
             {
-                string[] playerInfo = player.Split(' ');
-                int index = playerInfo.Length - 1;
-                var playerModel = new PlayerModel();                
-                playerModel.SetName(playerInfo, index - 6);
-                playerModel.PointsPerGame = decimal.Parse(playerInfo[index]);
+                var playerModel = new PlayerModel() 
+                {
+                    Name = stats[i],
+                    PointsPerGame = decimal.Parse(stats[i + 7])
+                };   
 
                 var playerExists = context.Players.FirstOrDefault(x => x.Name == playerModel.Name);
                 if (playerExists != null)

@@ -22,10 +22,9 @@ namespace FantasyStatsApp.Controllers
              
         public ActionResult UpdateData()
         {
-            //Statistics.StatisticsPath();
-            string stats = this.Statistics.GetBasicStats();
+            List<string> stats = this.Statistics.GetBasicStats();
             MoneyBall.UpdateBasicData(stats);
-            string statsPointsPerGame = this.Statistics.GetStatsByPointsPerGame();
+            List<string> statsPointsPerGame = this.Statistics.GetStatsByPointsPerGame();
             MoneyBall.UpdatePointsPerGameData(statsPointsPerGame);
             return View();
         }

@@ -24,17 +24,6 @@ namespace FantasyStatsApp.Models
 
         public decimal PointsPerGame { get; set; }
 
-        public void SetName(string[] playerStats, int nameLength)
-        {
-            string name = String.Empty;
-            for (int i = 0; i < nameLength; i++)
-            {
-                name += playerStats[i] + " ";
-            }
-
-            this.Name = name.TrimEnd(' ');
-        }
-
         public void SetPosition(string position)
         {
             switch (position)
@@ -54,7 +43,7 @@ namespace FantasyStatsApp.Models
         public void SetPrice(string playerPrice)
         {
             string price = playerPrice.Substring(1);
-            this.Price = decimal.Parse(price.Trim());
+            this.Price = decimal.Parse(price);
         }
     }
 }

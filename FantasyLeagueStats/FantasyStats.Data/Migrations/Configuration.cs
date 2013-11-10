@@ -3,6 +3,8 @@ using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using FantasyStats.Model;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.ObjectModel;
 
 namespace FantasyStats.Data.Migrations
 {
@@ -16,6 +18,32 @@ namespace FantasyStats.Data.Migrations
 
         protected override void Seed(FantasyStats.Data.ApplicationDbContext context)
         {
+            if (context.Roles.FirstOrDefault() == null)
+            {
+                var userAdmin = new ApplicationUser()
+                    {
+                        UserName = "admin",
+                        PasswordHash = "ACQbq83L/rsvlWq11Zor2jVtz2KAMcHNd6x1SN2EXHs7VuZPGaE8DhhnvtyO10Nf5Q==",
+
+                    };
+                userAdmin.Roles.Add(new IdentityUserRole()
+                     {
+                         Role = new IdentityRole("Admin")
+                     }
+                 );
+                userAdmin.Roles.Add(new IdentityUserRole()
+                    {
+                        Role = new IdentityRole("User")
+                    }
+                );
+                userAdmin.Logins.Add(new IdentityUserLogin
+                {
+                    LoginProvider = "Local",
+                    ProviderKey = "admin",
+                });
+                context.Users.Add(userAdmin);
+                context.SaveChanges();
+            }
             if (context.Teams.Count() > 0)
             {
                 return;

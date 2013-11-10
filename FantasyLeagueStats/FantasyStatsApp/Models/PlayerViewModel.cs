@@ -21,7 +21,7 @@ namespace FantasyStatsApp.Models
                 Points = player.Points,
                 PointsPerPrice = Math.Round(player.Points / player.Price, 2),
                 PPPPerMinutes = Math.Round(((player.Points / player.Price) / player.MinutesPlayed) * 100, 4),
-                PPPPerGame = player.PointsPerGame
+                PPPPerGame = Math.Round(player.PointsPerGame / player.Price, 4)
             };
         public int Id { get; set; }
 

@@ -3,6 +3,8 @@ using OpenQA.Selenium.Firefox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 
@@ -17,80 +19,63 @@ namespace FantasyStatsApp.Models
         private const string statsPointsPerGameURL = statsURL + "/?element_filter=0&stat_filter=points_per_game";
         private const string statsPageMinutesURL = statsURL + "?stat_filter=minutes&element_filter=0&page=";
         private const string statsPagePointsPerGameURL = statsURL + "?stat_filter=points_per_game&element_filter=0&page=";
-        private bool acceptNextAlert = true;
 
-        //public static void StatisticsPath()
-        //{
-        //    driver.Navigate().GoToUrl(baseURL + "/");
-        //    driver.FindElement(By.Id("ismEmail")).Clear();
-        //    driver.FindElement(By.Id("ismEmail")).SendKeys("vas_laz@abv.bg");
-        //    driver.FindElement(By.Id("id_password")).Clear();
-        //    driver.FindElement(By.Id("id_password")).SendKeys("vas20404");
-        //    driver.FindElement(By.XPath("//input[@value='Log In']")).Click();
-        //    driver.Navigate().GoToUrl(statsURL);
-
-        //}
-
-        public string GetBasicStats()
+        public List<string> GetBasicStats()
         {
-            IWebDriver driver = new FirefoxDriver();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(5));
-            driver.Navigate().GoToUrl(statsMinutesURL);
-            element = driver.FindElement(By.XPath("//table[@class='ismTable']"));
-            string stats = element.Text;
-            stats = DeletFirstRow(stats);
-            stats += GetStatsFromNextPage(driver, statsPageMinutesURL + 2);        
-            stats += GetStatsFromNextPage(driver, statsPageMinutesURL + 3);
-            stats += GetStatsFromNextPage(driver, statsPageMinutesURL + 4);
-            stats += GetStatsFromNextPage(driver, statsPageMinutesURL + 5);
-            driver.Close();
-            IWebDriver driverMinutes = new FirefoxDriver();
-            driverMinutes.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(5));
-            stats += GetStatsFromNextPage(driverMinutes, statsPageMinutesURL + 6);
-            stats += GetStatsFromNextPage(driverMinutes, statsPageMinutesURL + 7);
-            stats += GetStatsFromNextPage(driverMinutes, statsPageMinutesURL + 8);
-            stats += GetStatsFromNextPage(driverMinutes, statsPageMinutesURL + 9);
-            stats += GetStatsFromNextPage(driverMinutes, statsPageMinutesURL + 10);
-            driverMinutes.Close();
+            List<string> stats = new List<string>();
+            using (WebClient client = new WebClient())
+            {
+                client.Encoding = System.Text.Encoding.UTF8;
+                stats.AddRange(GetStatsFromNextPage(client, statsMinutesURL));
+                stats.AddRange(GetStatsFromNextPage(client, statsPageMinutesURL + 2));
+                stats.AddRange(GetStatsFromNextPage(client, statsPageMinutesURL + 3));
+                stats.AddRange(GetStatsFromNextPage(client, statsPageMinutesURL + 4));
+                stats.AddRange(GetStatsFromNextPage(client, statsPageMinutesURL + 5));
+                stats.AddRange(GetStatsFromNextPage(client, statsPageMinutesURL + 6));
+                stats.AddRange(GetStatsFromNextPage(client, statsPageMinutesURL + 7));
+                stats.AddRange(GetStatsFromNextPage(client, statsPageMinutesURL + 8));
+                stats.AddRange(GetStatsFromNextPage(client, statsPageMinutesURL + 9));
+                stats.AddRange(GetStatsFromNextPage(client, statsPageMinutesURL + 10));
+            }
+
+            return stats;
+        }
+        public List<string> GetStatsByPointsPerGame()
+        {
+            List<string> stats = new List<string>();
+            using (WebClient client = new WebClient())
+            {
+                client.Encoding = System.Text.Encoding.UTF8;
+                stats.AddRange(GetStatsFromNextPage(client, statsPointsPerGameURL));
+                stats.AddRange(GetStatsFromNextPage(client, statsPagePointsPerGameURL + 2));
+                stats.AddRange(GetStatsFromNextPage(client, statsPagePointsPerGameURL + 3));
+                stats.AddRange(GetStatsFromNextPage(client, statsPagePointsPerGameURL + 4));
+                stats.AddRange(GetStatsFromNextPage(client, statsPagePointsPerGameURL + 5));
+                stats.AddRange(GetStatsFromNextPage(client, statsPagePointsPerGameURL + 6));
+                stats.AddRange(GetStatsFromNextPage(client, statsPagePointsPerGameURL + 7));
+                stats.AddRange(GetStatsFromNextPage(client, statsPagePointsPerGameURL + 8));
+                stats.AddRange(GetStatsFromNextPage(client, statsPagePointsPerGameURL + 9));
+                stats.AddRange(GetStatsFromNextPage(client, statsPagePointsPerGameURL + 10));
+
+            }
+
             return stats;
         }
 
-        public string GetStatsByPointsPerGame()
+        private List<string> GetStatsFromNextPage(WebClient client, string pageUrl)
         {
-            IWebDriver driverPointPerPrice = new FirefoxDriver();
-            driverPointPerPrice.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(5));
-            driverPointPerPrice.Navigate().GoToUrl(statsPointsPerGameURL);
-            element = driverPointPerPrice.FindElement(By.XPath("//table[@class='ismTable']"));
-            string stats = element.Text;
-            stats = DeletFirstRow(stats);
-            stats += GetStatsFromNextPage(driverPointPerPrice, statsPagePointsPerGameURL + 2);
-            stats += GetStatsFromNextPage(driverPointPerPrice, statsPagePointsPerGameURL + 3);
-            stats += GetStatsFromNextPage(driverPointPerPrice, statsPagePointsPerGameURL + 4);
-            stats += GetStatsFromNextPage(driverPointPerPrice, statsPagePointsPerGameURL + 5);
-            driverPointPerPrice.Close();
-            IWebDriver driverPointPerPrice2 = new FirefoxDriver();
-            driverPointPerPrice2.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(5));
-            stats += GetStatsFromNextPage(driverPointPerPrice2, statsPagePointsPerGameURL + 6);
-            stats += GetStatsFromNextPage(driverPointPerPrice2, statsPagePointsPerGameURL + 7);
-            stats += GetStatsFromNextPage(driverPointPerPrice2, statsPagePointsPerGameURL + 8);
-            stats += GetStatsFromNextPage(driverPointPerPrice2, statsPagePointsPerGameURL + 9);
-            stats += GetStatsFromNextPage(driverPointPerPrice2, statsPagePointsPerGameURL + 10);
-            driverPointPerPrice2.Close();
+            string html = client.DownloadString(pageUrl);
+            string pattern = "(<td>)(.*)(<\\/td>)";
+            var matches = Regex.Matches(html, pattern);
+            List<string> stats = new List<string>();
+            foreach (Match item in matches)
+            {
+                if (!item.Groups[2].Value.Contains("<"))
+                {
+                    stats.Add(item.Groups[2].Value);
+                }
+            }
             return stats;
-        }
-
-        private string GetStatsFromNextPage(IWebDriver dr, string pageUrl)
-        {
-            dr.Navigate().GoToUrl(pageUrl);
-            element = dr.FindElement(By.XPath("//table[@class='ismTable']"));
-            string stats = element.Text;
-            stats = DeletFirstRow(stats);
-            return stats;
-        }
-        public string DeletFirstRow(string stats)
-        {
-            int index = stats.IndexOf("\n");
-            return stats = stats.Substring(index);
         }
     }
 }
