@@ -74,5 +74,25 @@ namespace FantasyStatsApp.Models
 
             context.SaveChanges();         
         }
+
+        public static void UpdateStandings(List<string> statsStandings)
+        {
+            var context = new ApplicationDbContext();
+            for (int i = 14; i < statsStandings.Count; i += 12)
+            {
+                string teamName = statsStandings[i + 3];
+                var team = context.Teams.FirstOrDefault(t => t.Name == teamName);
+                team.Position = int.Parse(statsStandings[i]);
+                team.GamesPlayed = int.Parse(statsStandings[i + 4]);
+                team.Wins = int.Parse(statsStandings[i + 5]);
+                team.Draws = int.Parse(statsStandings[i + 6]);
+                team.Losses = int.Parse(statsStandings[i + 7]);
+                team.GoalsFor = int.Parse(statsStandings[i + 8]);
+                team.GoalsAgainst = int.Parse(statsStandings[i + 9]);
+                team.Points = int.Parse(statsStandings[i + 11]);
+            }
+
+            context.SaveChanges();
+        }
     }
 }

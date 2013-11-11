@@ -1,32 +1,36 @@
 ﻿using FantasyStats.Data;
 using FantasyStatsApp.Models;
+using Kendo.Mvc.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Kendo.Mvc.Extensions;
 
 namespace FantasyStatsApp.Controllers
 {
     public class HomeController : Controller
     {
         public Statistics Statistics { get; set; }
+
+        public ApplicationDbContext Data { get; set; }
         public HomeController()
         {
             this.Statistics = new Statistics();
+            this.Data = new ApplicationDbContext();
         }
         public ActionResult Index()
         {
             return View();
         }
-             
-        public ActionResult UpdateData()
+
+        public JsonResult ReadStandings([DataSourceRequest] DataSourceRequest request)
         {
-            List<string> stats = this.Statistics.GetBasicStats();
-            MoneyBall.UpdateBasicData(stats);
-            List<string> statsPointsPerGame = this.Statistics.GetStatsByPointsPerGame();
-            MoneyBall.UpdatePointsPerGameData(statsPointsPerGame);
-            return View();
+            var result = this.Data.Teams.OrderBy(x => x.Position).Select(TeamViewModel.FromTeams);
+
+            return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
+             
     }
 }

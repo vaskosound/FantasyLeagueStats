@@ -128,14 +128,14 @@ namespace FantasyStats.Data.Migrations
 
             Team newcastle = new Team()
             {
-                Name = "Newcastle",
+                Name = "Newcastle United",
                 Initials = "NEW"
             };
             context.Teams.Add(newcastle);
 
             Team norwich = new Team()
             {
-                Name = "Norwich",
+                Name = "Norwich City",
                 Initials = "NOR"
             };
             context.Teams.Add(norwich);
@@ -163,28 +163,28 @@ namespace FantasyStats.Data.Migrations
 
             Team swansea = new Team()
             {
-                Name = "Swansea",
+                Name = "Swansea City",
                 Initials = "SWA"
             };
             context.Teams.Add(swansea);
 
             Team tottenham = new Team()
             {
-                Name = "Tottenham",
+                Name = "Tottenham Hotspur",
                 Initials = "TOT"
             };
             context.Teams.Add(tottenham);
 
             Team westBrom = new Team()
             {
-                Name = "West Brom",
+                Name = "West Bromwich Albion",
                 Initials = "WBA"
             };
             context.Teams.Add(westBrom);
 
             Team westHam = new Team()
             {
-                Name = "West Ham",
+                Name = "West Ham United",
                 Initials = "WHU"
             };
             context.Teams.Add(westHam);

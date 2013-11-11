@@ -2,7 +2,7 @@
     ViewBag.Title = "Home Page";
 }
 <div class="row">
-    <div class="col-lg-5">
+    <div class="col-lg-4">
         <h3>Position Statistics</h3>
         <ul class="list-unstyled">
             <li>@Html.ActionLink("Goalkeepers", "Goalkeeprs", "Statistics")</li>
@@ -12,7 +12,7 @@
             <li>@Html.ActionLink("All Positions", "AllPositions", "Statistics")</li>
         </ul>
     </div>
-    <div class="col-lg-7">
-        <img src="Images/myteam.JPG" alt="My Team" />
+    <div class="col-lg-8">
+        @Html.Partial("_Standings")
     </div>
 </div>

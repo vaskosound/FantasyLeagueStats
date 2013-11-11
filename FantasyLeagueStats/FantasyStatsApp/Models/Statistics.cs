@@ -12,13 +12,13 @@ namespace FantasyStatsApp.Models
 {
     public class Statistics
     {
-        private IWebElement element;
         private const string baseURL = "http://fantasy.premierleague.com";
         private const string statsURL = baseURL + "/stats/elements/";
         private const string statsMinutesURL = statsURL + "/?element_filter=0&stat_filter=minutes";
         private const string statsPointsPerGameURL = statsURL + "/?element_filter=0&stat_filter=points_per_game";
         private const string statsPageMinutesURL = statsURL + "?stat_filter=minutes&element_filter=0&page=";
         private const string statsPagePointsPerGameURL = statsURL + "?stat_filter=points_per_game&element_filter=0&page=";
+        private const string statsLeagueTable = "http://www.premierleague.com/content/premierleague/en-gb/matchday/league-table.html";
 
         public List<string> GetBasicStats()
         {
@@ -76,6 +76,25 @@ namespace FantasyStatsApp.Models
                 }
             }
             return stats;
+        }
+
+        public List<string> GetStandings()
+        {
+            List<string> standings = new List<string>();
+            using (WebClient client = new WebClient())
+            {
+                client.Encoding = System.Text.Encoding.UTF8;
+                string html = client.DownloadString(statsLeagueTable);
+                string pattern = "(<td.*>)(.*)(<\\/td>)";
+                var matches = Regex.Matches(html, pattern);
+                foreach (Match item in matches)
+                {
+                    standings.Add(item.Groups[2].Value);
+                }
+
+            }
+
+            return standings;
         }
     }
 }

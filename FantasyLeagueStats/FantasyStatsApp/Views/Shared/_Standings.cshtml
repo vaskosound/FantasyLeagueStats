@@ -1,0 +1,29 @@
+﻿@(Html.Kendo().Grid<FantasyStatsApp.Models.TeamViewModel>()
+     .Name("defenders")
+        .Pageable()
+        .Sortable()
+        .Columns(col =>
+                {
+                    col.Bound(m => m.Position).Title("Pos").Width(30);
+                    col.Bound(m => m.Name).Title("Club").Width(350);
+                    col.Bound(m => m.GamesPlayed).Title("GP");
+                    col.Bound(m => m.Wins).Title("W");
+                    col.Bound(m => m.Draws).Title("D");
+                    col.Bound(m => m.Losses).Title("L");
+                    col.Bound(m => m.GoalsFor).Title("GF");
+                    col.Bound(m => m.GoalsAgainst).Title("GA");
+                    col.Bound(m => m.GoalDifference).Title("GD");
+                    col.Bound(m => m.Points).Width(30);
+                })
+        .DataSource(data =>
+        {
+            data.Ajax()
+                .ServerOperation(true)
+                .PageSize(10)
+                .Sort(sort => sort.Add(s => s.Position))
+                .Model(m =>
+                    {
+                        m.Id(p => p.Id);
+                    })
+                .Read("ReadStandings", "Home");
+        }))
