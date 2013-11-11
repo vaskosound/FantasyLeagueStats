@@ -34,7 +34,12 @@
                             <li>@Html.ActionLink("All Positions", "AllPositions", "Statistics")</li>
                         </ul>
                     </li>
-                    <li>@Html.ActionLink("Update Data", "UpdateData", "Admin")</li>
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">Admin Panel<span class="caret" /></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Update Data", "UpdateData", "Admin")</li>
+                        </ul>
+                    </li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
