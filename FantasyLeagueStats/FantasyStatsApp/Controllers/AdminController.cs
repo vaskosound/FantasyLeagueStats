@@ -30,8 +30,8 @@ namespace FantasyStatsApp.Controllers
             MoneyBall.UpdatePointsPerGameData(statsPointsPerGame);
             List<string> statsLeagueTable = this.Statistics.GetStandings();
             MoneyBall.UpdateStandings(statsLeagueTable);
-            List<string> gameweeks = this.Statistics.GetGameweeks();
-            MoneyBall.UpdateGameweeks(gameweeks);
+            //List<string> gameweeks = this.Statistics.GetGameweeks();
+            //MoneyBall.UpdateGameweeks(gameweeks);
             return View();
         }
 
