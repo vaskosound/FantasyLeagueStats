@@ -8,6 +8,7 @@ namespace FantasyStats.Model
     public class Team
     {
         private HashSet<Player> players;
+
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -29,6 +30,8 @@ namespace FantasyStats.Model
         public int GoalsAgainst { get; set; }
 
         public int Points { get; set; }
+
+
 
         public Team()
         {

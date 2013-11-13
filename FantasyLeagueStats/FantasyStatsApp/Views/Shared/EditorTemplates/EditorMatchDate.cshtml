@@ -1,0 +1,8 @@
+﻿@model DateTime? 
+
+@(Html.Kendo().DatePicker()
+    .Name("MatchDate")
+    .Value(Model == null ? DateTime.Now : @Model)
+    .Format("M/d/yyyy")
+)
+

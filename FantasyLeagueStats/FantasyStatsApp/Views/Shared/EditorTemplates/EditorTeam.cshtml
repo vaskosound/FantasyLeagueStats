@@ -1,0 +1,9 @@
+﻿@model FantasyStatsApp.Models.SelectTeamModel
+
+@(Html.Kendo().DropDownListFor(m => m)
+    .BindTo((System.Collections.IEnumerable)ViewData["teams"])
+    .DataTextField("Name")
+    .DataValueField("Name")
+    .OptionLabel("Select Team")
+)
+
