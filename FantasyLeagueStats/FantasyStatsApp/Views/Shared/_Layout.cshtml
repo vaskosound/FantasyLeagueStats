@@ -35,6 +35,14 @@
                         </ul>
                     </li>
                     <li class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">Money Ball<span class="caret" /></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Team by Points", "TeamByPoints", "MoneyBall")</li>
+                            <li>@Html.ActionLink("Team by Points Per Price", "TeamByPPP", "MoneyBall")</li>
+                            <li>@Html.ActionLink("Team by PPP Per Game", "TeamByPPPPerGame", "MoneyBall")</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">Admin Panel<span class="caret" /></a>
                         <ul class="dropdown-menu">
                             <li>@Html.ActionLink("Update Data", "UpdateData", "Admin")</li>
@@ -173,7 +181,8 @@
             </ul>
         </div>
         @RenderBody()
-        <footer class="navbar navbar-fixed-bottom text-center panel-footer">
+        <hr />
+        <footer class="text-center">
             <p>&copy; @DateTime.Now.Year - Footbal Fantasy League Statistics</p>
         </footer>
     </div>

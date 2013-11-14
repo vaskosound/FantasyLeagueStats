@@ -92,3 +92,20 @@ input[type="checkbox"].input-validation-error {
         left: -20px;
         z-index: 1;
     }
+
+.name, .team, .price {
+    display: block;
+    text-align:center;
+    font-weight: bold;
+    color: white;
+}
+
+#pitch {
+    background: url(../Images/pitch.png) no-repeat center;
+}
+
+#pitch tr td {
+    width: 90px;
+    height: 120px;
+    padding-top: 45px;
+}

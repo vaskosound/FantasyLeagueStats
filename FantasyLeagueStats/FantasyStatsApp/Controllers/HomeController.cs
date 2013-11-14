@@ -12,12 +12,12 @@ namespace FantasyStatsApp.Controllers
 {
     public class HomeController : Controller
     {
-        public Statistics Statistics { get; set; }
+        public ExternalData Statistics { get; set; }
 
         public ApplicationDbContext Data { get; set; }
         public HomeController()
         {
-            this.Statistics = new Statistics();
+            this.Statistics = new ExternalData();
             this.Data = new ApplicationDbContext();
         }
         public ActionResult Index()

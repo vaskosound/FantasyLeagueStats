@@ -8,7 +8,7 @@ using System.Web;
 
 namespace FantasyStatsApp.Models
 {
-    public class MoneyBall
+    public class DataManager
     {
 
         private const string manUnited = "Man Utd";

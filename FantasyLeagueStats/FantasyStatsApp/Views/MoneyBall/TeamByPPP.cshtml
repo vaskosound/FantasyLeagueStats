@@ -1,0 +1,40 @@
+﻿@model FantasyStatsApp.Models.SubmitTeamPrice
+@{
+    ViewBag.Title = "Generate Team by Points Per Price";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-lg-5">
+        @using (Ajax.BeginForm("GetTeamByPPP", new AjaxOptions()
+    {
+        HttpMethod = "POST",
+        InsertionMode = InsertionMode.Replace,
+        UpdateTargetId = "valuable-team"
+    }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+
+            <div class="control-group">
+                @Html.LabelFor(model => model.TeamPrice, new { @class = "control-label" })
+                <div class="controls">
+                    @Html.EditorFor(model => model.TeamPrice)
+                    @Html.ValidationMessageFor(model => model.TeamPrice, null, new { @class = "help-inline" })
+                </div>
+            </div>
+            <br />
+            <div class="form-actions no-color">
+                <input type="submit" value="Generate" class="btn btn-primary" />
+            </div>
+        }
+    </div>
+    <div id="valuable-team" class="col-lg-7">
+        @Html.Partial("_ValuableTeam")
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

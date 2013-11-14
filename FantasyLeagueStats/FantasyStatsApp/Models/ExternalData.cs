@@ -10,7 +10,7 @@ using System.Web;
 
 namespace FantasyStatsApp.Models
 {
-    public class Statistics
+    public class ExternalData
     {
         private const string baseURL = "http://fantasy.premierleague.com";
         private const string statsURL = baseURL + "/stats/elements/";

@@ -13,25 +13,25 @@ namespace FantasyStatsApp.Controllers
 {
     public class AdminController : Controller
     {
-        public Statistics Statistics { get; set; }
+        public ExternalData Statistics { get; set; }
         public ApplicationDbContext Data { get; set; }
 
         public AdminController()
         {
-            this.Statistics = new Statistics();
+            this.Statistics = new ExternalData();
             this.Data = new ApplicationDbContext();
         }
 
         public ActionResult UpdateData()
         {
             List<string> stats = this.Statistics.GetBasicStats();
-            MoneyBall.UpdateBasicData(stats);
+            DataManager.UpdateBasicData(stats);
             List<string> statsPointsPerGame = this.Statistics.GetStatsByPointsPerGame();
-            MoneyBall.UpdatePointsPerGameData(statsPointsPerGame);
+            DataManager.UpdatePointsPerGameData(statsPointsPerGame);
             List<string> statsLeagueTable = this.Statistics.GetStandings();
-            MoneyBall.UpdateStandings(statsLeagueTable);
+            DataManager.UpdateStandings(statsLeagueTable);
             //List<string> gameweeks = this.Statistics.GetGameweeks();
-            //MoneyBall.UpdateGameweeks(gameweeks);
+            //MoneyBall.UpdateGameweeks(gameweeks);1
             return View();
         }
 
@@ -111,7 +111,7 @@ namespace FantasyStatsApp.Controllers
         public ActionResult UpadateResults()
         {
             List<string> fixtures = this.Statistics.GetFixtures();
-            MoneyBall.UpdateFixtures(fixtures);
+            DataManager.UpdateFixtures(fixtures);
 
             return RedirectToAction("Matches");
         }
