@@ -97,7 +97,7 @@ input[type="checkbox"].input-validation-error {
     display: block;
     text-align:center;
     font-weight: bold;
-    color: white;
+    color: black;
 }
 
 #pitch {
