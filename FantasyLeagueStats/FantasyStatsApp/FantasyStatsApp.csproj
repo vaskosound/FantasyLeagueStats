@@ -402,7 +402,7 @@
     <Content Include="Images\crystal_logo.png" />
     <Content Include="Images\hull_logo.png" />
     <Content Include="Images\myteam.JPG" />
-    <Content Include="Images\pitch.jpg" />
+    <Content Include="Images\pitch.png" />
     <Content Include="Images\sb_lt_logo.JPG" />
     <Content Include="Images\sb_lt_logo.png" />
     <Content Include="KendoMVC\Kendo.Mvc.dll" />
