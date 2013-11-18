@@ -24,7 +24,7 @@ namespace FantasyStatsApp.Controllers
         {
             DateTime currentDate = DateTime.Now;
             var currentGameweek = this.Data.Gameweeks
-                .FirstOrDefault(g => g.StartDate >= currentDate && currentDate <= g.EndDate);
+                .FirstOrDefault(g => g.StartDate <= currentDate && currentDate <= g.EndDate);
 
             var currentMatches = this.Data.Matches.Where(m => m.Gameweek.Id == currentGameweek.Id)
                 .Select(MatchViewModel.FromMatches);
