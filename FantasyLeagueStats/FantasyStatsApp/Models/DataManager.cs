@@ -174,17 +174,19 @@ namespace FantasyStatsApp.Models
         private Gameweek AddOrUpdateGameweek(ApplicationDbContext context,
             MatchViewModel matchModel)
         {
-            var gameweekEntity = context.Gameweeks.FirstOrDefault(g => g.Name == matchModel.Gameweek);
+            var gameweek = context.Gameweeks.FirstOrDefault(g => g.Name == matchModel.Gameweek);
 
-            if (gameweekEntity == null)
+            int gamewekIndex = matchModel.Gameweek.LastIndexOf(' ');
+            int gameweekNumber = int.Parse(matchModel.Gameweek.Substring(gamewekIndex + 1));
+            var previousGameweek = context.Gameweeks.Find(gameweekNumber - 1);
+            if (previousGameweek != null)
             {
-                int gamewekIndex = matchModel.Gameweek.LastIndexOf(' ');
-                int gameweekNumber = int.Parse(matchModel.Gameweek.Substring(gamewekIndex + 1));
-                var previousGameweek = context.Gameweeks.Find(gameweekNumber - 1);
-                if (previousGameweek != null)
-                {
-                    startDate = previousGameweek.EndDate;
-                }
+                startDate = previousGameweek.EndDate;
+            }
+
+            if (gameweek == null)
+            {
+               
                 var newGameweek = new Gameweek()
                 {
                     Id = gameweekNumber,
@@ -195,14 +197,15 @@ namespace FantasyStatsApp.Models
 
                 context.Gameweeks.Add(newGameweek);
                 context.SaveChanges();
-                gameweekEntity = context.Gameweeks.FirstOrDefault(g => g.Name == matchModel.Gameweek);
+                gameweek = context.Gameweeks.FirstOrDefault(g => g.Name == matchModel.Gameweek);
             }
             else
             {
-                gameweekEntity.EndDate = matchModel.MatchDate.AddDays(1);
+                gameweek.StartDate = startDate;
+                gameweek.EndDate = matchModel.MatchDate.AddDays(1);
             }
 
-            return gameweekEntity;
+            return gameweek;
         }
 
         private string ConvertTeamName(string name)
