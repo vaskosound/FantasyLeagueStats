@@ -178,7 +178,9 @@
     <Compile Include="Models\Knapsack.cs" />
     <Compile Include="Models\MatchViewModel.cs" />
     <Compile Include="Models\DataManager.cs" />
-    <Compile Include="Models\PlayerBasicModel.cs" />
+    <Compile Include="Models\PlayerBasicModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Models\PlayerModel.cs" />
     <Compile Include="Models\PlayerValuableModel.cs" />
     <Compile Include="Models\PlayerViewModel.cs" />
