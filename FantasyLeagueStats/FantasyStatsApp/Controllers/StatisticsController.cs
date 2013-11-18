@@ -10,6 +10,7 @@ using FantasyStatsApp.Models;
 
 namespace FantasyStatsApp.Controllers
 {
+    [Authorize]
     public class StatisticsController : Controller
     {
         //

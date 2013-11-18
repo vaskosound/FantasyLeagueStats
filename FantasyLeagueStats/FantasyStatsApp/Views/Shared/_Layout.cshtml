@@ -24,31 +24,38 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">Positions<span class="caret" /></a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Goalkeepers", "Goalkeeprs", "Statistics")</li>
-                            <li>@Html.ActionLink("Defenders", "Defenders", "Statistics")</li>
-                            <li>@Html.ActionLink("Midfielders", "Midfielders", "Statistics")</li>
-                            <li>@Html.ActionLink("Forwards", "Forwards", "Statistics")</li>
-                            <li>@Html.ActionLink("All Positions", "AllPositions", "Statistics")</li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">Money Ball<span class="caret" /></a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Team by Points", "TeamByPoints", "MoneyBall")</li>
-                            <li>@Html.ActionLink("Team by Points Per Price", "TeamByPPP", "MoneyBall")</li>
-                            <li>@Html.ActionLink("Team by PPP Per Game", "TeamByPPPPerGame", "MoneyBall")</li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">Admin Panel<span class="caret" /></a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Update Data", "UpdateData", "Admin")</li>
-                            <li>@Html.ActionLink("Matches", "Matches", "Admin")</li>
-                        </ul>
-                    </li>
+                    @if (this.User.Identity.IsAuthenticated)
+                    {
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Positions<span class="caret" /></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Goalkeepers", "Goalkeeprs", "Statistics")</li>
+                                <li>@Html.ActionLink("Defenders", "Defenders", "Statistics")</li>
+                                <li>@Html.ActionLink("Midfielders", "Midfielders", "Statistics")</li>
+                                <li>@Html.ActionLink("Forwards", "Forwards", "Statistics")</li>
+                                <li>@Html.ActionLink("All Positions", "AllPositions", "Statistics")</li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Money Ball<span class="caret" /></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Team by Points", "TeamByPoints", "MoneyBall")</li>
+                                <li>@Html.ActionLink("Team by Points Per Game", "TeamByPointsPerGame", "MoneyBall")</li>
+                                <li>@Html.ActionLink("Team by Points Per Price", "TeamByPPP", "MoneyBall")</li>
+                                <li>@Html.ActionLink("Team by PPP Per Game", "TeamByPPPPerGame", "MoneyBall")</li>
+                            </ul>
+                        </li>
+                    }
+                    @if (this.User.IsInRole("Admin"))
+                    {
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Admin Panel<span class="caret" /></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Players Stats", "PlayersStats", "Admin")</li>
+                                <li>@Html.ActionLink("Matches", "Matches", "Admin")</li>
+                            </ul>
+                        </li>
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

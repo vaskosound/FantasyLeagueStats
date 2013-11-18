@@ -178,6 +178,7 @@
     <Compile Include="Models\Knapsack.cs" />
     <Compile Include="Models\MatchViewModel.cs" />
     <Compile Include="Models\DataManager.cs" />
+    <Compile Include="Models\PlayerBasicModel.cs" />
     <Compile Include="Models\PlayerModel.cs" />
     <Compile Include="Models\PlayerValuableModel.cs" />
     <Compile Include="Models\PlayerViewModel.cs" />
@@ -436,7 +437,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Admin\UpdateData.cshtml" />
+    <Content Include="Views\Admin\PlayersStats.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />
@@ -464,6 +465,10 @@
     <Content Include="Views\Shared\_ValuableTeam.cshtml" />
     <Content Include="Views\MoneyBall\TeamByPPP.cshtml" />
     <Content Include="Views\MoneyBall\TeamByPPPPerGame.cshtml" />
+    <Content Include="Views\Shared\_PlayersStatsGrid.cshtml" />
+    <Content Include="Views\Shared\_MatchesGrid.cshtml" />
+    <Content Include="Views\Shared\_Fixtures.cshtml" />
+    <Content Include="Views\MoneyBall\TeamByPointsPerGame.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

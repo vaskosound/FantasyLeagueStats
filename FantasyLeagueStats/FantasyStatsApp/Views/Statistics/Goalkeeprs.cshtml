@@ -12,10 +12,11 @@
     .Columns(col =>
             {
                 col.Bound(m => m.Name).Title("Player Name");
-                col.Bound(m => m.Team).Title("Team");
+                col.Bound(m => m.Team).Title("Club");
                 col.Bound(m => m.Selected).ClientTemplate("#: Selected #" + "%").Title("Selected");
                 col.Bound(m => m.Price).Title("Price");
                 col.Bound(m => m.Points).Title("Points");
+                col.Bound(m => m.PointsPerGame).Title("Points Per Game");
                 col.Bound(m => m.PointsPerPrice).Title("Points Per Price");
                 col.Bound(m => m.PPPPerMinutes).Title("PPP Per Minutes");
                 col.Bound(m => m.PPPPerGame).Title("PPP Per Game");

@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "Players Statisics";
+}
+
+<div class="row">
+    <div class="col-lg-10 h2">@ViewBag.Title</div>
+    <div class="col-lg-2">
+        @Ajax.ActionLink("Update Data", "UpdateData", null, new AjaxOptions()
+            {
+                HttpMethod = "GET",
+                InsertionMode = InsertionMode.Replace,
+                UpdateTargetId = "players-stats",
+                LoadingElementId = "loading",
+                LoadingElementDuration = 1000
+            },
+            new { @class = "btn btn-primary text-right" })
+    </div>
+</div>
+<div id="loading">Updating...</div>
+<div id="players-stats">
+    @Html.Partial("_PlayersStatsGrid")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

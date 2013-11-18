@@ -109,3 +109,22 @@ input[type="checkbox"].input-validation-error {
     height: 120px;
     padding-top: 45px;
 }
+
+#players-stats, #matches {
+    margin-top: 10px;
+}
+
+#loading {
+    display: none;
+    font-weight: bold;
+    color: red;
+    font-size: 1.2em;
+}
+
+#current-fixtures td:first-child{
+    text-align:right;
+}
+
+#current-fixtures td:nth-child(2){
+    text-align:center;
+}

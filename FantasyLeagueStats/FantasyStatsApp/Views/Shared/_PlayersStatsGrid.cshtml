@@ -1,0 +1,29 @@
+﻿@(Html.Kendo().Grid<FantasyStatsApp.Models.PlayerBasicModel>
+    ()
+    .Name("allPositions")
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Columns(col =>
+    {
+        col.Bound(m => m.Name).Title("Player Name");
+        col.Bound(m => m.Team).Title("Club");
+        col.Bound(m => m.Selected).ClientTemplate("#: Selected #" + "%").Title("Selected");
+        col.Bound(m => m.Price).Title("Price");
+        col.Bound(m => m.Points).Title("Points");
+        col.Bound(m => m.PointsPerGame).Title("Points Per Game");
+        col.Bound(m => m.MinutesPlayed).Title("Minutes Played");
+    })
+    .DataSource(data =>
+    {
+        data.Ajax()
+        .ServerOperation(true)
+        .PageSize(10)
+        .Sort(sort => sort.Add(stat => stat.Points).Descending())
+        .Model(m =>
+        {
+            m.Id(p => p.Id);
+        })
+        .Read("ReadPlayersStats", "Admin");
+    })
+)

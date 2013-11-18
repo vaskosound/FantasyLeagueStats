@@ -11,28 +11,44 @@ using FantasyStats.Model;
 
 namespace FantasyStatsApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         public ExternalData Statistics { get; set; }
+
+        public DataManager DataManager { get; set; }
         public ApplicationDbContext Data { get; set; }
 
         public AdminController()
         {
             this.Statistics = new ExternalData();
+            this.DataManager = new DataManager();
             this.Data = new ApplicationDbContext();
+        }
+
+
+        public ActionResult PlayersStats()
+        {
+            return View();
+        }
+
+        public JsonResult ReadPlayersStats([DataSourceRequest] DataSourceRequest request)
+        {
+            var result = this.Data.Players.Select(PlayerBasicModel.FromPlayersStats);
+
+            return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult UpdateData()
         {
             List<string> stats = this.Statistics.GetBasicStats();
-            DataManager.UpdateBasicData(stats);
+            this.DataManager.UpdateBasicData(stats);
             List<string> statsPointsPerGame = this.Statistics.GetStatsByPointsPerGame();
-            DataManager.UpdatePointsPerGameData(statsPointsPerGame);
+            this.DataManager.UpdatePointsPerGameData(statsPointsPerGame);
             List<string> statsLeagueTable = this.Statistics.GetStandings();
-            DataManager.UpdateStandings(statsLeagueTable);
-            //List<string> gameweeks = this.Statistics.GetGameweeks();
-            //MoneyBall.UpdateGameweeks(gameweeks);1
-            return View();
+            this.DataManager.UpdateStandings(statsLeagueTable);
+            
+            return PartialView("_PlayersStatsGrid");
         }
 
         public ActionResult Matches()
@@ -48,6 +64,7 @@ namespace FantasyStatsApp.Controllers
 
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
+
         public JsonResult CreateMatch([DataSourceRequest] DataSourceRequest request, MatchViewModel match)
         {
             if (match != null && ModelState.IsValid)
@@ -110,10 +127,24 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult UpadateResults()
         {
-            List<string> fixtures = this.Statistics.GetFixtures();
-            DataManager.UpdateFixtures(fixtures);
+            DateTime currentDate = DateTime.Now;
+            var currentGameweek = this.Data.Gameweeks
+                .FirstOrDefault(g => g.StartDate >= currentDate && currentDate <= g.EndDate);
+            List<string> fixtures = this.Statistics.GetCurrentFixtures(currentGameweek.Id);
+            this.DataManager.UpdateFixtures(fixtures);
 
-            return RedirectToAction("Matches");
+            return PartialView("_MatchesGrid");
+        }
+
+        public ActionResult UpadateFixtures()
+        {
+            List<List<string>> allFixtures = this.Statistics.GetSeasonFixtures();
+            foreach (var fixtures in allFixtures)
+            {
+                this.DataManager.UpdateFixtures(fixtures);
+            }
+
+            return PartialView("_MatchesGrid");
         }
 
         private void PopulateTeams()

@@ -7,7 +7,7 @@ using System.Web;
 
 namespace FantasyStatsApp.Models
 {
-    public class PlayerViewModel
+    public class PlayerViewModel : PlayerBasicModel
     {
         public static Expression<Func<Player, PlayerViewModel>> FromPlayers =
             player => new PlayerViewModel()
@@ -19,36 +19,15 @@ namespace FantasyStatsApp.Models
                 Price = player.Price,
                 Position = player.Position,
                 Points = player.Points,
+                PointsPerGame = player.PointsPerGame,
                 PointsPerPrice = Math.Round(player.Points / player.Price, 2),
                 PPPPerMinutes = Math.Round(((player.Points / player.Price) / player.MinutesPlayed) * 100, 4),
                 PPPPerGame = Math.Round(player.PointsPerGame / player.Price, 4)
             };
-        public int Id { get; set; }
-
-        public string Name { get; set; }
-
-        public string Team { get; set; }
-
-        public double Selected { get; set; }
-
-        public decimal Price { get; set; }
-
-        public int Points { get; set; }
-
         public decimal PointsPerPrice { get; set; }
 
         public decimal PPPPerMinutes { get; set; }
 
-        public decimal PPPPerGame { get; set; }
-
-        public Position Position { get; set; }
-
-        public string PositionName
-        {
-            get
-            {
-                return this.Position.ToString();
-            }
-        }
+        public decimal PPPPerGame { get; set; }        
     }
 }

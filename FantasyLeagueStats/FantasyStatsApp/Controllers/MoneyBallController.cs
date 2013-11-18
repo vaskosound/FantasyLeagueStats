@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace FantasyStatsApp.Controllers
 {
+    [Authorize]
     public class MoneyBallController : Controller
     {
         public ApplicationDbContext Data { get; set; }
@@ -39,6 +40,31 @@ namespace FantasyStatsApp.Controllers
             knapsack.KnapsackProblem();
             var bestTeam = knapsack.OutputSolution().OrderBy(p => p.Position).ToList();
             //var bestTeamByPoints = this.Data.Players.Where(p => bestTeam.Any(x => x.Id == p.Id));
+
+            return PartialView("_ValuableTeam", bestTeam);
+        }
+
+        public ActionResult TeamByPointsPerGame()
+        {
+            return View();
+        }
+
+        public ActionResult GetTeamByPointsPerGame(SubmitTeamPrice price)
+        {
+            var players = this.Data.Players.OrderByDescending(p => p.PointsPerGame)
+                .Take(100).Select(x => new PlayerValuableModel()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Value = x.PointsPerGame,
+                    Weight = x.Price,
+                    Position = (int)x.Position,
+                    Team = x.Team.Initials
+                }).ToArray();
+
+            Knapsack knapsack = new Knapsack(players, price.TeamPrice);
+            knapsack.KnapsackProblem();
+            var bestTeam = knapsack.OutputSolution().OrderBy(p => p.Position).ToList();
 
             return PartialView("_ValuableTeam", bestTeam);
         }

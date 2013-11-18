@@ -3,53 +3,34 @@
 }
 
 <div class="row">
-    <div class="col-lg-10 h2">@ViewBag.Title</div>
+    <div class="col-lg-8 h2">@ViewBag.Title</div>
     <div class="col-lg-2">
-        @Html.ActionLink("Update Results", "UpadateResults", null, new { @class = "btn btn-primary text-right" })
+        @Ajax.ActionLink("Update Results", "UpadateResults", null, new AjaxOptions()
+           {
+                HttpMethod = "GET",
+                InsertionMode = InsertionMode.Replace,
+                UpdateTargetId = "matches-list",
+                LoadingElementId = "loading",
+                LoadingElementDuration = 1000             
+            },
+            new { @class = "btn btn-primary text-right" })
+    </div>
+    <div class="col-lg-2">
+        @Ajax.ActionLink("Update Fixtures", "UpadateFixtures", null, new AjaxOptions()
+           {
+               HttpMethod = "GET",
+               InsertionMode = InsertionMode.Replace,
+               UpdateTargetId = "matches-list",
+               LoadingElementId = "loading",
+               LoadingElementDuration = 1000
+           },
+            new { @class = "btn btn-primary text-right" })
     </div>
 </div>
-@(Html.Kendo().Grid<FantasyStatsApp.Models.MatchViewModel>()
-    .Name("matches")
-    .Pageable()
-    .Sortable()
-    .Filterable()
-    .Editable(edit =>
-            {
-                edit.Mode(GridEditMode.PopUp);
-            })
-    .ToolBar(tool => tool.Create())
-    .Columns(col =>
-            {
-                col.Bound(m => m.Gameweek).EditorTemplateName("EditorGameweek");
-                col.Bound(m => m.Host).EditorTemplateName("EditorTeam");
-                col.Bound(m => m.HostScore).HtmlAttributes(new { style = "text-align: center"}).ClientTemplate(
-                    "# if(data.HostScore != null ){ # #: HostScore # - #: VisitorScore # # }" +
-                    "else{ # v # } #").Title("Result");
-                col.Bound(m => m.Visitor).EditorTemplateName("EditorTeam");
-                col.Bound(m => m.MatchDate).Title("Match Date").Format("{0:dd MMM yyyy}").EditorTemplateName("EditorMatchDate");
-                col.Command(com =>
-                            {
-                                com.Edit();
-                                com.Destroy();
-                            }).Title("Commands").Width(200);
-            })
-    .DataSource(data =>
-    {
-        data.Ajax()
-            .ServerOperation(true)
-            .PageSize(10)
-            .Sort(sort => 
-                {
-                    sort.Add(stat => stat.MatchDate);
-                })
-            .Model(m =>
-                {
-                    m.Id(p => p.Id);
-                })
-            .Read("ReadMatches", "Admin")
-            .Update("EditMatch", "Admin")
-            .Destroy("DeleteMatch", "Admin")
-            .Create("CreateMatch", "Admin");            
-    })
-)
-
+<div id="loading">Updating...</div>
+<div id="matches-list">
+   @Html.Partial("_MatchesGrid")
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

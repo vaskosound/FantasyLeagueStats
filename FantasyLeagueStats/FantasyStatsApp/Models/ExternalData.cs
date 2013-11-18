@@ -98,29 +98,87 @@ namespace FantasyStatsApp.Models
             return standings;
         }
 
-        public List<string> GetFixtures()
+
+        public List<List<string>> GetSeasonFixtures()
+        {
+            List<List<string>> allFixtures = new List<List<string>>();
+            using (WebClient client = new WebClient())
+            {
+                client.Encoding = System.Text.Encoding.UTF8;
+                //allFixtures.Add(GetGameweekFixture(client, currentFixtures + 1));
+                //allFixtures.Add(GetGameweekFixture(client, currentFixtures + 2));
+                //allFixtures.Add(GetGameweekFixture(client, currentFixtures + 3));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 4));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 5));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 6));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 7));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 8));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 9));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 10));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 11));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 12));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 13));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 14));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 15));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 16));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 17));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 18));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 19));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 20));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 21));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 22));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 23));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 24));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 25));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 26));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 27));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 28));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 29));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 30));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 31));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 32));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 33));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 34));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 35));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 36));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 37));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 38));
+            }
+
+            return allFixtures;
+        }
+
+        public List<string> GetCurrentFixtures(int gameweek)
         {
             List<string> fixtures = new List<string>();
             using (WebClient client = new WebClient())
             {
                 client.Encoding = System.Text.Encoding.UTF8;
-                string html = client.DownloadString(currentFixtures);
-                int gameweekIndex = html.IndexOf("ismStrongCaption");
-                string fixtureGameweek = html.Substring(gameweekIndex);
-                int endGameweekIndex = fixtureGameweek.IndexOf("-");
-                var gameweek = fixtureGameweek.Substring(18, endGameweekIndex - 19);
-                fixtures.Add(gameweek);
-                int endIndex = fixtureGameweek.IndexOf("ismNoJsMsg");
-                int startIndex = endGameweekIndex;
-                string fixturesTable = fixtureGameweek.Substring(startIndex, endIndex - startIndex);
-                string pattern = "(<td.*?>)(.*?)(<\\/td>)";
-                var matches = Regex.Matches(fixturesTable, pattern);
-                foreach (Match item in matches)
+                fixtures = GetGameweekFixture(client, currentFixtures + gameweek);
+            }
+
+            return fixtures;
+        }
+
+        private static List<string> GetGameweekFixture(WebClient client, string gameweekUrl)
+        {
+            List<string> fixtures = new List<string>();
+            string html = client.DownloadString(gameweekUrl);
+            int gameweekIndex = html.IndexOf("ismStrongCaption");
+            string fixtureGameweek = html.Substring(gameweekIndex);
+            int endGameweekIndex = fixtureGameweek.IndexOf("-");
+            var gameweek = fixtureGameweek.Substring(18, endGameweekIndex - 19);
+            fixtures.Add(gameweek);
+            int endIndex = fixtureGameweek.IndexOf("ismNoJsMsg");
+            int startIndex = endGameweekIndex;
+            string fixturesTable = fixtureGameweek.Substring(startIndex, endIndex - startIndex);
+            string pattern = "(<td.*?>)(.*?)(<\\/td>)";
+            var matches = Regex.Matches(fixturesTable, pattern);
+            foreach (Match item in matches)
+            {
+                if (!item.Groups[2].Value.Contains("<"))
                 {
-                    if (!item.Groups[2].Value.Contains("<"))
-                    {
-                        fixtures.Add(item.Groups[2].Value);
-                    }
+                    fixtures.Add(item.Groups[2].Value);
                 }
             }
 

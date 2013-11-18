@@ -30,9 +30,7 @@ namespace FantasyStats.Model
         public int GoalsAgainst { get; set; }
 
         public int Points { get; set; }
-
-
-
+    
         public Team()
         {
             this.players = new HashSet<Player>();

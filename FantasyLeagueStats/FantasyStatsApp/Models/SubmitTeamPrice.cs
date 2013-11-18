@@ -10,7 +10,7 @@ namespace FantasyStatsApp.Models
     public class SubmitTeamPrice
     {
         [Required]
-        [DisplayName("Team Price")]
+        [DisplayName("Your Team Price")]
         public decimal TeamPrice { get; set; }
     }
 }

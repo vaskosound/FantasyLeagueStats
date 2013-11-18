@@ -52,7 +52,10 @@ namespace FantasyStatsApp.Models
                 if (k == playersCount)
                 { // If we’ve reached leaf node, have 
                     solutionProfit = currProfit; // actual soln, not just bound 
-                    Array.Copy(this.workSolution, 0, this.bestSolution, 0, this.workSolution.Length); // Copy soln into array bestSolution
+                    if (GetPlayersInSolution() == 15)
+                    {
+                        Array.Copy(this.workSolution, 0, this.bestSolution, 0, this.workSolution.Length); // Copy soln into array bestSolution    
+                    }                    
                     k = playersCount - 1; // Back up to prev tree level, which may leave solution 
                 }
                 else // Else not at leaf, just have bound 
@@ -70,7 +73,7 @@ namespace FantasyStatsApp.Models
             partItem = k + 1; // Go to next lower level,, try to put in soln 
             List<PlayerValuableModel> missedPlayers = new List<PlayerValuableModel>();
             while (partItem < playersCount && !found) // More items & haven’t found partial 
-            {
+            {               
                 if (newWgt + this.players[partItem].Weight <= capacity)
                 {
                     this.workSolution[partItem] = 1; // Update curr soln to show item k is in it 
@@ -82,7 +85,6 @@ namespace FantasyStatsApp.Models
                     else
                     {
                         this.workSolution[partItem] = 0;
-                        SearchInMissedPlayers(missedPlayers);
                         missedPlayers.Add(this.players[partItem]);
                     }                   
                 }
@@ -90,12 +92,12 @@ namespace FantasyStatsApp.Models
                 {
                     if (GetPlayersInSolution() < 15)
                     {
-                        int mostExpensivePlayerIndex = GetMostExpensivePlayer();
+                        int mostExpensivePlayerIndex = GetAtLeastValuablePlayer();
                         this.workSolution[mostExpensivePlayerIndex] = 0;
                         newWgt -= this.players[mostExpensivePlayerIndex].Weight; // Update new wgt, prof 
-                        newProfit -= this.players[mostExpensivePlayerIndex].Value; // by adding item wgt,prof                        
+                        newProfit -= this.players[mostExpensivePlayerIndex].Value; // by adding item wgt,prof    
+                        SearchInMissedPlayers(missedPlayers);
                         partItem--;
-
                     }
                     else
                     {
@@ -141,18 +143,38 @@ namespace FantasyStatsApp.Models
             }
         }
 
-        private int GetMostExpensivePlayer()
+        //private int GetMostExpensivePlayer()
+        //{
+        //    decimal maxPrice = 0;
+        //    int currentIndex = 0;
+        //    for (int i = 0; i < this.workSolution.Length; i++)
+        //    {
+        //        if (this.workSolution[i] == 1)
+        //        {
+        //            decimal playerPrice = this.players[i].Weight;
+        //            if (maxPrice < playerPrice)
+        //            {
+        //                maxPrice = playerPrice;
+        //                currentIndex = i;
+        //            }
+        //        }
+        //    }
+
+        //    return currentIndex;
+        //}
+
+        private int GetAtLeastValuablePlayer()
         {
-            decimal maxPrice = 0;
+            decimal minValue = int.MaxValue;
             int currentIndex = 0;
             for (int i = 0; i < this.workSolution.Length; i++)
             {
                 if (this.workSolution[i] == 1)
                 {
-                    decimal playerPrice = this.players[i].Weight;
-                    if (maxPrice < playerPrice)
+                    decimal playerValuable = this.players[i].Value / this.players[i].Weight;
+                    if (minValue > playerValuable)
                     {
-                        maxPrice = playerPrice;
+                        minValue = playerValuable;
                         currentIndex = i;
                     }
                 }
