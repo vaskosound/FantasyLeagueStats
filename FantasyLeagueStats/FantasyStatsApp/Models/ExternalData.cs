@@ -105,9 +105,9 @@ namespace FantasyStatsApp.Models
             using (WebClient client = new WebClient())
             {
                 client.Encoding = System.Text.Encoding.UTF8;
-                //allFixtures.Add(GetGameweekFixture(client, currentFixtures + 1));
-                //allFixtures.Add(GetGameweekFixture(client, currentFixtures + 2));
-                //allFixtures.Add(GetGameweekFixture(client, currentFixtures + 3));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 1));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 2));
+                allFixtures.Add(GetGameweekFixture(client, currentFixtures + 3));
                 allFixtures.Add(GetGameweekFixture(client, currentFixtures + 4));
                 allFixtures.Add(GetGameweekFixture(client, currentFixtures + 5));
                 allFixtures.Add(GetGameweekFixture(client, currentFixtures + 6));
