@@ -186,7 +186,6 @@ namespace FantasyStatsApp.Models
 
             if (gameweek == null)
             {
-               
                 var newGameweek = new Gameweek()
                 {
                     Id = gameweekNumber,
@@ -197,7 +196,7 @@ namespace FantasyStatsApp.Models
 
                 context.Gameweeks.Add(newGameweek);
                 context.SaveChanges();
-                gameweek = context.Gameweeks.FirstOrDefault(g => g.Name == matchModel.Gameweek);
+                gameweek = context.Gameweeks.Find(newGameweek.Id);
             }
             else
             {

@@ -47,7 +47,7 @@ namespace FantasyStatsApp.Controllers
             this.DataManager.UpdatePointsPerGameData(statsPointsPerGame);
             List<string> statsLeagueTable = this.Statistics.GetStandings();
             this.DataManager.UpdateStandings(statsLeagueTable);
-            
+
             return PartialView("_PlayersStatsGrid");
         }
 
@@ -129,8 +129,8 @@ namespace FantasyStatsApp.Controllers
         {
             DateTime currentDate = DateTime.Now;
             var currentGameweek = this.Data.Gameweeks
-                .FirstOrDefault(g => g.StartDate >= currentDate && currentDate <= g.EndDate);
-            List<string> fixtures = this.Statistics.GetCurrentFixtures(currentGameweek.Id);
+                .FirstOrDefault(g => g.StartDate <= currentDate && currentDate <= g.EndDate);
+            List<string> fixtures = this.Statistics.GetGameweek(currentGameweek.Id);
             this.DataManager.UpdateFixtures(fixtures);
 
             return PartialView("_MatchesGrid");
@@ -138,10 +138,24 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult UpadateFixtures()
         {
-            List<List<string>> allFixtures = this.Statistics.GetSeasonFixtures();
-            foreach (var fixtures in allFixtures)
+            var gameweeks = this.Data.Gameweeks;
+            if (gameweeks.Count() == 0)
             {
-                this.DataManager.UpdateFixtures(fixtures);
+                for (int i = 1; i <= 38; i++)
+                {
+                    List<string> fixtures = this.Statistics.GetGameweek(i);
+                    this.DataManager.UpdateFixtures(fixtures);
+                }
+            }
+            else
+            {
+                DateTime currentDate = DateTime.Now;
+                var remainingGameweeks = gameweeks.Where(g => g.StartDate >= currentDate);
+                foreach (var gameweek in remainingGameweeks)
+                {
+                    List<string> fixtures = this.Statistics.GetGameweek(gameweek.Id);
+                    this.DataManager.UpdateFixtures(fixtures);
+                }
             }
 
             return PartialView("_MatchesGrid");
