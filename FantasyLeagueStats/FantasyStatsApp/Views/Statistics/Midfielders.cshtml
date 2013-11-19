@@ -26,7 +26,7 @@
         data.Ajax()
             .ServerOperation(true)
             .PageSize(10)
-            .Sort(sort => sort.Add(stat => stat.PointsPerPrice).Descending())
+            .Sort(sort => sort.Add(stat => stat.Points).Descending())
             .Model(m =>
                 {
                     m.Id(p => p.Id);
