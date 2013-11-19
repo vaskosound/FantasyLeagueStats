@@ -9,13 +9,13 @@ namespace FantasyStatsApp.Models
     {
         private PlayerValuableModel[] players; // Input list of items 
         private decimal capacity; // Max weight allowed in knapsack
-        public int[] bestSolution; // Best solution array: item i in if xi=1 
+        public int[] bestSolution; // Best solution array
         private int[] workSolution; // Working solution array at current tree node 
-        private decimal solutionProfit = -1; // Profit of best solution so far 
-        private decimal currWgt; // Weight of solution at this tree node 
-        private decimal currProfit; // Profit of solution at this tree node 
-        private decimal newWgt; // Weight of solution from bound() method 
-        private decimal newProfit; // Profit of solution from bound() method 
+        private decimal solutionValue = -1; // Value of best solution so far 
+        private decimal currentWeight; // Weight of solution at this tree node 
+        private decimal currentValue; // Value of solution at this tree node 
+        private decimal newWeight; // Weight of solution from bound() method 
+        private decimal newValue; // Vaule of solution from bound() method 
         private int k = -1; // Level of tree in knapsack() method 
         private int partItem; // Level of tree in bound() method 
 
@@ -31,35 +31,38 @@ namespace FantasyStatsApp.Models
         public void KnapsackProblem()
         {
             int playersCount = this.players.Length;
-            do
-            { // While upper bound < known soln,backtrack 
-                while (Bound() <= solutionProfit)
+            do // While upper bound < known soln,backtrack 
+            {
+                while (Bound() <= solutionValue)
                 {
                     while (k != 0 && this.workSolution[k] != 1) // Back up while item k not in sack 
                     {
                         k--; // to find last object in knapsack 
                     }
-                    if (k == 0) // If at root,, we’re done. Return. 
+                    if (k == 0) // If at root, we’re done. 
                         return;
                     this.workSolution[k] = 0; // Else take k out of soln (R branch) 
-                    currWgt -= this.players[k].Weight; // Reduce soln wgt by k’s wgt 
-                    currProfit -= this.players[k].Value; // Reduce soln profit by k’s prof 
+                    currentWeight -= this.players[k].Weight; // Reduce soln weight by k’s weight 
+                    currentValue -= this.players[k].Value; // Reduce soln value by k’s value 
                 }
-                currWgt = newWgt; // Reach here if bound> soln profit 
-                currProfit = newProfit; // and we may have new soln. 
-                k = this.partItem; // Set tree level k to last, possibly 
+                currentWeight = newWeight; // Reach here if bound > soln value 
+                currentValue = newValue; // and we may have new soln. 
+                k = this.partItem; // Set tree level k to last, possible 
                 // partial it em i n greed y solution 
-                if (k == playersCount)
-                { // If we’ve reached leaf node, have 
-                    solutionProfit = currProfit; // actual soln, not just bound 
+                if (k == playersCount) // If we’ve reached leaf node, have actual soln, not just bound 
+                {
+                    solutionValue = currentValue;
                     if (GetPlayersInSolution() == 15)
                     {
                         Array.Copy(this.workSolution, 0, this.bestSolution, 0, this.workSolution.Length); // Copy soln into array bestSolution    
-                    }                    
+                    }
+
                     k = playersCount - 1; // Back up to prev tree level, which may leave solution 
                 }
-                else // Else not at leaf, just have bound 
+                else
+                {
                     this.workSolution[k] = 0; // Take last item k out of soln 
+                }
             } while (true);
         }
 
@@ -68,45 +71,45 @@ namespace FantasyStatsApp.Models
             bool found = false; // Was bound found?I.e.,is last item partial 
             decimal boundVal = -1; // Value of upper bound 
             int playersCount = this.players.Length; // Number of items in problem 
-            newProfit = currProfit; // Set new prof as current prof at this node 
-            newWgt = currWgt;
-            partItem = k + 1; // Go to next lower level,, try to put in soln 
+            newValue = currentValue; 
+            newWeight = currentWeight;
+            partItem = k + 1; // Go to next lower level, try to put in soln 
             List<PlayerValuableModel> missedPlayers = new List<PlayerValuableModel>();
-            while (partItem < playersCount && !found) // More items & haven’t found partial 
-            {               
-                if (newWgt + this.players[partItem].Weight <= capacity)
+            while (partItem < playersCount && !found) 
+            {
+                if (newWeight + this.players[partItem].Weight <= capacity)
                 {
-                    this.workSolution[partItem] = 1; // Update curr soln to show item k is in it 
+                    this.workSolution[partItem] = 1; // Update current soln to show item k is in it 
                     if (IsValidPositions() && IsValidPlayersFromTeam())
                     {
-                        newWgt += this.players[partItem].Weight; // Update new wgt, prof 
-                        newProfit += this.players[partItem].Value; // by adding item wgt,prof 
+                        newWeight += this.players[partItem].Weight; 
+                        newValue += this.players[partItem].Value; 
                     }
                     else
                     {
                         this.workSolution[partItem] = 0;
                         missedPlayers.Add(this.players[partItem]);
-                    }                   
+                    }
                 }
                 else
                 {
-                    if (GetPlayersInSolution() < 15)
+                    if (GetPlayersInSolution() < 15) // remove player when team is not filled
                     {
                         int mostExpensivePlayerIndex = GetAtLeastValuablePlayer();
                         this.workSolution[mostExpensivePlayerIndex] = 0;
-                        newWgt -= this.players[mostExpensivePlayerIndex].Weight; // Update new wgt, prof 
-                        newProfit -= this.players[mostExpensivePlayerIndex].Value; // by adding item wgt,prof    
-                        SearchInMissedPlayers(missedPlayers);
+                        newWeight -= this.players[mostExpensivePlayerIndex].Weight; 
+                        newValue -= this.players[mostExpensivePlayerIndex].Value; 
+                        SearchInMissedPlayers(missedPlayers); 
                         partItem--;
                     }
                     else
                     {
-                        boundVal = newProfit + (this.capacity - newWgt) *
+                        boundVal = newValue + (this.capacity - newWeight) *
                             this.players[partItem].Value / this.players[partItem].Weight;
                         found = true;
                     }
-                } // Compute upper b ound b ased on partial fit 
-                partItem++; // Go to next item and try to put in sack 
+                }
+                partItem++;
             }
             if (found)
             {
@@ -115,8 +118,23 @@ namespace FantasyStatsApp.Models
             }
             else
             {
-                return newProfit;
+                return newValue;
             }
+        }
+        
+        public List<PlayerValuableModel> OutputSolution()
+        {
+            List<PlayerValuableModel> bestPlayers = new List<PlayerValuableModel>();
+
+            for (int i = 0; i < this.bestSolution.Length; i++)
+            {
+                if (this.bestSolution[i] == 1)
+                {
+                    bestPlayers.Add(this.players[i]);
+                }
+            }
+
+            return bestPlayers;
         }
 
         private void SearchInMissedPlayers(List<PlayerValuableModel> missedPlayers)
@@ -124,14 +142,14 @@ namespace FantasyStatsApp.Models
             for (int i = 0; i < missedPlayers.Count; i++)
             {
                 var player = this.players.FirstOrDefault(p => p.Id == missedPlayers[i].Id);
-                if (newWgt + player.Weight <= capacity)
+                if (newWeight + player.Weight <= capacity)
                 {
                     int index = Array.IndexOf(this.players, player);
                     this.workSolution[index] = 1;
                     if (IsValidPositions() && IsValidPlayersFromTeam())
                     {
-                        newWgt += player.Weight;
-                        newProfit += player.Value;
+                        newWeight += player.Weight;
+                        newValue += player.Value;
                         missedPlayers.Remove(player);
                         break;
                     }
@@ -142,26 +160,6 @@ namespace FantasyStatsApp.Models
                 }
             }
         }
-
-        //private int GetMostExpensivePlayer()
-        //{
-        //    decimal maxPrice = 0;
-        //    int currentIndex = 0;
-        //    for (int i = 0; i < this.workSolution.Length; i++)
-        //    {
-        //        if (this.workSolution[i] == 1)
-        //        {
-        //            decimal playerPrice = this.players[i].Weight;
-        //            if (maxPrice < playerPrice)
-        //            {
-        //                maxPrice = playerPrice;
-        //                currentIndex = i;
-        //            }
-        //        }
-        //    }
-
-        //    return currentIndex;
-        //}
 
         private int GetAtLeastValuablePlayer()
         {
@@ -196,38 +194,10 @@ namespace FantasyStatsApp.Models
 
             return countPlayers;
         }
-
-        public List<PlayerValuableModel> OutputSolution()
-        {
-            List<PlayerValuableModel> bestPlayers = new List<PlayerValuableModel>();
-
-            for (int i = 0; i < this.bestSolution.Length; i++)
-            {
-                if (this.bestSolution[i] == 1)
-                {
-                    bestPlayers.Add(this.players[i]);
-                }
-            }
-
-            return bestPlayers;
-        }
-
+        
         private bool IsValidPositions()
         {
-            Dictionary<int, int> positions = new Dictionary<int, int>();
-            for (int i = 0; i < this.players.Length; i++)
-            {
-                if (this.workSolution[i] == 1)
-                {
-                    int count = 1;
-                    if (positions.ContainsKey(this.players[i].Position))
-                    {
-                        count = positions[this.players[i].Position] + 1;
-                    }
-                    positions[this.players[i].Position] = count;
-
-                }
-            }
+            Dictionary<int, int> positions = GetPositionsCount();
 
             foreach (var postion in positions)
             {
@@ -252,6 +222,25 @@ namespace FantasyStatsApp.Models
                 }
             }
             return true;
+        }
+
+        private Dictionary<int, int> GetPositionsCount()
+        {
+            Dictionary<int, int> positions = new Dictionary<int, int>();
+            for (int i = 0; i < this.players.Length; i++)
+            {
+                if (this.workSolution[i] == 1)
+                {
+                    int count = 1;
+                    if (positions.ContainsKey(this.players[i].Position))
+                    {
+                        count = positions[this.players[i].Position] + 1;
+                    }
+                    positions[this.players[i].Position] = count;
+
+                }
+            }
+            return positions;
         }
 
         private bool IsValidPlayersFromTeam()
