@@ -12,18 +12,16 @@ using FantasyStats.Model;
 namespace FantasyStatsApp.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class AdminController : Controller
+    public class AdminController : BaseController
     {
         public ExternalData Statistics { get; set; }
 
         public DataManager DataManager { get; set; }
-        public ApplicationDbContext Data { get; set; }
-
+      
         public AdminController()
         {
             this.Statistics = new ExternalData();
             this.DataManager = new DataManager();
-            this.Data = new ApplicationDbContext();
         }
 
 
@@ -34,7 +32,7 @@ namespace FantasyStatsApp.Controllers
 
         public JsonResult ReadPlayersStats([DataSourceRequest] DataSourceRequest request)
         {
-            var result = this.Data.Players.Select(PlayerBasicModel.FromPlayersStats);
+            var result = this.Data.Players.All().Select(PlayerBasicModel.FromPlayersStats);
 
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -60,7 +58,8 @@ namespace FantasyStatsApp.Controllers
 
         public JsonResult ReadMatches([DataSourceRequest] DataSourceRequest request)
         {
-            var result = this.Data.Matches.OrderBy(m => m.MatchDate).Select(MatchViewModel.FromMatches);
+            var result = this.Data.Matches.All().OrderBy(m => m.MatchDate)
+                .Select(MatchViewModel.FromMatches);
 
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -69,10 +68,10 @@ namespace FantasyStatsApp.Controllers
         {
             if (match != null && ModelState.IsValid)
             {
-                var hostTeam = this.Data.Teams.FirstOrDefault(x => x.Name == match.Host);
-                var visitorTeam = this.Data.Teams.FirstOrDefault(x => x.Name == match.Visitor);
-                var gameweek = this.Data.Gameweeks.FirstOrDefault(g => g.Name == match.Gameweek);
-                var matchExists = this.Data.Matches.FirstOrDefault(m => m.Host.Name == match.Host &&
+                var hostTeam = this.Data.Teams.All().FirstOrDefault(x => x.Name == match.Host);
+                var visitorTeam = this.Data.Teams.All().FirstOrDefault(x => x.Name == match.Visitor);
+                var gameweek = this.Data.Gameweeks.All().FirstOrDefault(g => g.Name == match.Gameweek);
+                var matchExists = this.Data.Matches.All().FirstOrDefault(m => m.Host.Name == match.Host &&
                     m.Visitor.Name == match.Visitor);
 
                 if (matchExists == null)
@@ -98,10 +97,10 @@ namespace FantasyStatsApp.Controllers
 
         public JsonResult EditMatch([DataSourceRequest] DataSourceRequest request, MatchViewModel match)
         {
-            var editedMatch = this.Data.Matches.Find(match.Id);
-            var hostTeam = this.Data.Teams.FirstOrDefault(x => x.Name == match.Host);
-            var visitorTeam = this.Data.Teams.FirstOrDefault(x => x.Name == match.Visitor);
-            var gameweek = this.Data.Gameweeks.FirstOrDefault(g => g.Name == match.Gameweek);
+            var editedMatch = this.Data.Matches.GetById(match.Id);
+            var hostTeam = this.Data.Teams.All().FirstOrDefault(x => x.Name == match.Host);
+            var visitorTeam = this.Data.Teams.All().FirstOrDefault(x => x.Name == match.Visitor);
+            var gameweek = this.Data.Gameweeks.All().FirstOrDefault(g => g.Name == match.Gameweek);
 
             editedMatch.Gameweek = gameweek;
             editedMatch.Host = hostTeam;
@@ -117,9 +116,9 @@ namespace FantasyStatsApp.Controllers
 
         public JsonResult DeleteMatch([DataSourceRequest] DataSourceRequest request, MatchViewModel match)
         {
-            var deletedMatch = this.Data.Matches.Find(match.Id);
+            var deletedMatch = this.Data.Matches.GetById(match.Id);
 
-            this.Data.Matches.Remove(deletedMatch);
+            this.Data.Matches.Delete(deletedMatch);
             this.Data.SaveChanges();
 
             return Json(new[] { match }.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
@@ -128,8 +127,9 @@ namespace FantasyStatsApp.Controllers
         public ActionResult UpadateResults()
         {
             DateTime currentDate = DateTime.Now;
-            var currentGameweek = this.Data.Gameweeks
+            var currentGameweek = this.Data.Gameweeks.All()
                 .FirstOrDefault(g => g.StartDate <= currentDate && currentDate <= g.EndDate);
+
             List<string> fixtures = this.Statistics.GetGameweek(currentGameweek.Id);
             this.DataManager.UpdateFixtures(fixtures);
 
@@ -138,7 +138,7 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult UpadateFixtures()
         {
-            var gameweeks = this.Data.Gameweeks;
+            var gameweeks = this.Data.Gameweeks.All();
             if (gameweeks.Count() == 0)
             {
                 for (int i = 1; i <= 38; i++)
@@ -164,8 +164,7 @@ namespace FantasyStatsApp.Controllers
         private void PopulateTeams()
         {
             var dataContext = this.Data;
-            var teams = dataContext.Teams
-                        .OrderBy(e => e.Name)
+            var teams = dataContext.Teams.All().OrderBy(e => e.Name)
                         .Select(SelectTeamModel.FromTeams);
 
             ViewData["teams"] = teams;
@@ -174,8 +173,7 @@ namespace FantasyStatsApp.Controllers
         private void PopulateGameweek()
         {
             var dataContext = this.Data;
-            var gameweeks = dataContext.Gameweeks
-                        .OrderBy(e => e.Id)
+            var gameweeks = dataContext.Gameweeks.All().OrderBy(e => e.Id)
                         .Select(GameweekModel.FromGameweeks);
 
             ViewData["gameweeks"] = gameweeks;

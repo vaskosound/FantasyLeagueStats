@@ -20,7 +20,7 @@ namespace FantasyStatsApp
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            Database.SetInitializer<ApplicationDbContext>(new MigrateDatabaseToLatestVersion<ApplicationDbContext, Configuration>());
+            Database.SetInitializer<FantasyStatsDbContext>(new MigrateDatabaseToLatestVersion<FantasyStatsDbContext, Configuration>());
         }
     }
 }

@@ -16,7 +16,7 @@ namespace FantasyStatsApp.Models
 
         public decimal Weight { get; set; }
 
-        public int Position { get; set; }
+        public Position Position { get; set; }
 
         public string Team { get; set; }
     }

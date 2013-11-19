@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FantasyStats.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -197,26 +198,26 @@ namespace FantasyStatsApp.Models
         
         private bool IsValidPositions()
         {
-            Dictionary<int, int> positions = GetPositionsCount();
+            Dictionary<Position, int> positions = GetPositionsCount();
 
             foreach (var postion in positions)
             {
-                if (postion.Key == 0 && postion.Value > 2)
+                if (postion.Key == Position.GKP && postion.Value > 2)
                 {
                     return false;
                 }
 
-                if (postion.Key == 1 && postion.Value > 5)
+                if (postion.Key == Position.DEF && postion.Value > 5)
                 {
                     return false;
                 }
 
-                if (postion.Key == 2 && postion.Value > 5)
+                if (postion.Key == Position.MID && postion.Value > 5)
                 {
                     return false;
                 }
 
-                if (postion.Key == 3 && postion.Value > 3)
+                if (postion.Key == Position.FWD && postion.Value > 3)
                 {
                     return false;
                 }
@@ -224,9 +225,9 @@ namespace FantasyStatsApp.Models
             return true;
         }
 
-        private Dictionary<int, int> GetPositionsCount()
+        private Dictionary<Position, int> GetPositionsCount()
         {
-            Dictionary<int, int> positions = new Dictionary<int, int>();
+            Dictionary<Position, int> positions = new Dictionary<Position, int>();
             for (int i = 0; i < this.players.Length; i++)
             {
                 if (this.workSolution[i] == 1)

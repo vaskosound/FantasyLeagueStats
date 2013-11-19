@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 
 namespace FantasyStats.Data.Migrations
 {
-    public sealed class Configuration : DbMigrationsConfiguration<FantasyStats.Data.ApplicationDbContext>
+    public sealed class Configuration : DbMigrationsConfiguration<FantasyStats.Data.FantasyStatsDbContext>
     {
         public Configuration()
         {
@@ -16,7 +16,7 @@ namespace FantasyStats.Data.Migrations
             this.AutomaticMigrationDataLossAllowed = true;
         }
 
-        protected override void Seed(FantasyStats.Data.ApplicationDbContext context)
+        protected override void Seed(FantasyStats.Data.FantasyStatsDbContext context)
         {
             if (context.Roles.FirstOrDefault() == null)
             {

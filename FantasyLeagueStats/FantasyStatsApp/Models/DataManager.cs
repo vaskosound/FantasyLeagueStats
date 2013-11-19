@@ -37,7 +37,7 @@ namespace FantasyStatsApp.Models
         public void UpdatePointsPerGameData(
             List<string> stats)
         {
-            var context = new ApplicationDbContext();
+            var context = new FantasyStatsDbContext();
             for (int i = 0; i < stats.Count; i += 8)
             {
                 var playerModel = new PlayerModel()
@@ -58,7 +58,7 @@ namespace FantasyStatsApp.Models
 
         public void UpdateStandings(List<string> statsStandings)
         {
-            var context = new ApplicationDbContext();
+            var context = new FantasyStatsDbContext();
             for (int i = 14; i < statsStandings.Count; i += 12)
             {
                 string teamName = statsStandings[i + 3];
@@ -78,7 +78,7 @@ namespace FantasyStatsApp.Models
 
         public void UpdateFixtures(List<string> fixtures)
         {
-            var context = new ApplicationDbContext();
+            var context = new FantasyStatsDbContext();
             for (int i = 1; i < fixtures.Count; i += 4)
             {
                 int index = fixtures[i].LastIndexOf(' ');
@@ -110,7 +110,7 @@ namespace FantasyStatsApp.Models
                
         private void AddOrUpdatePlayer(PlayerModel playerModel)
         {
-            var context = new ApplicationDbContext();
+            var context = new FantasyStatsDbContext();
 
             var playerExists = context.Players.FirstOrDefault(x => x.Name == playerModel.Name);
             var team = context.Teams.FirstOrDefault(x => x.Initials == playerModel.Team);
@@ -139,7 +139,7 @@ namespace FantasyStatsApp.Models
             context.SaveChanges();
         }
 
-        private void AddOrUpdateMatch(ApplicationDbContext context,
+        private void AddOrUpdateMatch(FantasyStatsDbContext context,
            MatchViewModel matchModel)
         {
             var matchExists = context.Matches
@@ -171,7 +171,7 @@ namespace FantasyStatsApp.Models
             }
         }
 
-        private Gameweek AddOrUpdateGameweek(ApplicationDbContext context,
+        private Gameweek AddOrUpdateGameweek(FantasyStatsDbContext context,
             MatchViewModel matchModel)
         {
             var gameweek = context.Gameweeks.FirstOrDefault(g => g.Name == matchModel.Gameweek);

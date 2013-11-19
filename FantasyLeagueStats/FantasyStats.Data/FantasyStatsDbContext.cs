@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace FantasyStats.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class FantasyStatsDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext()
+        public FantasyStatsDbContext()
             : base("DefaultConnection")
         {
         }

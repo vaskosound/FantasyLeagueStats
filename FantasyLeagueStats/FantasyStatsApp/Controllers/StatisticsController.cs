@@ -7,20 +7,13 @@ using System.Web;
 using System.Web.Mvc;
 using Kendo.Mvc.Extensions;
 using FantasyStatsApp.Models;
+using FantasyStats.Model;
 
 namespace FantasyStatsApp.Controllers
 {
     [Authorize]
-    public class StatisticsController : Controller
+    public class StatisticsController : BaseController
     {
-        //
-        // GET: /Statistics/
-        public ApplicationDbContext Data { get; set; }
-
-        public StatisticsController()
-        {
-            this.Data = new ApplicationDbContext();
-        }
         public ActionResult Goalkeeprs()
         {
             return View();
@@ -28,7 +21,7 @@ namespace FantasyStatsApp.Controllers
 
         public JsonResult ReadGoalkeepers([DataSourceRequest] DataSourceRequest request)
         {
-            var result = this.Data.Players.Where(x => (int)x.Position == 0)
+            var result = this.Data.Players.All().Where(x => x.Position == Position.GKP)
                 .Select(PlayerViewModel.FromPlayers).OrderByDescending(x => x.PointsPerPrice);
 
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
@@ -41,7 +34,7 @@ namespace FantasyStatsApp.Controllers
 
         public JsonResult ReadDefenders([DataSourceRequest] DataSourceRequest request)
         {
-            var result = this.Data.Players.Where(x => (int)x.Position == 1)
+            var result = this.Data.Players.All().Where(x => x.Position == Position.DEF)
                 .Select(PlayerViewModel.FromPlayers).OrderByDescending(x => x.PointsPerPrice);
 
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
@@ -54,7 +47,7 @@ namespace FantasyStatsApp.Controllers
 
         public JsonResult ReadMidfielders([DataSourceRequest] DataSourceRequest request)
         {
-            var result = this.Data.Players.Where(x => (int)x.Position == 2)
+            var result = this.Data.Players.All().Where(x => x.Position == Position.MID)
                 .Select(PlayerViewModel.FromPlayers).OrderByDescending(x => x.PointsPerPrice);
 
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
@@ -67,7 +60,7 @@ namespace FantasyStatsApp.Controllers
 
         public JsonResult ReadForwards([DataSourceRequest] DataSourceRequest request)
         {
-            var result = this.Data.Players.Where(x => (int)x.Position == 3)
+            var result = this.Data.Players.All().Where(x => x.Position == Position.FWD)
                 .Select(PlayerViewModel.FromPlayers).OrderByDescending(x => x.PointsPerPrice);
 
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
@@ -80,7 +73,7 @@ namespace FantasyStatsApp.Controllers
 
         public JsonResult ReadAllPositions([DataSourceRequest] DataSourceRequest request)
         {
-            var result = this.Data.Players.Select(PlayerViewModel.FromPlayers)
+            var result = this.Data.Players.All().Select(PlayerViewModel.FromPlayers)
                 .OrderByDescending(x => x.PointsPerPrice);
 
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
