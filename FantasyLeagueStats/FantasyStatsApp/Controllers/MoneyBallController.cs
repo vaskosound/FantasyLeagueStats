@@ -1,10 +1,6 @@
-﻿using FantasyStats.Data;
-using FantasyStats.Model;
-using FantasyStatsApp.Models;
+﻿using FantasyStatsApp.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace FantasyStatsApp.Controllers
@@ -62,12 +58,12 @@ namespace FantasyStatsApp.Controllers
             return PartialView("_ValuableTeam", bestTeam);
         }
 
-        public ActionResult TeamByPPP()
+        public ActionResult TeamByPointsPerPrice()
         {
             return View();
         }
 
-        public ActionResult GetTeamByPPP(SubmitTeamPrice price)
+        public ActionResult GetTeamByPointsPerPrice(SubmitTeamPrice price)
         {
             var players = this.Data.Players.All().OrderByDescending(p => p.Points / p.Price)
                 .Take(100).Select(x => new PlayerValuableModel()

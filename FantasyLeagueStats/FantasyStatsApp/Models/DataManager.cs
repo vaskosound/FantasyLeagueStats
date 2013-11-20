@@ -4,15 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 
 namespace FantasyStatsApp.Models
 {
     public class DataManager
     {
 
-        private const string manUnited = "Man Utd";
-        private const string manCity = "Man City";
+        private const string Мan_United = "Man Utd";
+        private const string Мan_City = "Man City";
         private static DateTime startDate = new DateTime(2013, 7, 15);
 
         public void UpdateBasicData(List<string> stats)
@@ -209,12 +208,12 @@ namespace FantasyStatsApp.Models
 
         private string ConvertTeamName(string name)
         {
-            if (name == manUnited)
+            if (name == Мan_United)
             {
                 return "Manchester United";
             }
 
-            if (name == manCity)
+            if (name == Мan_City)
             {
                 return "Manchester City";
             }

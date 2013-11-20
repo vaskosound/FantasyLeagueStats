@@ -1,10 +1,7 @@
-﻿using FantasyStats.Data;
-using FantasyStatsApp.Models;
+﻿using FantasyStatsApp.Models;
 using Kendo.Mvc.UI;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Kendo.Mvc.Extensions;
 

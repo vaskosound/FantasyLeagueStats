@@ -1,10 +1,8 @@
 using System;
-using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using FantasyStats.Model;
 using Microsoft.AspNet.Identity.EntityFramework;
-using System.Collections.ObjectModel;
 
 namespace FantasyStats.Data.Migrations
 {

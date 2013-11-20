@@ -1,15 +1,13 @@
 ﻿using FantasyStats.Data;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace FantasyStatsApp.Controllers
 {
     public class BaseController : Controller
     {
-        protected IUowData Data;
+        protected IUowData Data { get; set; }
 
         public BaseController(IUowData data)
         {

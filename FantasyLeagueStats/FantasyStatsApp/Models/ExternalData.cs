@@ -1,26 +1,22 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Web;
 
 namespace FantasyStatsApp.Models
 {
     public class ExternalData
     {
-        private const string baseURL = "http://fantasy.premierleague.com";
-        private const string statsURL = baseURL + "/stats/elements/";
-        private const string statsMinutesURL = statsURL + "/?element_filter=0&stat_filter=minutes";
-        private const string statsPointsPerGameURL = statsURL + "/?element_filter=0&stat_filter=points_per_game";
-        private const string statsPageMinutesURL = statsURL + "?stat_filter=minutes&element_filter=0&page=";
-        private const string statsPagePointsPerGameURL = statsURL + "?stat_filter=points_per_game&element_filter=0&page=";
-        private const string statsLeagueTable = "http://www.premierleague.com/content/premierleague/en-gb/matchday/league-table.html";
-        private const string currentFixtures = baseURL + "/fixtures/";
-        private const string rules = baseURL + "/rules/";
+        private const string Base_URL = "http://fantasy.premierleague.com";
+        private const string Stats_URL = Base_URL + "/stats/elements/";
+        private const string Stats_Minutes_URL = Stats_URL + "/?element_filter=0&stat_filter=minutes";
+        private const string Stats_Points_Per_Game_URL = Stats_URL + "/?element_filter=0&stat_filter=points_per_game";
+        private const string Stats_Page_Minutes_URL = Stats_URL + "?stat_filter=minutes&element_filter=0&page=";
+        private const string Stats_Page_Points_Per_Game_URL = Stats_URL + "?stat_filter=points_per_game&element_filter=0&page=";
+        private const string Stats_League_Table = "http://www.premierleague.com/content/premierleague/en-gb/matchday/league-table.html";
+        private const string Current_Fixtures = Base_URL + "/fixtures/";
+        private const string Rules = Base_URL + "/rules/";
 
         public List<string> GetBasicStats()
         {
@@ -28,16 +24,16 @@ namespace FantasyStatsApp.Models
             using (WebClient client = new WebClient())
             {
                 client.Encoding = System.Text.Encoding.UTF8;
-                stats.AddRange(GetStatsFromTable(client, statsMinutesURL));
-                stats.AddRange(GetStatsFromTable(client, statsPageMinutesURL + 2));
-                stats.AddRange(GetStatsFromTable(client, statsPageMinutesURL + 3));
-                stats.AddRange(GetStatsFromTable(client, statsPageMinutesURL + 4));
-                stats.AddRange(GetStatsFromTable(client, statsPageMinutesURL + 5));
-                stats.AddRange(GetStatsFromTable(client, statsPageMinutesURL + 6));
-                stats.AddRange(GetStatsFromTable(client, statsPageMinutesURL + 7));
-                stats.AddRange(GetStatsFromTable(client, statsPageMinutesURL + 8));
-                stats.AddRange(GetStatsFromTable(client, statsPageMinutesURL + 9));
-                stats.AddRange(GetStatsFromTable(client, statsPageMinutesURL + 10));
+                stats.AddRange(GetStatsFromTable(client, Stats_Minutes_URL));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 2));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 3));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 4));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 5));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 6));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 7));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 8));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 9));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 10));
             }
 
             return stats;
@@ -48,16 +44,16 @@ namespace FantasyStatsApp.Models
             using (WebClient client = new WebClient())
             {
                 client.Encoding = System.Text.Encoding.UTF8;
-                stats.AddRange(GetStatsFromTable(client, statsPointsPerGameURL));
-                stats.AddRange(GetStatsFromTable(client, statsPagePointsPerGameURL + 2));
-                stats.AddRange(GetStatsFromTable(client, statsPagePointsPerGameURL + 3));
-                stats.AddRange(GetStatsFromTable(client, statsPagePointsPerGameURL + 4));
-                stats.AddRange(GetStatsFromTable(client, statsPagePointsPerGameURL + 5));
-                stats.AddRange(GetStatsFromTable(client, statsPagePointsPerGameURL + 6));
-                stats.AddRange(GetStatsFromTable(client, statsPagePointsPerGameURL + 7));
-                stats.AddRange(GetStatsFromTable(client, statsPagePointsPerGameURL + 8));
-                stats.AddRange(GetStatsFromTable(client, statsPagePointsPerGameURL + 9));
-                stats.AddRange(GetStatsFromTable(client, statsPagePointsPerGameURL + 10));
+                stats.AddRange(GetStatsFromTable(client, Stats_Points_Per_Game_URL));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 2));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 3));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 4));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 5));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 6));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 7));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 8));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 9));
+                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 10));
 
             }
 
@@ -86,7 +82,7 @@ namespace FantasyStatsApp.Models
             using (WebClient client = new WebClient())
             {
                 client.Encoding = System.Text.Encoding.UTF8;
-                string html = client.DownloadString(statsLeagueTable);
+                string html = client.DownloadString(Stats_League_Table);
                 string pattern = "(<td.*>)(.*)(<\\/td>)";
                 var matches = Regex.Matches(html, pattern);
                 foreach (Match item in matches)
@@ -104,7 +100,7 @@ namespace FantasyStatsApp.Models
             using (WebClient client = new WebClient())
             {
                 client.Encoding = System.Text.Encoding.UTF8;
-                fixtures = GetGameweekFixture(client, currentFixtures + gameweek);
+                fixtures = GetGameweekFixture(client, Current_Fixtures + gameweek);
             }
 
             return fixtures;
@@ -141,7 +137,7 @@ namespace FantasyStatsApp.Models
             using (WebClient client = new WebClient())
             {
                 client.Encoding = System.Text.Encoding.UTF8;
-                string html = client.DownloadString(rules);
+                string html = client.DownloadString(Rules);
                 int startIndex = html.IndexOf("All changes to your team");
                 int endIndex = html.IndexOf("During the season");
                 string gameweeksList = html.Substring(startIndex, endIndex - startIndex);

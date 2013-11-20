@@ -1,10 +1,8 @@
 ﻿using FantasyStats.Model;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
 
 namespace FantasyStatsApp.Models
 {

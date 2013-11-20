@@ -479,7 +479,7 @@
     <Content Include="Views\Shared\EditorTemplates\EditorGameweek.cshtml" />
     <Content Include="Views\MoneyBall\TeamByPoints.cshtml" />
     <Content Include="Views\Shared\_ValuableTeam.cshtml" />
-    <Content Include="Views\MoneyBall\TeamByPPP.cshtml" />
+    <Content Include="Views\MoneyBall\TeamByPointsPerPrice.cshtml" />
     <Content Include="Views\MoneyBall\TeamByPPPPerGame.cshtml" />
     <Content Include="Views\Shared\_PlayersStatsGrid.cshtml" />
     <Content Include="Views\Shared\_MatchesGrid.cshtml" />
@@ -488,7 +488,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
