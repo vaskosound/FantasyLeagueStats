@@ -28,9 +28,9 @@ namespace FantasyStatsApp
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            app.UseFacebookAuthentication(
+               appId: "178656178997378",
+               appSecret: "927ad51eedb97b67e93a24915a6207a9");
 
             //app.UseGoogleAuthentication();
         }
