@@ -1,4 +1,5 @@
-﻿using FantasyStatsApp.Models;
+﻿using FantasyStatsApp.Data;
+using FantasyStatsApp.Models;
 using System;
 using System.Linq;
 using System.Web.Mvc;
@@ -13,7 +14,7 @@ namespace FantasyStatsApp.Controllers
             return View();
         }
 
-        public ActionResult GetTeamByPoints(SubmitTeamPrice price)
+        public ActionResult GetTeamByPoints(SubmitTeamPriceModel price)
         {
             var players = this.Data.Players.All().OrderByDescending(p => p.Points)
                 .Take(100).Select(x => new PlayerValuableModel() 
@@ -38,7 +39,7 @@ namespace FantasyStatsApp.Controllers
             return View();
         }
 
-        public ActionResult GetTeamByPointsPerGame(SubmitTeamPrice price)
+        public ActionResult GetTeamByPointsPerGame(SubmitTeamPriceModel price)
         {
             var players = this.Data.Players.All().OrderByDescending(p => p.PointsPerGame)
                 .Take(100).Select(x => new PlayerValuableModel()
@@ -63,7 +64,7 @@ namespace FantasyStatsApp.Controllers
             return View();
         }
 
-        public ActionResult GetTeamByPointsPerPrice(SubmitTeamPrice price)
+        public ActionResult GetTeamByPointsPerPrice(SubmitTeamPriceModel price)
         {
             var players = this.Data.Players.All().OrderByDescending(p => p.Points / p.Price)
                 .Take(100).Select(x => new PlayerValuableModel()
@@ -88,7 +89,7 @@ namespace FantasyStatsApp.Controllers
             return View();
         }
 
-        public ActionResult GetTeamByPPPPerGame(SubmitTeamPrice price)
+        public ActionResult GetTeamByPPPPerGame(SubmitTeamPriceModel price)
         {
             var players = this.Data.Players.All().OrderByDescending(x => x.PointsPerGame / x.Price)
                 .Take(100).Select(x => new PlayerValuableModel()

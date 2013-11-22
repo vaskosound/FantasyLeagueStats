@@ -1,9 +1,10 @@
 ﻿using FantasyStats.Model;
+using FantasyStatsApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FantasyStatsApp.Models
+namespace FantasyStatsApp.Data
 {
     public class Knapsack
     {
@@ -12,11 +13,12 @@ namespace FantasyStatsApp.Models
         public int[] bestSolution; // Best solution array
         private int[] workSolution; // Working solution array at current tree node 
         private decimal solutionValue = -1; // Value of best solution so far 
+        private decimal solutionWeight; // Weight of best solution so far 
         private decimal currentWeight; // Weight of solution at this tree node 
         private decimal currentValue; // Value of solution at this tree node 
         private decimal newWeight; // Weight of solution from bound() method 
         private decimal newValue; // Vaule of solution from bound() method 
-        private int k = -1; // Level of tree in knapsack() method 
+        private int k = -2; // Level of tree in knapsack() method 
         private int partItem; // Level of tree in bound() method 
 
 
@@ -30,11 +32,13 @@ namespace FantasyStatsApp.Models
 
         public void KnapsackProblem()
         {
-            int playersCount = this.players.Length;
             do // While upper bound < known soln,backtrack 
             {
                 while (Bound() <= solutionValue)
                 {
+                    Array.Copy(this.bestSolution, 0, this.workSolution, 0, this.workSolution.Length);
+                    currentWeight = solutionWeight;
+                    currentValue = solutionValue;
                     while (k != 0 && this.workSolution[k] != 1) // Back up while item k not in sack 
                     {
                         k--; // to find last object in knapsack 
@@ -44,24 +48,18 @@ namespace FantasyStatsApp.Models
                     this.workSolution[k] = 0; // Else take k out of soln (R branch) 
                     currentWeight -= this.players[k].Weight; // Reduce soln weight by k’s weight 
                     currentValue -= this.players[k].Value; // Reduce soln value by k’s value 
+                    k--;
                 }
-                currentWeight = newWeight; // Reach here if bound > soln value 
-                currentValue = newValue; // and we may have new soln. 
+
                 k = this.partItem; // Set tree level k to last, possible 
-                // partial it em i n greed y solution 
-                if (k == playersCount) // If we’ve reached leaf node, have actual soln, not just bound 
+                currentWeight = newWeight; // Reach here if bound > soln value 
+                currentValue = newValue; // and we may have new soln.                 
+
+                if (GetPlayersInSolution() == 15)
                 {
                     solutionValue = currentValue;
-                    if (GetPlayersInSolution() == 15)
-                    {
-                        Array.Copy(this.workSolution, 0, this.bestSolution, 0, this.workSolution.Length); // Copy soln into array bestSolution    
-                    }
-
-                    k = playersCount - 1; // Back up to prev tree level, which may leave solution 
-                }
-                else
-                {
-                    this.workSolution[k] = 0; // Take last item k out of soln 
+                    solutionWeight = currentWeight;
+                    Array.Copy(this.workSolution, 0, this.bestSolution, 0, this.workSolution.Length); // Copy soln into array bestSolution    
                 }
             } while (true);
         }
@@ -69,21 +67,20 @@ namespace FantasyStatsApp.Models
         private decimal Bound()
         {
             bool found = false; // Was bound found?I.e.,is last item partial 
-            decimal boundVal = -1; // Value of upper bound 
             int playersCount = this.players.Length; // Number of items in problem 
-            newValue = currentValue; 
+            newValue = currentValue;
             newWeight = currentWeight;
-            partItem = k + 1; // Go to next lower level, try to put in soln 
+            partItem = 0;
             List<PlayerValuableModel> missedPlayers = new List<PlayerValuableModel>();
-            while (partItem < playersCount && !found) 
+            while (partItem < playersCount && !found)
             {
-                if (newWeight + this.players[partItem].Weight <= capacity)
+                if (this.workSolution[partItem] != 1 && partItem != k + 1 && newWeight + this.players[partItem].Weight <= capacity)
                 {
                     this.workSolution[partItem] = 1; // Update current soln to show item k is in it 
-                    if (IsValidPositions() && IsValidPlayersFromTeam())
+                    if (IsValidPositions() && IsValidPlayersCountFromTeam())
                     {
-                        newWeight += this.players[partItem].Weight; 
-                        newValue += this.players[partItem].Value; 
+                        newWeight += this.players[partItem].Weight;
+                        newValue += this.players[partItem].Value;
                     }
                     else
                     {
@@ -95,17 +92,18 @@ namespace FantasyStatsApp.Models
                 {
                     if (GetPlayersInSolution() < 15) // remove player when team is not filled
                     {
-                        int mostExpensivePlayerIndex = GetAtLeastValuablePlayer();
-                        this.workSolution[mostExpensivePlayerIndex] = 0;
-                        newWeight -= this.players[mostExpensivePlayerIndex].Weight; 
-                        newValue -= this.players[mostExpensivePlayerIndex].Value; 
-                        SearchInMissedPlayers(missedPlayers); 
-                        partItem--;
+                        if (k < 0)
+                        {
+                            int mostExpensivePlayerIndex = GetAtLeastValuablePlayer();
+                            this.workSolution[mostExpensivePlayerIndex] = 0;
+                            newWeight -= this.players[mostExpensivePlayerIndex].Weight;
+                            newValue -= this.players[mostExpensivePlayerIndex].Value;
+                            SearchInMissedPlayers(missedPlayers);
+                            partItem--;
+                        }
                     }
                     else
                     {
-                        boundVal = newValue + (this.capacity - newWeight) *
-                            this.players[partItem].Value / this.players[partItem].Weight;
                         found = true;
                     }
                 }
@@ -114,14 +112,14 @@ namespace FantasyStatsApp.Models
             if (found)
             {
                 partItem--; // Back up to prev item, which is fully in sack 
-                return boundVal; // Return the upper bound 
+                return newValue; // Return the upper bound 
             }
             else
             {
                 return newValue;
             }
         }
-        
+
         public List<PlayerValuableModel> OutputSolution()
         {
             List<PlayerValuableModel> bestPlayers = new List<PlayerValuableModel>();
@@ -146,7 +144,7 @@ namespace FantasyStatsApp.Models
                 {
                     int index = Array.IndexOf(this.players, player);
                     this.workSolution[index] = 1;
-                    if (IsValidPositions() && IsValidPlayersFromTeam())
+                    if (IsValidPositions() && IsValidPlayersCountFromTeam())
                     {
                         newWeight += player.Weight;
                         newValue += player.Value;
@@ -194,7 +192,7 @@ namespace FantasyStatsApp.Models
 
             return countPlayers;
         }
-        
+
         private bool IsValidPositions()
         {
             Dictionary<Position, int> positions = GetPositionsCount();
@@ -243,7 +241,7 @@ namespace FantasyStatsApp.Models
             return positions;
         }
 
-        private bool IsValidPlayersFromTeam()
+        private bool IsValidPlayersCountFromTeam()
         {
             Dictionary<string, int> teams = new Dictionary<string, int>();
             for (int i = 0; i < this.players.Length; i++)

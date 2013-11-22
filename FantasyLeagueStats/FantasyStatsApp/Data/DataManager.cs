@@ -1,11 +1,12 @@
 ﻿using FantasyStats.Data;
 using FantasyStats.Model;
+using FantasyStatsApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace FantasyStatsApp.Models
+namespace FantasyStatsApp.Data
 {
     public class DataManager
     {

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace FantasyStatsApp.Models
 {
-    public class SubmitTeamPrice
+    public class SubmitTeamPriceModel
     {
         [Required]
         [DisplayName("Your Team Price")]

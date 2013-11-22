@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Kendo.Mvc.Extensions;
 using FantasyStats.Model;
+using FantasyStatsApp.Data;
 
 namespace FantasyStatsApp.Controllers
 {
