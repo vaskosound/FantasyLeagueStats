@@ -4,6 +4,8 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using Kendo.Mvc.Extensions;
+using FantasyStatsApp.Data;
+using FluentScheduler;
 
 namespace FantasyStatsApp.Controllers
 {
@@ -11,6 +13,7 @@ namespace FantasyStatsApp.Controllers
     {
         public ActionResult Index()
         {
+            TaskManager.Initialize(new DataRegistry());
             DateTime currentDate = DateTime.Now;
             var currentGameweek = this.Data.Gameweeks.All()
                 .FirstOrDefault(g => g.StartDate <= currentDate && currentDate <= g.EndDate);

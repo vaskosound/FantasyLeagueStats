@@ -39,6 +39,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentScheduler">
+      <HintPath>..\packages\FluentScheduler.3.1.42\lib\net40\FluentScheduler.dll</HintPath>
+    </Reference>
     <Reference Include="Kendo.Mvc, Version=2013.2.918.340, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>KendoMVC\Kendo.Mvc.dll</HintPath>
@@ -184,6 +187,8 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MoneyBallController.cs" />
     <Compile Include="Controllers\StatisticsController.cs" />
+    <Compile Include="Data\DataRegistry.cs" />
+    <Compile Include="Data\DataTask.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
