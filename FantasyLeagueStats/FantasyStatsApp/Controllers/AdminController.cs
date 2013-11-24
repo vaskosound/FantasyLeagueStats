@@ -7,6 +7,10 @@ using System.Web.Mvc;
 using Kendo.Mvc.Extensions;
 using FantasyStats.Model;
 using FantasyStatsApp.Data;
+using Quartz;
+using Quartz.Impl;
+using FantasyStats.Data;
+using Quartz.Impl.Triggers;
 
 namespace FantasyStatsApp.Controllers
 {
@@ -26,6 +30,17 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult PlayersStats()
         {
+            ISchedulerFactory schedFactory = new StdSchedulerFactory();
+
+            IScheduler scheduler = schedFactory.GetScheduler();
+            scheduler.Start();
+            IJobDetail jobDetail = new JobDetailImpl("myJob", null, typeof(DataJob));
+            jobDetail.JobDataMap["data"] = new ExternalData();
+            jobDetail.JobDataMap["dataManager"] = new DataManager();
+            jobDetail.JobDataMap["dbContext"] = new UowData();
+            ISimpleTrigger trigger = new SimpleTriggerImpl("myTrigger", null, DateTime.UtcNow, 
+                null, SimpleTriggerImpl.RepeatIndefinitely, TimeSpan.FromHours(2));
+            scheduler.ScheduleJob(jobDetail, trigger);
             return View();
         }
 

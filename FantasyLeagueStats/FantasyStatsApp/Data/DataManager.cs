@@ -25,7 +25,7 @@ namespace FantasyStatsApp.Data
                     Selected = double.Parse(stats[i + 3].TrimEnd('%')),
                     Points = int.Parse(stats[i + 6]),
                     Team = stats[i + 1],
-                    MinutesPlayed = int.Parse(stats[i + 7])
+                    MinutesPlayed = int.Parse(stats[i + 7].Replace(",", ""))
                 };
                 playerModel.SetPosition(stats[i + 2]);
                 playerModel.SetPrice(stats[i + 4]);
