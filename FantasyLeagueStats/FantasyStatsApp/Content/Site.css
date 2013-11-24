@@ -110,7 +110,7 @@ input[type="checkbox"].input-validation-error {
     padding-top: 45px;
 }
 
-#players-stats, #matches {
+#matches {
     margin-top: 10px;
 }
 
@@ -127,4 +127,10 @@ input[type="checkbox"].input-validation-error {
 
 #current-fixtures td:nth-child(2){
     text-align:center;
+}
+
+.start-schedule {
+    font-weight:bold;
+    font-style:italic;
+    color:#428bca;
 }
