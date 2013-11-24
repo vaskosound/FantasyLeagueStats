@@ -51,8 +51,8 @@ namespace FantasyStatsApp.Controllers
             jobDetail.JobDataMap["data"] = new ExternalData();
             jobDetail.JobDataMap["dataManager"] = new DataManager();
             jobDetail.JobDataMap["dbContext"] = new UowData();
-            ISimpleTrigger trigger = new SimpleTriggerImpl("myTrigger", null, DateTime.UtcNow.AddYears(1),
-                null, SimpleTriggerImpl.RepeatIndefinitely, TimeSpan.FromHours(2));
+            ISimpleTrigger trigger = new SimpleTriggerImpl("myTrigger", null, DateTime.UtcNow,
+                DateTime.UtcNow.AddYears(1), SimpleTriggerImpl.RepeatIndefinitely, TimeSpan.FromHours(2));
             scheduler.ScheduleJob(jobDetail, trigger);
             
             return PartialView("_Scheduler", scheduler);
