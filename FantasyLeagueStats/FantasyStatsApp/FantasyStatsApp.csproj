@@ -502,6 +502,7 @@
     <Content Include="Views\Shared\_MatchesGrid.cshtml" />
     <Content Include="Views\Shared\_Fixtures.cshtml" />
     <Content Include="Views\MoneyBall\TeamByPointsPerGame.cshtml" />
+    <Content Include="Views\Shared\_Scheduler.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

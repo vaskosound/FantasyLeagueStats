@@ -17,10 +17,11 @@ namespace FantasyStatsApp.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : BaseController
     {
+        private static IScheduler scheduler;
         public ExternalData Statistics { get; set; }
 
         public DataManager DataManager { get; set; }
-      
+
         public AdminController()
         {
             this.Statistics = new ExternalData();
@@ -30,18 +31,7 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult PlayersStats()
         {
-            ISchedulerFactory schedFactory = new StdSchedulerFactory();
-
-            IScheduler scheduler = schedFactory.GetScheduler();
-            scheduler.Start();
-            IJobDetail jobDetail = new JobDetailImpl("myJob", null, typeof(DataJob));
-            jobDetail.JobDataMap["data"] = new ExternalData();
-            jobDetail.JobDataMap["dataManager"] = new DataManager();
-            jobDetail.JobDataMap["dbContext"] = new UowData();
-            ISimpleTrigger trigger = new SimpleTriggerImpl("myTrigger", null, DateTime.UtcNow, 
-                null, SimpleTriggerImpl.RepeatIndefinitely, TimeSpan.FromHours(2));
-            scheduler.ScheduleJob(jobDetail, trigger);
-            return View();
+            return View(scheduler);
         }
 
         public JsonResult ReadPlayersStats([DataSourceRequest] DataSourceRequest request)
@@ -49,6 +39,30 @@ namespace FantasyStatsApp.Controllers
             var result = this.Data.Players.All().Select(PlayerBasicModel.FromPlayersStats);
 
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult StartSchedule()
+        {
+            ISchedulerFactory schedFactory = new StdSchedulerFactory();
+
+            scheduler = schedFactory.GetScheduler();
+            scheduler.Start();
+            IJobDetail jobDetail = new JobDetailImpl("myJob", null, typeof(DataJob));
+            jobDetail.JobDataMap["data"] = new ExternalData();
+            jobDetail.JobDataMap["dataManager"] = new DataManager();
+            jobDetail.JobDataMap["dbContext"] = new UowData();
+            ISimpleTrigger trigger = new SimpleTriggerImpl("myTrigger", null, DateTime.UtcNow,
+                null, SimpleTriggerImpl.RepeatIndefinitely, TimeSpan.FromHours(1));
+            scheduler.ScheduleJob(jobDetail, trigger);
+            
+            return PartialView("_Scheduler", scheduler);
+        }
+
+        public ActionResult StopSchedule()
+        {         
+            scheduler.Shutdown();
+
+            return PartialView("_Scheduler", scheduler);
         }
 
         public ActionResult UpdateData()
