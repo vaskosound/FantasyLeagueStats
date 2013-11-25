@@ -3,8 +3,8 @@
 }
 
 <div class="row">
-    <div class="col-lg-8 h2">@ViewBag.Title</div>
-    <div class="col-lg-2">
+    <div class="col-lg-9 h2">@ViewBag.Title</div>
+    <div class="col-lg-3">
         @Ajax.ActionLink("Update Results", "UpadateResults", null, new AjaxOptions()
            {
                 HttpMethod = "GET",
@@ -14,8 +14,7 @@
                 LoadingElementDuration = 1000             
             },
             new { @class = "btn btn-primary text-right" })
-    </div>
-    <div class="col-lg-2">
+
         @Ajax.ActionLink("Update Fixtures", "UpadateFixtures", null, new AjaxOptions()
            {
                HttpMethod = "GET",
