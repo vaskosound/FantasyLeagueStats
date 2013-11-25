@@ -5,9 +5,9 @@
 }
 
 <div class="row">
-    <div class="col-lg-8 h2">@ViewBag.Title</div>
-    <div class="col-lg-4">
-        @Ajax.ActionLink("Start Schedule", "StartSchedule", null, new AjaxOptions()
+    <div class="col-lg-10 h2">@ViewBag.Title</div>
+    <div class="col-lg-2">
+        @*@Ajax.ActionLink("Start Schedule", "StartSchedule", null, new AjaxOptions()
             {
                 HttpMethod = "GET",
                 InsertionMode = InsertionMode.Replace,
@@ -21,7 +21,7 @@
                 InsertionMode = InsertionMode.Replace,
                 UpdateTargetId = "scheduler",
             },
-            new { @class = "btn btn-primary text-right" })
+            new { @class = "btn btn-primary text-right" })*@
         
         @Ajax.ActionLink("Update Data", "UpdateData", null, new AjaxOptions()
             {
@@ -34,9 +34,9 @@
             new { @class = "btn btn-primary text-right" })
     </div>
 </div>
-<div id="scheduler">
+@*<div id="scheduler">
     @Html.Partial("_Scheduler")
-</div>
+</div>*@
 <div id="loading">Updating...</div>
 <div id="players-stats">
     @Html.Partial("_PlayersStatsGrid")

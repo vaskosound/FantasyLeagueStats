@@ -110,7 +110,7 @@ input[type="checkbox"].input-validation-error {
     padding-top: 45px;
 }
 
-#matches {
+#matches, #players-stats {
     margin-top: 10px;
 }
 
@@ -129,8 +129,8 @@ input[type="checkbox"].input-validation-error {
     text-align:center;
 }
 
-.start-schedule {
+/*.start-schedule {
     font-weight:bold;
     font-style:italic;
     color:#428bca;
-}
+}*/

@@ -41,22 +41,22 @@ namespace FantasyStatsApp.Controllers
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult StartSchedule()
-        {
-            ISchedulerFactory schedFactory = new StdSchedulerFactory();
+        //public ActionResult StartSchedule()
+        //{
+        //    ISchedulerFactory schedFactory = new StdSchedulerFactory();
 
-            scheduler = schedFactory.GetScheduler();
-            scheduler.Start();
-            IJobDetail jobDetail = new JobDetailImpl("myJob", null, typeof(DataJob));
-            jobDetail.JobDataMap["data"] = new ExternalData();
-            jobDetail.JobDataMap["dataManager"] = new DataManager();
-            jobDetail.JobDataMap["dbContext"] = new UowData();
-            ISimpleTrigger trigger = new SimpleTriggerImpl("myTrigger", null, DateTime.UtcNow,
-                DateTime.UtcNow.AddYears(1), SimpleTriggerImpl.RepeatIndefinitely, TimeSpan.FromHours(2));
-            scheduler.ScheduleJob(jobDetail, trigger);
+        //    scheduler = schedFactory.GetScheduler();
+        //    scheduler.Start();
+        //    IJobDetail jobDetail = new JobDetailImpl("myJob", null, typeof(DataJob));
+        //    jobDetail.JobDataMap["data"] = new ExternalData();
+        //    jobDetail.JobDataMap["dataManager"] = new DataManager();
+        //    jobDetail.JobDataMap["dbContext"] = new UowData();
+        //    ISimpleTrigger trigger = new SimpleTriggerImpl("myTrigger", null, DateTime.UtcNow,
+        //        DateTime.UtcNow.AddYears(1), SimpleTriggerImpl.RepeatIndefinitely, TimeSpan.FromMinutes(2));
+        //    scheduler.ScheduleJob(jobDetail, trigger);
             
-            return PartialView("_Scheduler", scheduler);
-        }
+        //    return PartialView("_Scheduler", scheduler);
+        //}
 
         public ActionResult StopSchedule()
         {         

@@ -1,7 +1,13 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using FantasyStats.Data;
+using FantasyStatsApp.Data;
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
+using Quartz;
+using Quartz.Impl;
+using Quartz.Impl.Triggers;
+using System;
 
 namespace FantasyStatsApp
 {
@@ -33,6 +39,21 @@ namespace FantasyStatsApp
                appSecret: "927ad51eedb97b67e93a24915a6207a9");
 
             //app.UseGoogleAuthentication();
+        }
+
+        public void StartSchedule()
+        {
+            ISchedulerFactory schedFactory = new StdSchedulerFactory();
+
+            IScheduler scheduler = schedFactory.GetScheduler();
+            scheduler.Start();
+            IJobDetail jobDetail = new JobDetailImpl("myJob", null, typeof(DataJob));
+            jobDetail.JobDataMap["data"] = new ExternalData();
+            jobDetail.JobDataMap["dataManager"] = new DataManager();
+            jobDetail.JobDataMap["dbContext"] = new UowData();
+            ISimpleTrigger trigger = new SimpleTriggerImpl("myTrigger", null, DateTime.UtcNow,
+                DateTime.UtcNow.AddYears(1), SimpleTriggerImpl.RepeatIndefinitely, TimeSpan.FromHours(2));
+            scheduler.ScheduleJob(jobDetail, trigger);
         }
     }
 }
