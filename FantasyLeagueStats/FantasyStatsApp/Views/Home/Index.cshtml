@@ -1,6 +1,4 @@
-﻿@model IEnumerable<FantasyStatsApp.Models.MatchViewModel>
-
-@{
+﻿@{
     ViewBag.Title = "Footbal Fantasy League Stats";
 }
 <div class="row">
@@ -14,25 +12,14 @@
             <li>@Html.ActionLink("All Positions", "AllPositions", "Statistics")</li>
         </ul>
     </div>
-    <div class="col-lg-4">
-        <h3 class="text-center">@Model.First().Gameweek</h3>
-        <table id="current-fixtures">
-            <colgroup>
-                <col width="150">
-                <col width="70">
-                <col width="150">
-            </colgroup>
-            @foreach (var match in Model)
-            {
-                <tr>
-                    <td>@match.Host</td>
-                    <td>@(match.HostScore == null ? "v" : match.HostScore  + " - " + match.VisitorScore)</td>
-                    <td>@match.Visitor</td>
-                </tr>
-            }
-        </table>
+    <div id="fixtures" class="col-lg-4">
+        @Html.Partial("_Fixtures")        
     </div>
     <div class="col-lg-6">
         @Html.Partial("_Standings")
     </div>
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

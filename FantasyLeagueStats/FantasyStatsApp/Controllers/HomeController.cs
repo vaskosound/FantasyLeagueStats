@@ -13,8 +13,7 @@ namespace FantasyStatsApp.Controllers
     {
         public ActionResult Index()
         {
-            //TaskManager.Initialize(new DataRegistry());
-            DateTime currentDate = DateTime.Now;
+             DateTime currentDate = DateTime.Now;
             var currentGameweek = this.Data.Gameweeks.All()
                 .FirstOrDefault(g => g.StartDate <= currentDate && currentDate <= g.EndDate);
 
@@ -29,6 +28,14 @@ namespace FantasyStatsApp.Controllers
             var result = this.Data.Teams.All().OrderBy(x => x.Position).Select(TeamViewModel.FromTeams);
 
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ChangeGameweek(int gameweek)
+        {            
+            var gameweekFixtures = this.Data.Matches.All().Where(m => m.Gameweek.Id == gameweek)
+                .Select(MatchViewModel.FromMatches);
+
+            return PartialView("_Fixtures", gameweekFixtures);
         }
     }
 }
