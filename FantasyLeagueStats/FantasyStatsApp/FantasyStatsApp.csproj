@@ -196,8 +196,6 @@
     <Compile Include="Controllers\MoneyBallController.cs" />
     <Compile Include="Controllers\StatisticsController.cs" />
     <Compile Include="Data\DataJob.cs" />
-    <Compile Include="Data\DataRegistry.cs" />
-    <Compile Include="Data\DataTask.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

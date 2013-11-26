@@ -9,6 +9,8 @@ namespace FantasyStatsApp.Data
 {
     public class DataJob : IJob
     {
+        private const int PAGE_COUNT = 10;
+
         public DataJob()
         { }
         public void Execute(IJobExecutionContext context)
@@ -17,10 +19,18 @@ namespace FantasyStatsApp.Data
             ExternalData statistics = (ExternalData) dataMap["data"];
             DataManager dataManager = (DataManager) dataMap["dataManager"];
             UowData data = (UowData) dataMap["dbContext"];
-            List<string> stats = statistics.GetBasicStats();
+
+            List<string> stats = new List<string>();
+            List<string> statsPointsPerGame = new List<string>();
+
+            for (int i = 1; i <= PAGE_COUNT; i++)
+            {
+                stats.AddRange(statistics.GetBasicStats(i));
+                statsPointsPerGame.AddRange(statistics.GetStatsByPointsPerGame(i));
+            }
             dataManager.UpdateBasicData(stats);
-            List<string> statsPointsPerGame = statistics.GetStatsByPointsPerGame();
             dataManager.UpdatePointsPerGameData(statsPointsPerGame);
+
             List<string> statsLeagueTable = statistics.GetStandings();
             dataManager.UpdateStandings(statsLeagueTable);
 

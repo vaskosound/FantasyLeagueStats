@@ -10,54 +10,33 @@ namespace FantasyStatsApp.Data
     {
         private const string Base_URL = "http://fantasy.premierleague.com";
         private const string Stats_URL = Base_URL + "/stats/elements/";
-        private const string Stats_Minutes_URL = Stats_URL + "/?element_filter=0&stat_filter=minutes";
-        private const string Stats_Points_Per_Game_URL = Stats_URL + "/?element_filter=0&stat_filter=points_per_game";
         private const string Stats_Page_Minutes_URL = Stats_URL + "?stat_filter=minutes&element_filter=0&page=";
         private const string Stats_Page_Points_Per_Game_URL = Stats_URL + "?stat_filter=points_per_game&element_filter=0&page=";
         private const string Stats_League_Table = "http://www.premierleague.com/content/premierleague/en-gb/matchday/league-table.html";
         private const string Current_Fixtures = Base_URL + "/fixtures/";
         private const string Rules = Base_URL + "/rules/";
 
-        public List<string> GetBasicStats()
+        public List<string> GetBasicStats(int page)
         {
-            List<string> stats = new List<string>();
+            List<string> pageStats = new List<string>();
             using (WebClient client = new WebClient())
             {
                 client.Encoding = System.Text.Encoding.UTF8;
-                stats.AddRange(GetStatsFromTable(client, Stats_Minutes_URL));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 2));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 3));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 4));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 5));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 6));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 7));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 8));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 9));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Minutes_URL + 10));
+                pageStats = GetStatsFromTable(client, Stats_Page_Minutes_URL + page);
             }
 
-            return stats;
+            return pageStats;
         }
-        public List<string> GetStatsByPointsPerGame()
+        public List<string> GetStatsByPointsPerGame(int page)
         {
-            List<string> stats = new List<string>();
+            List<string> pageStats = new List<string>();
             using (WebClient client = new WebClient())
             {
                 client.Encoding = System.Text.Encoding.UTF8;
-                stats.AddRange(GetStatsFromTable(client, Stats_Points_Per_Game_URL));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 2));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 3));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 4));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 5));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 6));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 7));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 8));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 9));
-                stats.AddRange(GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + 10));
-
+                pageStats = GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + page);
             }
 
-            return stats;
+            return pageStats;
         }
 
         private List<string> GetStatsFromTable(WebClient client, string pageUrl)

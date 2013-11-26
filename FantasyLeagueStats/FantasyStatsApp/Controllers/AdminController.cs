@@ -17,7 +17,8 @@ namespace FantasyStatsApp.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : BaseController
     {
-        private static IScheduler scheduler;
+        private const int PAGE_COUNT = 10;
+
         public ExternalData Statistics { get; set; }
 
         public DataManager DataManager { get; set; }
@@ -31,7 +32,7 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult PlayersStats()
         {
-            return View(scheduler);
+            return View();
         }
 
         public JsonResult ReadPlayersStats([DataSourceRequest] DataSourceRequest request)
@@ -41,36 +42,20 @@ namespace FantasyStatsApp.Controllers
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
-        //public ActionResult StartSchedule()
-        //{
-        //    ISchedulerFactory schedFactory = new StdSchedulerFactory();
-
-        //    scheduler = schedFactory.GetScheduler();
-        //    scheduler.Start();
-        //    IJobDetail jobDetail = new JobDetailImpl("myJob", null, typeof(DataJob));
-        //    jobDetail.JobDataMap["data"] = new ExternalData();
-        //    jobDetail.JobDataMap["dataManager"] = new DataManager();
-        //    jobDetail.JobDataMap["dbContext"] = new UowData();
-        //    ISimpleTrigger trigger = new SimpleTriggerImpl("myTrigger", null, DateTime.UtcNow,
-        //        DateTime.UtcNow.AddYears(1), SimpleTriggerImpl.RepeatIndefinitely, TimeSpan.FromMinutes(2));
-        //    scheduler.ScheduleJob(jobDetail, trigger);
-            
-        //    return PartialView("_Scheduler", scheduler);
-        //}
-
-        public ActionResult StopSchedule()
-        {         
-            scheduler.Shutdown();
-
-            return PartialView("_Scheduler", scheduler);
-        }
-
         public ActionResult UpdateData()
         {
-            List<string> stats = this.Statistics.GetBasicStats();
-            this.DataManager.UpdateBasicData(stats);
-            List<string> statsPointsPerGame = this.Statistics.GetStatsByPointsPerGame();
+            List<string> stats = new List<string>(); 
+            List<string> statsPointsPerGame = new List<string>();
+
+            for (int i = 1; i <= PAGE_COUNT; i++)
+            {
+                stats.AddRange(this.Statistics.GetBasicStats(i));
+                statsPointsPerGame.AddRange(this.Statistics.GetStatsByPointsPerGame(i));
+            }
+
+            this.DataManager.UpdateBasicData(stats);            
             this.DataManager.UpdatePointsPerGameData(statsPointsPerGame);
+
             List<string> statsLeagueTable = this.Statistics.GetStandings();
             this.DataManager.UpdateStandings(statsLeagueTable);
 
