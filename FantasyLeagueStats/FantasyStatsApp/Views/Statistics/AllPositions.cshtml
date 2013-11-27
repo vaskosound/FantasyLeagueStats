@@ -13,6 +13,7 @@
             {
                 col.Bound(m => m.Name).Title("Player Name");
                 col.Bound(m => m.Team).Title("Club");
+                col.Bound(m => m.Position);
                 col.Bound(m => m.Selected).ClientTemplate("#: Selected #" + "%").Title("Selected"); 
                 col.Bound(m => m.Price).Title("Price");
                 col.Bound(m => m.Points).Title("Points");

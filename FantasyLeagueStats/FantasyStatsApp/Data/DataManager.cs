@@ -11,8 +11,8 @@ namespace FantasyStatsApp.Data
     public class DataManager
     {
 
-        private const string Мan_United = "Man Utd";
-        private const string Мan_City = "Man City";
+        private const string МAN_UNITED = "Man Utd";
+        private const string МAN_CITY = "Man City";
         private static DateTime startDate = new DateTime(2013, 7, 15);
 
         public void UpdateBasicData(List<string> stats)
@@ -50,6 +50,28 @@ namespace FantasyStatsApp.Data
                 if (playerExists != null)
                 {
                     playerExists.PointsPerGame = playerModel.PointsPerGame;
+                }
+            }
+
+            context.SaveChanges();
+        }
+
+        public void UpdatePlayersForm(
+            List<string> stats)
+        {
+            var context = new FantasyStatsDbContext();
+            for (int i = 0; i < stats.Count; i += 8)
+            {
+                var playerModel = new PlayerModel()
+                {
+                    Name = stats[i],
+                    PlayerForm = decimal.Parse(stats[i + 7])
+                };
+
+                var playerExists = context.Players.FirstOrDefault(x => x.Name == playerModel.Name);
+                if (playerExists != null)
+                {
+                    playerExists.PlayerForm = playerModel.PlayerForm;
                 }
             }
 
@@ -209,12 +231,12 @@ namespace FantasyStatsApp.Data
 
         private string ConvertTeamName(string name)
         {
-            if (name == Мan_United)
+            if (name == МAN_UNITED)
             {
                 return "Manchester United";
             }
 
-            if (name == Мan_City)
+            if (name == МAN_CITY)
             {
                 return "Manchester City";
             }

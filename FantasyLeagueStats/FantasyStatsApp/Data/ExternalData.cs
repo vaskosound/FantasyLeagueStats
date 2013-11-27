@@ -8,13 +8,14 @@ namespace FantasyStatsApp.Data
 {
     public class ExternalData
     {
-        private const string Base_URL = "http://fantasy.premierleague.com";
-        private const string Stats_URL = Base_URL + "/stats/elements/";
-        private const string Stats_Page_Minutes_URL = Stats_URL + "?stat_filter=minutes&element_filter=0&page=";
-        private const string Stats_Page_Points_Per_Game_URL = Stats_URL + "?stat_filter=points_per_game&element_filter=0&page=";
-        private const string Stats_League_Table = "http://www.premierleague.com/content/premierleague/en-gb/matchday/league-table.html";
-        private const string Current_Fixtures = Base_URL + "/fixtures/";
-        private const string Rules = Base_URL + "/rules/";
+        private const string BASE_URL = "http://fantasy.premierleague.com";
+        private const string STATS_URL = BASE_URL + "/stats/elements/";
+        private const string STATS_PAGE_MINUTES_URL = STATS_URL + "?stat_filter=minutes&element_filter=0&page=";
+        private const string STATS_PAGE_POINTS_PER_GAME_URL = STATS_URL + "?stat_filter=points_per_game&element_filter=0&page=";
+        private const string STATS_PAGE_FORM_URL = STATS_URL + "?stat_filter=form&element_filter=0&page=";
+        private const string STATS_LEAGUE_TABLE_URL = "http://www.premierleague.com/content/premierleague/en-gb/matchday/league-table.html";
+        private const string CURRENT_FIXTURES_URL = BASE_URL + "/fixtures/";
+        private const string RULES_URL = BASE_URL + "/rules/";
 
         public List<string> GetBasicStats(int page)
         {
@@ -22,18 +23,30 @@ namespace FantasyStatsApp.Data
             using (WebClient client = new WebClient())
             {
                 client.Encoding = System.Text.Encoding.UTF8;
-                pageStats = GetStatsFromTable(client, Stats_Page_Minutes_URL + page);
+                pageStats = GetStatsFromTable(client, STATS_PAGE_MINUTES_URL + page);
             }
 
             return pageStats;
         }
+
         public List<string> GetStatsByPointsPerGame(int page)
         {
             List<string> pageStats = new List<string>();
             using (WebClient client = new WebClient())
             {
                 client.Encoding = System.Text.Encoding.UTF8;
-                pageStats = GetStatsFromTable(client, Stats_Page_Points_Per_Game_URL + page);
+                pageStats = GetStatsFromTable(client, STATS_PAGE_POINTS_PER_GAME_URL + page);
+            }
+
+            return pageStats;
+        }
+        public List<string> GetStatsByForm(int page)
+        {
+            List<string> pageStats = new List<string>();
+            using (WebClient client = new WebClient())
+            {
+                client.Encoding = System.Text.Encoding.UTF8;
+                pageStats = GetStatsFromTable(client, STATS_PAGE_FORM_URL + page);
             }
 
             return pageStats;
@@ -61,7 +74,7 @@ namespace FantasyStatsApp.Data
             using (WebClient client = new WebClient())
             {
                 client.Encoding = System.Text.Encoding.UTF8;
-                string html = client.DownloadString(Stats_League_Table);
+                string html = client.DownloadString(STATS_LEAGUE_TABLE_URL);
                 string pattern = "(<td.*>)(.*)(<\\/td>)";
                 var matches = Regex.Matches(html, pattern);
                 foreach (Match item in matches)
@@ -79,7 +92,7 @@ namespace FantasyStatsApp.Data
             using (WebClient client = new WebClient())
             {
                 client.Encoding = System.Text.Encoding.UTF8;
-                fixtures = GetGameweekFixture(client, Current_Fixtures + gameweek);
+                fixtures = GetGameweekFixture(client, CURRENT_FIXTURES_URL + gameweek);
             }
 
             return fixtures;
@@ -108,27 +121,6 @@ namespace FantasyStatsApp.Data
             }
 
             return fixtures;
-        }
-
-        public List<string> GetGameweeks()
-        {
-            List<string> gamewеeks = new List<string>();
-            using (WebClient client = new WebClient())
-            {
-                client.Encoding = System.Text.Encoding.UTF8;
-                string html = client.DownloadString(Rules);
-                int startIndex = html.IndexOf("All changes to your team");
-                int endIndex = html.IndexOf("During the season");
-                string gameweeksList = html.Substring(startIndex, endIndex - startIndex);
-                string pattern = "(<td>)(.*)(<\\/td>)";
-                var matches = Regex.Matches(gameweeksList, pattern);
-                foreach (Match item in matches)
-                {
-                    gamewеeks.Add(item.Groups[2].Value);
-                }
-            }
-
-            return gamewеeks;
-        }
+        }       
     }
 }

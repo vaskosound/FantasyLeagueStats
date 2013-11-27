@@ -22,14 +22,17 @@ namespace FantasyStatsApp.Data
 
             List<string> stats = new List<string>();
             List<string> statsPointsPerGame = new List<string>();
+            List<string> statsForm = new List<string>();
 
             for (int i = 1; i <= PAGE_COUNT; i++)
             {
                 stats.AddRange(statistics.GetBasicStats(i));
                 statsPointsPerGame.AddRange(statistics.GetStatsByPointsPerGame(i));
+                statsForm.AddRange(statistics.GetStatsByForm(i));
             }
             dataManager.UpdateBasicData(stats);
             dataManager.UpdatePointsPerGameData(statsPointsPerGame);
+            dataManager.UpdatePlayersForm(statsForm);
 
             List<string> statsLeagueTable = statistics.GetStandings();
             dataManager.UpdateStandings(statsLeagueTable);

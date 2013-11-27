@@ -24,6 +24,8 @@ namespace FantasyStats.Model
 
         public decimal PointsPerGame { get; set; }
 
+        public decimal PlayerForm { get; set; }
+
         public override string ToString()
         {
             return string.Format("{0} {1} {2} -", this.Name, this.Team.Initials, this.Position.ToString());

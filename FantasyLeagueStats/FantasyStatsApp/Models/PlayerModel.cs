@@ -22,6 +22,8 @@ namespace FantasyStatsApp.Models
 
         public decimal PointsPerGame { get; set; }
 
+        public decimal PlayerForm { get; set; }
+
         public void SetPosition(string position)
         {
             switch (position)

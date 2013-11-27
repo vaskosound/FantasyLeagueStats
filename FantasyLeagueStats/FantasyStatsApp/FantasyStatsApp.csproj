@@ -213,6 +213,8 @@
     <Compile Include="Models\SelectTeamModel.cs" />
     <Compile Include="Data\ExternalData.cs" />
     <Compile Include="Models\SubmitTeamPriceModel.cs" />
+    <Compile Include="Models\HostTeamModel.cs" />
+    <Compile Include="Models\VisitorTeamModel.cs" />
     <Compile Include="Models\TeamViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />

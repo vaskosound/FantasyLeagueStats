@@ -46,15 +46,18 @@ namespace FantasyStatsApp.Controllers
         {
             List<string> stats = new List<string>(); 
             List<string> statsPointsPerGame = new List<string>();
+            List<string> statsForm = new List<string>();
 
             for (int i = 1; i <= PAGE_COUNT; i++)
             {
                 stats.AddRange(this.Statistics.GetBasicStats(i));
                 statsPointsPerGame.AddRange(this.Statistics.GetStatsByPointsPerGame(i));
+                statsForm.AddRange(this.Statistics.GetStatsByForm(i));
             }
 
             this.DataManager.UpdateBasicData(stats);            
             this.DataManager.UpdatePointsPerGameData(statsPointsPerGame);
+            this.DataManager.UpdatePlayersForm(statsForm);
 
             List<string> statsLeagueTable = this.Statistics.GetStandings();
             this.DataManager.UpdateStandings(statsLeagueTable);

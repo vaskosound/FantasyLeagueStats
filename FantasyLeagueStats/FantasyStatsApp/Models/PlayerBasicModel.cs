@@ -18,7 +18,8 @@ namespace FantasyStatsApp.Models
                Position = player.Position,
                Points = player.Points,
                MinutesPlayed = player.MinutesPlayed,
-               PointsPerGame = player.PointsPerGame
+               PointsPerGame = player.PointsPerGame,
+               PlayerForm = player.PlayerForm
            };
         public int Id { get; set; }
 
@@ -45,5 +46,7 @@ namespace FantasyStatsApp.Models
         public int MinutesPlayed { get; set; }
 
         public decimal PointsPerGame { get; set; }
+
+        public decimal PlayerForm { get; set; }
     }
 }
