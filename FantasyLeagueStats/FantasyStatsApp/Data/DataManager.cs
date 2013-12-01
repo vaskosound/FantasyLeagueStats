@@ -46,7 +46,8 @@ namespace FantasyStatsApp.Data
                     PointsPerGame = decimal.Parse(stats[i + 7])
                 };
 
-                var playerExists = context.Players.FirstOrDefault(x => x.Name == playerModel.Name);
+                var playerExists = context.Players
+                    .FirstOrDefault(x => x.Name == playerModel.Name && x.Team.Initials == playerModel.Team);
                 if (playerExists != null)
                 {
                     playerExists.PointsPerGame = playerModel.PointsPerGame;
@@ -68,7 +69,8 @@ namespace FantasyStatsApp.Data
                     PlayerForm = decimal.Parse(stats[i + 7])
                 };
 
-                var playerExists = context.Players.FirstOrDefault(x => x.Name == playerModel.Name);
+                var playerExists = context.Players
+                    .FirstOrDefault(x => x.Name == playerModel.Name && x.Team.Initials == playerModel.Team);
                 if (playerExists != null)
                 {
                     playerExists.PlayerForm = playerModel.PlayerForm;
@@ -134,7 +136,8 @@ namespace FantasyStatsApp.Data
         {
             var context = new FantasyStatsDbContext();
 
-            var playerExists = context.Players.FirstOrDefault(x => x.Name == playerModel.Name);
+            var playerExists = context.Players
+                .FirstOrDefault(x => x.Name == playerModel.Name && x.Team.Initials == playerModel.Team);
             var team = context.Teams.FirstOrDefault(x => x.Initials == playerModel.Team);
             if (playerExists == null)
             {
