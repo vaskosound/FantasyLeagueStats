@@ -43,6 +43,7 @@ namespace FantasyStatsApp.Data
                 var playerModel = new PlayerModel()
                 {
                     Name = stats[i],
+                    Team = stats[i + 1],
                     PointsPerGame = decimal.Parse(stats[i + 7])
                 };
 
@@ -66,6 +67,7 @@ namespace FantasyStatsApp.Data
                 var playerModel = new PlayerModel()
                 {
                     Name = stats[i],
+                    Team = stats[i + 1],
                     PlayerForm = decimal.Parse(stats[i + 7])
                 };
 
