@@ -72,7 +72,7 @@ namespace FantasyStatsApp.Data
             newWeight = currentWeight;
             partItem = 0;
             List<PlayerValuableModel> missedPlayers = new List<PlayerValuableModel>();
-            while (partItem < playersCount && !found)
+            while (partItem < playersCount && !found && GetPlayersInSolution() < 15)
             {
                 if (this.workSolution[partItem] != 1 && partItem != k + 1 && newWeight + this.players[partItem].Weight <= capacity)
                 {
