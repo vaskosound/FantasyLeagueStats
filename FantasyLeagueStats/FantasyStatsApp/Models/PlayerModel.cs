@@ -18,6 +18,8 @@ namespace FantasyStatsApp.Models
 
         public decimal Price { get; set; }
 
+        public bool IsInjured { get; set; }
+
         public int MinutesPlayed { get; set; }
 
         public decimal PointsPerGame { get; set; }

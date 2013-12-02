@@ -72,11 +72,17 @@ namespace FantasyStatsApp.Data
             newWeight = currentWeight;
             partItem = 0;
             List<PlayerValuableModel> missedPlayers = new List<PlayerValuableModel>();
-            while (partItem < playersCount && !found && GetPlayersInSolution() < 15)
+            while (partItem < playersCount && !found)
             {
-                if (this.workSolution[partItem] != 1 && partItem != k + 1 && newWeight + this.players[partItem].Weight <= capacity)
+                if (newWeight + this.players[partItem].Weight <= capacity && GetPlayersInSolution() < 15)
                 {
-                    this.workSolution[partItem] = 1; // Update current soln to show item k is in it 
+                    if (this.workSolution[partItem] == 1 || partItem == k + 1 || players[partItem].IsInjured)
+                    {
+                        partItem++;
+                        continue;
+                    }
+
+                    this.workSolution[partItem] = 1; // Update current soln 
                     if (IsValidPositions() && IsValidPlayersCountFromTeam())
                     {
                         newWeight += this.players[partItem].Weight;

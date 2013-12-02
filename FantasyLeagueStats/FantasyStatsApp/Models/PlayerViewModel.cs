@@ -18,8 +18,9 @@ namespace FantasyStatsApp.Models
                 Position = player.Position,
                 Points = player.Points,
                 PointsPerGame = player.PointsPerGame,
-                PointsPerPrice = Math.Round(player.Points / player.Price, 2),
-                PPPPerMinutes = Math.Round(((player.Points / player.Price) / player.MinutesPlayed) * 100, 4),
+                PointsPerPrice = player.Points < 0 ?  0 : Math.Round(player.Points / player.Price, 2),
+                PPPPerMinutes = player.MinutesPlayed == 0 || player.Points < 0 ?
+                    0 : Math.Round(((player.Points / player.Price) / player.MinutesPlayed) * 100, 4),
                 PPPPerGame = Math.Round(player.PointsPerGame / player.Price, 4)
             };
         public decimal PointsPerPrice { get; set; }

@@ -10,25 +10,27 @@ namespace FantasyStatsApp.Data
 {
     public class DataManager
     {
-
+        private const string INJURED_ICON = "infowarn.png";
         private const string МAN_UNITED = "Man Utd";
         private const string МAN_CITY = "Man City";
         private static DateTime startDate = new DateTime(2013, 7, 15);
 
         public void UpdateBasicData(List<string> stats)
         {
-            for (int i = 0; i < stats.Count; i += 8)
+            for (int i = 0; i < stats.Count; i += 9)
             {
                 var playerModel = new PlayerModel()
                 {
-                    Name = stats[i],
-                    Selected = double.Parse(stats[i + 3].TrimEnd('%')),
-                    Points = int.Parse(stats[i + 6]),
-                    Team = stats[i + 1],
-                    MinutesPlayed = int.Parse(stats[i + 7].Replace(",", ""))
+                    Name = stats[i + 1],
+                    Selected = double.Parse(stats[i + 4].TrimEnd('%')),
+                    Points = int.Parse(stats[i + 7]),
+                    Team = stats[i + 2],
+                    MinutesPlayed = int.Parse(stats[i + 8].Replace(",", "")),
+                    IsInjured = stats[i].Contains(INJURED_ICON) ? true : false
                 };
-                playerModel.SetPosition(stats[i + 2]);
-                playerModel.SetPrice(stats[i + 4]);
+
+                playerModel.SetPosition(stats[i + 3]);
+                playerModel.SetPrice(stats[i + 5]);
 
                 AddOrUpdatePlayer(playerModel);
             }
@@ -38,13 +40,13 @@ namespace FantasyStatsApp.Data
             List<string> stats)
         {
             var context = new FantasyStatsDbContext();
-            for (int i = 0; i < stats.Count; i += 8)
+            for (int i = 0; i < stats.Count; i += 9)
             {
                 var playerModel = new PlayerModel()
                 {
-                    Name = stats[i],
-                    Team = stats[i + 1],
-                    PointsPerGame = decimal.Parse(stats[i + 7])
+                    Name = stats[i + 1],
+                    Team = stats[i + 2],
+                    PointsPerGame = decimal.Parse(stats[i + 8])
                 };
 
                 var playerExists = context.Players
@@ -62,13 +64,13 @@ namespace FantasyStatsApp.Data
             List<string> stats)
         {
             var context = new FantasyStatsDbContext();
-            for (int i = 0; i < stats.Count; i += 8)
+            for (int i = 0; i < stats.Count; i += 9)
             {
                 var playerModel = new PlayerModel()
                 {
-                    Name = stats[i],
-                    Team = stats[i + 1],
-                    PlayerForm = decimal.Parse(stats[i + 7])
+                    Name = stats[i + 1],
+                    Team = stats[i + 2],
+                    PlayerForm = decimal.Parse(stats[i + 8])
                 };
 
                 var playerExists = context.Players
@@ -150,7 +152,8 @@ namespace FantasyStatsApp.Data
                     Selected = playerModel.Selected,
                     Price = playerModel.Price,
                     Points = playerModel.Points,
-                    MinutesPlayed = playerModel.MinutesPlayed
+                    MinutesPlayed = playerModel.MinutesPlayed,
+                    IsInjured = playerModel.IsInjured
                 };
                 team.Players.Add(newPlayer);
             }
@@ -161,6 +164,7 @@ namespace FantasyStatsApp.Data
                 playerExists.Points = playerModel.Points;
                 playerExists.Price = playerModel.Price;
                 playerExists.MinutesPlayed = playerModel.MinutesPlayed;
+                playerExists.IsInjured = playerModel.IsInjured;
             }
 
             context.SaveChanges();

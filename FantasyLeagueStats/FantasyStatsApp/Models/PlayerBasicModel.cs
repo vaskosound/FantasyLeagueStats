@@ -17,6 +17,7 @@ namespace FantasyStatsApp.Models
                Price = player.Price,
                Position = player.Position,
                Points = player.Points,
+               IsInjured = player.IsInjured,
                MinutesPlayed = player.MinutesPlayed,
                PointsPerGame = player.PointsPerGame,
                PlayerForm = player.PlayerForm
@@ -42,6 +43,8 @@ namespace FantasyStatsApp.Models
                 return this.Position.ToString();
             }
         }
+
+        public bool IsInjured { get; set; }
 
         public int MinutesPlayed { get; set; }
 

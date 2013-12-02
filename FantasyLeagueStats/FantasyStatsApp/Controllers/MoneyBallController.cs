@@ -24,7 +24,8 @@ namespace FantasyStatsApp.Controllers
                     Value = x.Points,
                     Weight = x.Price,
                     Position = x.Position,
-                    Team = x.Team.Initials
+                    Team = x.Team.Initials,
+                    IsInjured = x.IsInjured
                 }).ToArray();
 
             Knapsack knapsack = new Knapsack(players, price.TeamPrice);
@@ -49,7 +50,8 @@ namespace FantasyStatsApp.Controllers
                     Value = x.PointsPerGame,
                     Weight = x.Price,
                     Position = x.Position,
-                    Team = x.Team.Initials
+                    Team = x.Team.Initials,
+                    IsInjured = x.IsInjured
                 }).ToArray();
 
             Knapsack knapsack = new Knapsack(players, price.TeamPrice);
@@ -74,7 +76,8 @@ namespace FantasyStatsApp.Controllers
                     Value = x.Points / x.Price,
                     Weight = x.Price,
                     Position = x.Position,
-                    Team = x.Team.Initials
+                    Team = x.Team.Initials,
+                    IsInjured = x.IsInjured
                 }).ToArray();
 
             Knapsack knapsack = new Knapsack(players, price.TeamPrice);
@@ -99,7 +102,8 @@ namespace FantasyStatsApp.Controllers
                     Value = x.PointsPerGame / x.Price,
                     Weight = x.Price,
                     Position = x.Position,
-                    Team = x.Team.Initials
+                    Team = x.Team.Initials,
+                    IsInjured = x.IsInjured
                 }).ToArray();
 
             Knapsack knapsack = new Knapsack(players, price.TeamPrice);

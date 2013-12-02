@@ -60,7 +60,7 @@ namespace FantasyStatsApp.Data
             List<string> stats = new List<string>();
             foreach (Match item in matches)
             {
-                if (!item.Groups[2].Value.Contains("<"))
+                if (!item.Groups[2].Value.StartsWith("<img") && !item.Groups[2].Value.Contains("<td>"))
                 {
                     stats.Add(item.Groups[2].Value);
                 }

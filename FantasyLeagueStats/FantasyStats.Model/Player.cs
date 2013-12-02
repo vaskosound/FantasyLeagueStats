@@ -1,17 +1,23 @@
 ﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace FantasyStats.Model
 {
     public class Player
     {
+        [Key]
         public int Id { get; set; }
+
+        [Required]
         public string Name { get; set; }
 
         public int TeamId { get; set; }
 
         public virtual Team Team { get; set; }
 
+        [Required]
         public Position Position { get; set; }
 
         public double Selected { get; set; }
@@ -20,16 +26,14 @@ namespace FantasyStats.Model
 
         public decimal Price { get; set; }
 
+        [Required]
+        public bool IsInjured { get; set; }
+
         public int MinutesPlayed { get; set; }
 
         public decimal PointsPerGame { get; set; }
 
         public decimal PlayerForm { get; set; }
-
-        public override string ToString()
-        {
-            return string.Format("{0} {1} {2} -", this.Name, this.Team.Initials, this.Position.ToString());
-        }
     }
 }
 

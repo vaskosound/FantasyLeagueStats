@@ -17,7 +17,7 @@ namespace FantasyStatsApp.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : BaseController
     {
-        private const int PAGE_COUNT = 10;
+        private const int PAGE_COUNT = 15;
 
         public ExternalData Statistics { get; set; }
 

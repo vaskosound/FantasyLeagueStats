@@ -16,5 +16,7 @@ namespace FantasyStatsApp.Models
         public Position Position { get; set; }
 
         public string Team { get; set; }
+
+        public bool IsInjured { get; set; }
     }
 }
