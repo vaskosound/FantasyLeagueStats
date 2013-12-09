@@ -192,6 +192,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\GamesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MoneyBallController.cs" />
     <Compile Include="Controllers\StatisticsController.cs" />
@@ -200,6 +201,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\GameBasicViewModel.cs" />
+    <Compile Include="Models\GameCreateModel.cs" />
     <Compile Include="Models\GameweekModel.cs" />
     <Compile Include="Data\Knapsack.cs" />
     <Compile Include="Models\MatchViewModel.cs" />
@@ -502,7 +505,9 @@
     <Content Include="Views\Shared\_MatchesGrid.cshtml" />
     <Content Include="Views\Shared\_Fixtures.cshtml" />
     <Content Include="Views\MoneyBall\TeamByPointsPerGame.cshtml" />
-    <Content Include="Views\Shared\_Scheduler.cshtml" />
+    <Content Include="Views\Games\Index.cshtml" />
+    <Content Include="Views\Shared\_MyGames.cshtml" />
+    <Content Include="Views\Shared\_Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

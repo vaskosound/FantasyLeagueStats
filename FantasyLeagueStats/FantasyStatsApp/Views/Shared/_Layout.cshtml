@@ -45,6 +45,9 @@
                                 <li>@Html.ActionLink("Team by PPP Per Game", "TeamByPPPPerGame", "MoneyBall")</li>
                             </ul>
                         </li>
+                        <li>
+                            @Html.ActionLink("Games", "Index", "Games")
+                        </li>
                     }
                     @if (this.User.IsInRole("Admin"))
                     {

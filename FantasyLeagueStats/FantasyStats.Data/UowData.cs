@@ -70,5 +70,13 @@ namespace FantasyStats.Data
                 return this.GetRepository<ApplicationUser>();
             }
         }
+
+        public IRepository<Game> Games
+        {
+            get
+            {
+                return this.GetRepository<Game>();
+            }
+        }
     }
 }

@@ -25,6 +25,7 @@ namespace FantasyStatsApp.Data
                     Selected = double.Parse(stats[i + 4].TrimEnd('%')),
                     Points = int.Parse(stats[i + 7]),
                     Team = stats[i + 2],
+                    RoundScore = int.Parse(stats[i + 6]),
                     MinutesPlayed = int.Parse(stats[i + 8].Replace(",", "")),
                     IsInjured = stats[i].Contains(INJURED_ICON) ? true : false
                 };
@@ -135,7 +136,33 @@ namespace FantasyStatsApp.Data
 
             context.SaveChanges();
         }
-               
+
+        public void UpdateDeadlines(List<string> deadlines)
+        {
+            var context = new FantasyStatsDbContext();
+            for (int i = 0; i < deadlines.Count; i += 2)
+            {
+                int gamewekIndex = deadlines[i].LastIndexOf(' ');
+                int gameweekNumber = int.Parse(deadlines[i].Substring(gamewekIndex + 1));
+                var gameweek = context.Gameweeks.Find(gameweekNumber);
+                if (gameweek != null)
+                {
+                    int index = deadlines[i + 1].LastIndexOf(' ');
+                    string daeadlineAsString = deadlines[i + 1].Substring(0, index) + " " +
+                        gameweek.StartDate.Year.ToString() + deadlines[i + 1].Substring(index);
+                    DateTime deadline = DateTime.ParseExact(daeadlineAsString,
+                        "d MMM yyyy HH:mm", CultureInfo.InvariantCulture);
+                    gameweek.Deadline = deadline;
+                    if (deadline < gameweek.StartDate)
+                    {
+                       gameweek.Deadline = deadline.AddYears(1);
+                    }
+                }
+            }
+
+            context.SaveChanges();
+        }
+
         private void AddOrUpdatePlayer(PlayerModel playerModel)
         {
             var context = new FantasyStatsDbContext();
@@ -151,6 +178,7 @@ namespace FantasyStatsApp.Data
                     Position = playerModel.Position,
                     Selected = playerModel.Selected,
                     Price = playerModel.Price,
+                    RoundScore = playerModel.RoundScore,
                     Points = playerModel.Points,
                     MinutesPlayed = playerModel.MinutesPlayed,
                     IsInjured = playerModel.IsInjured
@@ -163,6 +191,7 @@ namespace FantasyStatsApp.Data
                 playerExists.Selected = playerModel.Selected;
                 playerExists.Points = playerModel.Points;
                 playerExists.Price = playerModel.Price;
+                playerExists.RoundScore = playerModel.RoundScore;
                 playerExists.MinutesPlayed = playerModel.MinutesPlayed;
                 playerExists.IsInjured = playerModel.IsInjured;
             }

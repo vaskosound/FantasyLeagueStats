@@ -16,6 +16,8 @@ namespace FantasyStats.Data
 
         IRepository<ApplicationUser> Users { get; }
 
+        IRepository<Game> Games { get; }
+
         int SaveChanges();
     }
 }

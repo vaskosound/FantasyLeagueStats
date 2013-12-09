@@ -174,6 +174,9 @@ namespace FantasyStatsApp.Controllers
                 }
             }
 
+            var deadlines = this.Statistics.GetGameweeksDeadline();
+            this.DataManager.UpdateDeadlines(deadlines);
+                     
             return PartialView("_MatchesGrid");
         }
 

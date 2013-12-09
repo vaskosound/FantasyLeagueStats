@@ -13,6 +13,7 @@ namespace FantasyStatsApp.Data
         private const string STATS_PAGE_MINUTES_URL = STATS_URL + "?stat_filter=minutes&element_filter=0&page=";
         private const string STATS_PAGE_POINTS_PER_GAME_URL = STATS_URL + "?stat_filter=points_per_game&element_filter=0&page=";
         private const string STATS_PAGE_FORM_URL = STATS_URL + "?stat_filter=form&element_filter=0&page=";
+        private const string STATS_PAGE_ROUND_SCORE_URL = STATS_URL + "?stat_filter=event_points&element_filter=0&page=";
         private const string STATS_LEAGUE_TABLE_URL = "http://www.premierleague.com/content/premierleague/en-gb/matchday/league-table.html";
         private const string CURRENT_FIXTURES_URL = BASE_URL + "/fixtures/";
         private const string RULES_URL = BASE_URL + "/rules/";
@@ -47,6 +48,18 @@ namespace FantasyStatsApp.Data
             {
                 client.Encoding = System.Text.Encoding.UTF8;
                 pageStats = GetStatsFromTable(client, STATS_PAGE_FORM_URL + page);
+            }
+
+            return pageStats;
+        }
+
+        public List<string> GetStatsByRoundScore(int page)
+        {
+            List<string> pageStats = new List<string>();
+            using (WebClient client = new WebClient())
+            {
+                client.Encoding = System.Text.Encoding.UTF8;
+                pageStats = GetStatsFromTable(client, STATS_PAGE_ROUND_SCORE_URL + page);
             }
 
             return pageStats;
@@ -121,6 +134,28 @@ namespace FantasyStatsApp.Data
             }
 
             return fixtures;
-        }       
+        }
+
+        public List<string> GetGameweeksDeadline()
+        {
+            List<string> deadlines = new List<string>();
+            using (WebClient client = new WebClient())
+            {
+                client.Encoding = System.Text.Encoding.UTF8;
+                string html = client.DownloadString(RULES_URL);
+                int startIndex = html.IndexOf("<!-- DEADLINES -->");
+                int endIndex = html.IndexOf("<!-- SCORING -->");
+                string deadlinesTable = html.Substring(startIndex, endIndex - startIndex);
+                string pattern = "(<td.*?>)(.*?)(<\\/td>)";
+                var matches = Regex.Matches(deadlinesTable, pattern);
+                foreach (Match item in matches)
+                {
+                    deadlines.Add(item.Groups[2].Value);
+                }
+            }
+
+            return deadlines;
+        }
+
     }
 }

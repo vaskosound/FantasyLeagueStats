@@ -17,6 +17,7 @@ namespace FantasyStatsApp.Models
                Price = player.Price,
                Position = player.Position,
                Points = player.Points,
+               RoundScore = player.RoundScore,
                IsInjured = player.IsInjured,
                MinutesPlayed = player.MinutesPlayed,
                PointsPerGame = player.PointsPerGame,
@@ -51,5 +52,7 @@ namespace FantasyStatsApp.Models
         public decimal PointsPerGame { get; set; }
 
         public decimal PlayerForm { get; set; }
+
+        public int RoundScore { get; set; }
     }
 }

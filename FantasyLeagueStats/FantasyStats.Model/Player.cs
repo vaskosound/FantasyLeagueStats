@@ -34,6 +34,8 @@ namespace FantasyStats.Model
         public decimal PointsPerGame { get; set; }
 
         public decimal PlayerForm { get; set; }
+
+        public int RoundScore { get; set; }
     }
 }
 

@@ -20,5 +20,7 @@ namespace FantasyStats.Data
         public DbSet<Match> Matches { get; set; }
 
         public DbSet<Gameweek> Gameweeks { get; set; }
+
+        public DbSet<Game> Games { get; set; }
     }
 }

@@ -1,0 +1,33 @@
+﻿@model FantasyStatsApp.Models.GameCreateModel
+
+<div id="create-form">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <div class="control-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label" })
+            <div class="controls">
+                @Html.EditorFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name, null, new { @class = "help-inline" })
+            </div>
+        </div>
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Create" class="btn" />
+            <input type="button" value="Close" class="btn" onclick="closeCreateForm()" />
+        </div>
+    }
+    <script>
+        function closeCreateForm() {
+            $("#create-form").remove("#create-form");
+        };
+    </script>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
