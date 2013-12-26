@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -23,8 +24,6 @@ namespace FantasyStats.Model
         [ForeignKey("Second_PlayerId"), Column(Order = 1)]
         public virtual ApplicationUser SecondUser { get; set; }
 
-        public ICollection<Player> Players { get; set; }
-
         public int FirstUserPoints { get; set; }
 
         public int SecondUserPoints { get; set; }
@@ -33,10 +32,16 @@ namespace FantasyStats.Model
 
         public int SecondUserGWPoints { get; set; }
 
+        public decimal FirstUserBudget { get; set; }
+
+        public decimal SecondUserBudget { get; set; }
+
         public GameState GameState { get; set; }
+
         public Game()
         {
-            this.Players = new HashSet<Player>();
+            this.FirstUserBudget = 100;
+            this.SecondUserBudget = 100;
         }
     }
 }

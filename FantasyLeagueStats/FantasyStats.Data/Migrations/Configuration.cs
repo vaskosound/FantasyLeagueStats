@@ -1,38 +1,39 @@
-using System;
-using System.Data.Entity.Migrations;
-using System.Linq;
-using FantasyStats.Model;
-using Microsoft.AspNet.Identity.EntityFramework;
-
 namespace FantasyStats.Data.Migrations
 {
-    public sealed class Configuration : DbMigrationsConfiguration<FantasyStats.Data.FantasyStatsDbContext>
+    using FantasyStats.Model;
+    using Microsoft.AspNet.Identity.EntityFramework;
+    using System;
+    using System.Data.Entity;
+    using System.Data.Entity.Migrations;
+    using System.Linq;
+
+    public sealed class Configuration : DbMigrationsConfiguration<FantasyStatsDbContext>
     {
         public Configuration()
         {
-            this.AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = true;
             this.AutomaticMigrationDataLossAllowed = true;
         }
 
-        protected override void Seed(FantasyStats.Data.FantasyStatsDbContext context)
+        protected override void Seed(FantasyStatsDbContext context)
         {
             if (context.Roles.FirstOrDefault() == null)
             {
                 var userAdmin = new ApplicationUser()
-                    {
-                        UserName = "admin",
-                        PasswordHash = "ACQbq83L/rsvlWq11Zor2jVtz2KAMcHNd6x1SN2EXHs7VuZPGaE8DhhnvtyO10Nf5Q==",
+                {
+                    UserName = "admin",
+                    PasswordHash = "ACQbq83L/rsvlWq11Zor2jVtz2KAMcHNd6x1SN2EXHs7VuZPGaE8DhhnvtyO10Nf5Q==",
 
-                    };
+                };
                 userAdmin.Roles.Add(new IdentityUserRole()
-                     {
-                         Role = new IdentityRole("Admin")
-                     }
+                {
+                    Role = new IdentityRole("Admin")
+                }
                  );
                 userAdmin.Roles.Add(new IdentityUserRole()
-                    {
-                        Role = new IdentityRole("User")
-                    }
+                {
+                    Role = new IdentityRole("User")
+                }
                 );
                 userAdmin.Logins.Add(new IdentityUserLogin
                 {

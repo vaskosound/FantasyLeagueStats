@@ -1,0 +1,10 @@
+﻿@model IEnumerable<FantasyStatsApp.Models.GameModels.GameBasicViewModel>
+
+<ul>
+    @foreach (var game in @Model)
+    {
+        <li>
+            @Html.ActionLink(@game.Name, "PickTeam", "GameInfo",  new { id = @game.Id }, null)
+        </li>
+    }
+</ul>

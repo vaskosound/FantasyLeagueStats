@@ -18,6 +18,8 @@ namespace FantasyStats.Data
 
         IRepository<Game> Games { get; }
 
+        IRepository<PlayersGame> PlayersGames { get; }
+
         int SaveChanges();
     }
 }

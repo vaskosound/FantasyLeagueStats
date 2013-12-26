@@ -192,6 +192,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\GameInfoController.cs" />
     <Compile Include="Controllers\GamesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MoneyBallController.cs" />
@@ -201,18 +202,21 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\GameBasicViewModel.cs" />
-    <Compile Include="Models\GameCreateModel.cs" />
+    <Compile Include="Models\GameModels\GameBasicViewModel.cs" />
+    <Compile Include="Models\GameModels\GameCreateModel.cs" />
     <Compile Include="Models\GameweekModel.cs" />
     <Compile Include="Data\Knapsack.cs" />
+    <Compile Include="Models\GameModels\TransferViewModel.cs" />
     <Compile Include="Models\MatchViewModel.cs" />
     <Compile Include="Data\DataManager.cs" />
     <Compile Include="Models\PlayerBasicModel.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\GameModels\PlayerGameViewModel.cs" />
     <Compile Include="Models\PlayerModel.cs" />
     <Compile Include="Models\PlayerValuableModel.cs" />
     <Compile Include="Models\PlayerViewModel.cs" />
+    <Compile Include="Models\SelectPlayerModel.cs" />
     <Compile Include="Models\SelectTeamModel.cs" />
     <Compile Include="Data\ExternalData.cs" />
     <Compile Include="Models\SubmitTeamPriceModel.cs" />
@@ -412,6 +416,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\ARS.png" />
     <Content Include="Images\badge_1.png" />
     <Content Include="Images\badge_10.png" />
     <Content Include="Images\badge_11.png" />
@@ -434,6 +439,7 @@
     <Content Include="Images\badge_9.png" />
     <Content Include="Images\cardiff_logo.png" />
     <Content Include="Images\crystal_logo.png" />
+    <Content Include="Images\empty.png" />
     <Content Include="Images\hull_logo.png" />
     <Content Include="Images\myteam.JPG" />
     <Content Include="Images\pitch.png" />
@@ -505,9 +511,17 @@
     <Content Include="Views\Shared\_MatchesGrid.cshtml" />
     <Content Include="Views\Shared\_Fixtures.cshtml" />
     <Content Include="Views\MoneyBall\TeamByPointsPerGame.cshtml" />
-    <Content Include="Views\Games\Index.cshtml" />
-    <Content Include="Views\Shared\_MyGames.cshtml" />
+    <Content Include="Views\Games\MyGames.cshtml" />
+    <Content Include="Views\Shared\_GamesList.cshtml" />
     <Content Include="Views\Shared\_Create.cshtml" />
+    <Content Include="Views\Games\JoinGames.cshtml" />
+    <Content Include="Views\GameInfo\Transfers.cshtml" />
+    <Content Include="Views\Shared\_TransferPlayer.cshtml" />
+    <Content Include="Views\Shared\_GameMenu.cshtml" />
+    <Content Include="Views\GameInfo\PickTeam.cshtml" />
+    <Content Include="Views\Shared\_TransferPitch.cshtml" />
+    <Content Include="Views\Shared\_PickTeamPlayer.cshtml" />
+    <Content Include="Views\Shared\_PickTeamPitch.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

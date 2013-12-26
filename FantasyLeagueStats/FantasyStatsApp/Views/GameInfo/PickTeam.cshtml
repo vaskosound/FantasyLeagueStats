@@ -1,0 +1,15 @@
+﻿@using FantasyStats.Model
+@using FantasyStatsApp.Models.GameModels
+@model SortedDictionary<Position, List<PlayerGameViewModel>>
+@{
+    ViewBag.Title = "PickTeam";
+}
+@Html.Partial("_GameMenu")
+<h3>My Team</h3>
+<div id="pick-team" class="col-lg-6">
+    @Html.Partial("_PickTeamPitch", Model)
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

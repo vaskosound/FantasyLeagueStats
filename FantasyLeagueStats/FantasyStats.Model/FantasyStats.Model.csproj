@@ -54,10 +54,12 @@
   <ItemGroup>
     <Compile Include="ApplicationUser.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GamePlayer.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Gameweek.cs" />
     <Compile Include="Match.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="PlayersGame.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Team.cs" />

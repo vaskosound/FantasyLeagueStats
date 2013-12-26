@@ -45,8 +45,12 @@
                                 <li>@Html.ActionLink("Team by PPP Per Game", "TeamByPPPPerGame", "MoneyBall")</li>
                             </ul>
                         </li>
-                        <li>
-                            @Html.ActionLink("Games", "Index", "Games")
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Games<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("My Games", "MyGames", "Games")</li>
+                                <li>@Html.ActionLink("Join Games", "JoinGames", "Games")</li>
+                            </ul>
                         </li>
                     }
                     @if (this.User.IsInRole("Admin"))

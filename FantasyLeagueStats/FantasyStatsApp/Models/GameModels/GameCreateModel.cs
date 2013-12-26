@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace FantasyStatsApp.Models
+namespace FantasyStatsApp.Models.GameModels
 {
     public class GameCreateModel
     {

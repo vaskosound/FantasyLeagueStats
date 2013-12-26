@@ -1,0 +1,94 @@
+﻿@using FantasyStatsApp.Models.GameModels
+@model PlayerGameViewModel[]
+
+<div id="filter">
+    <div>
+        @(Html.Kendo().DropDownList()
+                    .Name("slelectTeam")
+                    .HtmlAttributes(new { style = "width:300px" })
+                    .OptionLabel("Select club...")
+                    .DataTextField("Name")
+                    .DataValueField("Id")
+                        .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("GetClubs", "GameInfo");
+                            });
+                        })
+        )
+    </div>
+
+    @using (Ajax.BeginForm("AddPlayer", new AjaxOptions()
+        {
+            HttpMethod = "POST",
+            InsertionMode = InsertionMode.Replace,
+            UpdateTargetId = "transfers",
+            OnFailure = "error",
+            OnSuccess = "success"
+        }))
+    {
+        <div>
+            @(Html.Kendo().DropDownList()
+                    .Name("selectPlayers")
+                    .HtmlAttributes(new { style = "width:300px" })
+                    .OptionLabel("Select player...")
+                    .DataTextField("Name")
+                    .DataValueField("Id")
+                    .DataSource(source =>
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("GetPlayers", "GameInfo")
+                                .Data("filterPlayers");
+                        })
+                        .ServerFiltering(true);
+                    })
+                    .Enable(false)
+                    .AutoBind(false)
+                    .CascadeFrom("slelectTeam")
+            )
+        </div>
+
+        <br />
+        <div>
+            <input type="submit" value="Buy Player" class="btn" />
+        </div>
+    }
+</div>
+<div id="error-message"></div>
+
+<div id="budget" class="col-lg-offset-8 text-danger">
+    <strong>Budget: &pound;@ViewBag.Budget</strong>
+</div>
+
+<div id="pitch">
+    <div class="row col-lg-offset-4">
+        @for (int i = 0; i < @Model.Length; i++)
+        {
+            if (i == 2)
+            {
+                @Html.Raw("</div><div class='row col-lg-offset-1'>")
+            }
+
+            if (i == 7)
+            {
+                @Html.Raw("</div><div class='row col-lg-offset-1'>")
+            }
+
+            if (i == 12)
+            {
+                @Html.Raw("</div><div class='row col-lg-offset-3'>")
+            }
+
+            if (Model[i] != null)
+            {
+                @Html.Partial("_TransferPlayer", Model[i])
+            }
+            else
+            {
+                @Html.Partial("_TransferPlayer", new PlayerGameViewModel())
+            }
+        }
+    </div>
+</div>

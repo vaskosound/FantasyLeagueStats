@@ -1,0 +1,60 @@
+﻿@using FantasyStatsApp.Models.GameModels
+@model TransferViewModel
+@{
+    ViewBag.Title = "Transfers";
+}
+
+@Html.Partial("_GameMenu")
+<div id="transfers" class="col-lg-6">
+    @Html.Partial("_TransferPitch", Model.Team)
+</div>
+<div id="players" class="col-lg-6">
+    @(Html.Kendo().Grid<FantasyStatsApp.Models.PlayerBasicModel>()
+    .Name("players-list")
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Columns(col =>
+    {
+        col.Bound(m => m.Name).Title("Player Name");
+        col.Bound(m => m.PositionName).Title("Position");
+        col.Bound(m => m.Team).Title("Club");
+        col.Bound(m => m.Price).Title("Price");
+        col.Bound(m => m.Points).Title("Points");
+    })
+    .DataSource(data =>
+    {
+        data.Ajax()
+        .ServerOperation(true)
+        .PageSize(10)
+        .Sort(sort => sort.Add(stat => stat.Points).Descending())
+        .Model(m =>
+        {
+            m.Id(p => p.Id);
+        })
+        .Read("ReadPlayersStats", "Admin");
+    })
+    )
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    function filterPlayers() {
+        return {
+            teams: $("#slelectTeam").val()
+        };
+    }
+
+    function error()
+    {
+        $("error-message").html("Not enough money")
+    }
+
+    function success()
+    {
+        $("error-message").html("")
+    }
+
+</script>

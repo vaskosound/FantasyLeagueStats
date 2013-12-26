@@ -98,16 +98,12 @@ input[type="checkbox"].input-validation-error {
     text-align:center;
     font-weight: bold;
     color: white;
+    font-size:12px;
 }
 
 #pitch {
     background: url(../Images/pitch.png) no-repeat center;
-}
-
-#pitch tr td {
-    width: 90px;
-    height: 120px;
-    padding-top: 45px;
+    padding-left: 25px;
 }
 
 #matches, #players-stats {
@@ -142,3 +138,21 @@ input[type="checkbox"].input-validation-error {
     font-style:italic;
     color:#428bca;
 }*/
+
+.cell {
+    width: 75px;
+    height:110px;
+    float:left;
+    padding: 2px;
+}
+
+.remove-player {
+    color: red;
+    display:inline-block;
+}
+
+
+img.kit {
+    width: 45px;
+    
+}

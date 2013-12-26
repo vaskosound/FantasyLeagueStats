@@ -11,6 +11,12 @@ namespace FantasyStatsApp
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+          routes.MapRoute(
+                name: "GameInfo",
+                url: "GameInfo/{id}/{action}",
+                defaults: new { controller = "GameInfo" }
+            );
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

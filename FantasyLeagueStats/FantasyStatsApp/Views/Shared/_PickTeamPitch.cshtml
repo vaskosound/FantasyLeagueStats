@@ -1,0 +1,46 @@
+﻿@using FantasyStats.Model
+@using FantasyStatsApp.Models.GameModels
+@model SortedDictionary<Position, List<PlayerGameViewModel>>
+
+<div id="pitch">
+    @foreach (var position in Model)
+    {
+        if (position.Key == Position.SUB)
+        {
+            @Html.Raw("</div><div id=subs>")
+            foreach (var player in position.Value)
+            {
+                <div class="text-center cell">
+                    @Html.Partial("_PickTeamPlayer", player)
+                    @Ajax.ActionLink("In", "InPlayer", new { playerId = player.Id }, new AjaxOptions()
+                        {
+                            HttpMethod = "POST",
+                            InsertionMode = InsertionMode.Replace,
+                            UpdateTargetId = "pick-team"
+                        }, new { @class = "text-danger" })
+                </div>
+            }
+            @Html.Raw("</div>")
+        }
+        else
+        {
+            int playersCount = position.Value.Count;
+            int offset = 6 - playersCount;
+            string classOffset = "row col-lg-offset-" + offset;
+            @Html.Raw("<div class='" + classOffset + "'>")
+            foreach (var player in position.Value)
+            {
+                <div class="text-center cell">
+                    @Html.Partial("_PickTeamPlayer", player)
+                    @Ajax.ActionLink("Out", "OutPlayer", new { playerId = player.Id }, new AjaxOptions()
+                       {
+                           HttpMethod = "POST",
+                           InsertionMode = InsertionMode.Replace,
+                           UpdateTargetId = "pick-team"
+                       }, new { @class = "text-danger" })
+                </div>
+            }
+
+            @Html.Raw("</div>")
+        }
+    }

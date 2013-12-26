@@ -1,5 +1,4 @@
-﻿using FantasyStats.Model;
-using FantasyStatsApp.Models;
+﻿using FantasyStatsApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +6,8 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using FantasyStatsApp.Models.GameModels;
+using FantasyStats.Model;
 
 namespace FantasyStatsApp.Controllers
 {
@@ -14,9 +15,33 @@ namespace FantasyStatsApp.Controllers
     {
         //
         // GET: /Games/
-        public ActionResult Index()
+        public ActionResult MyGames()
         {
-            return View();
+            var userId = this.User.Identity.GetUserId();
+            var myGames = this.Data.Games.All().Where(g => g.First_PlayerId == userId || g.Second_PlayerId == userId)
+              .Select(x => new GameBasicViewModel()
+              {
+                  Id = x.Id,
+                  Name = x.Name
+              }).ToList();
+
+            return View(myGames);
+        }
+
+        public ActionResult JoinGames()
+        {
+            var userId = this.User.Identity.GetUserId();
+            var òpenGames = this.Data.Games.All()
+                .Where(g => g.First_PlayerId != userId && g.Second_PlayerId != userId &&
+                    g.GameState == GameState.Created)
+              .Select(x => new GameBasicViewModel()
+              {
+                  Id = x.Id,
+                  Name = x.Name,
+                  GameState = x.GameState
+              }).ToList();
+
+            return View(òpenGames);
         }
 
         public ActionResult Create()
@@ -36,22 +61,17 @@ namespace FantasyStatsApp.Controllers
                 newGame.First_PlayerId = this.User.Identity.GetUserId();
                 this.Data.Games.Add(newGame);
                 this.Data.SaveChanges();
-                return RedirectToAction("/Index");
+                return RedirectToAction("PickTeam", "GameInfo", new { id = newGame.Id });
             }
 
             return View(game);
         }
 
-        public ActionResult MyGames()
-        {
-            var myGames = this.Data.Games.All().Where(g => g.FirstUser == this.User || g.SecondUser == this.User)
-                .Select(x => new GameBasicViewModel() 
-                {
-                    Id = x.Id,
-                    Name = x.Name
-                });
-
-            return PartialView("_MyGames", myGames);
-        }
+        //public ActionResult Details(int id)
+        //{
+        //    var players = this.Data.PlayersGames.All().Where(p => p.GameId == id)
+        //        .Select(x => x.Player).Select(p => PlayerBasicModel.FromPlayersStats);
+        //    return View(players);
+        //}
 	}
 }
