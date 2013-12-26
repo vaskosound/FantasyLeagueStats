@@ -203,7 +203,7 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GameModels\GameBasicViewModel.cs" />
-    <Compile Include="Models\GameModels\GameCreateModel.cs" />
+    <Compile Include="Models\GameCreateModel.cs" />
     <Compile Include="Models\GameweekModel.cs" />
     <Compile Include="Data\Knapsack.cs" />
     <Compile Include="Models\GameModels\TransferViewModel.cs" />
