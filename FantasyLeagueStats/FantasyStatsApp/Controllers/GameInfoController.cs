@@ -14,12 +14,12 @@ namespace FantasyStatsApp.Controllers
 {
     public class GameInfoController : BaseController
     {
-        private static Dictionary<Position, List<PlayerGameViewModel>> myTeam;
-        private static Game game;
-        private static SortedDictionary<Position, List<PlayerGameViewModel>> pickTeamPlayers;
+        private static Dictionary<int, List<PlayerGameViewModel>> myTeam;
+        private static SortedDictionary<int, List<PlayerGameViewModel>> pickTeamPlayers;
+        private const int SUBSTITUTION = 5;
         public ActionResult PickTeam(int id)
         {
-            game = this.Data.Games.GetById(id);
+            var game = this.Data.Games.GetById(id);
 
             myTeam = PopulateMyPlayers(id);
             if (myTeam == null || myTeam.Values.Sum(p => p.Count) < 15)
@@ -29,13 +29,91 @@ namespace FantasyStatsApp.Controllers
 
             pickTeamPlayers = GetStartingPlayers();
 
+            //var players = pickTeamPlayers.Values.SelectMany(x => x).ToList();
+
             return View(pickTeamPlayers);
         }
 
-        private static SortedDictionary<Position, List<PlayerGameViewModel>> GetStartingPlayers()
+        public ActionResult StartingTeam(int id, List<PlayerGameViewModel> playersModel)
         {
-            SortedDictionary<Position, List<PlayerGameViewModel>> players =
-                new SortedDictionary<Position, List<PlayerGameViewModel>>();
+            List<PlayerGameViewModel> startingPlayers = new List<PlayerGameViewModel>();
+            foreach (var player in playersModel)
+            {
+                if (player.IsStarting)
+                {
+                    startingPlayers.Add(player);
+                }
+            }
+
+            if (startingPlayers.Count != 11)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.StatusDescription = "The numer of starting players must be 11";
+                return PartialView("_PickTeamPitch", pickTeamPlayers);
+            }
+
+            if (CountPlayersAtPosition(Position.GKP, startingPlayers) != 1)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.StatusDescription = "You can have only 1 goalkeeper";
+                return PartialView("_PickTeamPitch", pickTeamPlayers);
+            }
+
+            if (CountPlayersAtPosition(Position.DEF, startingPlayers) < 3)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.StatusDescription = "The nuber of " + GetFullPosition(Position.DEF) + "s must be at least 3";
+                return PartialView("_PickTeamPitch", pickTeamPlayers);
+            }
+
+            if (CountPlayersAtPosition(Position.MID, startingPlayers) < 3)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.StatusDescription = "The nuber of " + GetFullPosition(Position.MID) + "s must be at least 3";
+                return PartialView("_PickTeamPitch", pickTeamPlayers);
+            }
+
+            if (CountPlayersAtPosition(Position.FWD, startingPlayers) < 1)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.StatusDescription = "The nuber of " + GetFullPosition(Position.FWD) + "s must be at least 1";
+                return PartialView("_PickTeamPitch", pickTeamPlayers);
+            }
+
+            var playersInGame = this.Data.PlayersGames.All().Where(x => x.GameId == id).ToList();
+
+            foreach (var player in playersModel)
+            {
+                var playerInGame = playersInGame.Find(p => p.PlayerId == player.Id);
+                if (player.IsStarting != playerInGame.IsStarting)
+                {
+                    playerInGame.IsStarting = player.IsStarting;
+                }
+            }
+
+            this.Data.SaveChanges();
+
+            return PartialView("_PickTeamPitch", pickTeamPlayers);
+        }
+
+        private int CountPlayersAtPosition(Position position, List<PlayerGameViewModel> players)
+        {
+            int counter = 0;
+            foreach (var player in players)
+            {
+                if (player.Position == position)
+                {
+                    counter++;
+                }
+            }
+
+            return counter;
+        }
+
+        private static SortedDictionary<int, List<PlayerGameViewModel>> GetStartingPlayers()
+        {
+            SortedDictionary<int, List<PlayerGameViewModel>> players =
+                new SortedDictionary<int, List<PlayerGameViewModel>>();
 
             foreach (var position in myTeam)
             {
@@ -52,12 +130,12 @@ namespace FantasyStatsApp.Controllers
                     }
                     else
                     {
-                        if (!players.ContainsKey(Position.SUB))
+                        if (!players.ContainsKey(SUBSTITUTION))
                         {
-                            players.Add(Position.SUB, new List<PlayerGameViewModel>());
+                            players.Add(SUBSTITUTION, new List<PlayerGameViewModel>());
                         }
 
-                        players[Position.SUB].Add(player);
+                        players[SUBSTITUTION].Add(player);
                        // players[Position.SUB].OrderBy(x => (int)x.Position);
                     }
                 }
@@ -89,6 +167,7 @@ namespace FantasyStatsApp.Controllers
                 
         public ActionResult Transfers(int id)
         {
+            var game = this.Data.Games.GetById(id);
             myTeam = PopulateMyPlayers(id);
 
             decimal playerBudget;
@@ -146,6 +225,7 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult AddPlayer(int id, int? selectPlayers)
         {
+            var game = this.Data.Games.GetById(id);
             var myPlayers = MyPlayersInArray(myTeam);
             GamePlayer gamePlayer;
             decimal budget = 0;
@@ -160,13 +240,28 @@ namespace FantasyStatsApp.Controllers
                 budget = game.SecondUserBudget;
             }
 
-            if (selectPlayers != null)
+            if (selectPlayers == null)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.StatusDescription = "Select any player";
+                return View("_TransferPitch", myPlayers);                
+            }
+            else
             {
                 var playerExists = this.Data.Players.GetById((int)selectPlayers);
 
-                if (budget - playerExists.Price < 0 || !IsValidPosition(playerExists))
+                if (budget - playerExists.Price < 0)
                 {
                     Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.StatusDescription = "Not enough money";
+                    return View("_TransferPitch", myPlayers);
+                }
+
+                if (!IsValidPosition(playerExists))
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.StatusDescription = "You already have tha maximum number of " +
+                        GetFullPosition(playerExists.Position) + "s";
                     return View("_TransferPitch", myPlayers);
                 }
 
@@ -213,17 +308,17 @@ namespace FantasyStatsApp.Controllers
             switch (playerExists.Position)
             {
                 case Position.GKP:
-                    if (myTeam.ContainsKey(Position.GKP) &&
-                        myTeam[Position.GKP].Count == 1 && myTeam[Position.GKP][0].IsStarting)
+                    if (myTeam.ContainsKey((int)Position.GKP) &&
+                        myTeam[(int)Position.GKP].Count == 1 && myTeam[(int)Position.GKP][0].IsStarting)
                     {
                         return false;
                     }
                     break;
                 case Position.DEF:
-                    if (myTeam.ContainsKey(Position.DEF) && myTeam[Position.DEF].Count > 3)
+                    if (myTeam.ContainsKey((int)Position.DEF) && myTeam[(int)Position.DEF].Count > 3)
                     {
                         int count = 0;
-                        foreach (var player in myTeam[Position.DEF])
+                        foreach (var player in myTeam[(int)Position.DEF])
                         {
                             if (player.IsStarting)
                             {
@@ -238,10 +333,10 @@ namespace FantasyStatsApp.Controllers
                     }
                     break;
                 case Position.MID:
-                    if (myTeam.ContainsKey(Position.MID) && myTeam[Position.MID].Count > 3)
+                    if (myTeam.ContainsKey((int)Position.MID) && myTeam[(int)Position.MID].Count > 3)
                     {
                         int count = 0;
-                        foreach (var player in myTeam[Position.MID])
+                        foreach (var player in myTeam[(int)Position.MID])
                         {
                             if (player.IsStarting)
                             {
@@ -256,10 +351,10 @@ namespace FantasyStatsApp.Controllers
                     }
                     break;
                 case Position.FWD:
-                    if (myTeam.ContainsKey(Position.FWD) && myTeam[Position.FWD].Count > 1)
+                    if (myTeam.ContainsKey((int)Position.FWD) && myTeam[(int)Position.FWD].Count > 1)
                     {
                         int count = 0;
-                        foreach (var player in myTeam[Position.FWD])
+                        foreach (var player in myTeam[(int)Position.FWD])
                         {
                             if (player.IsStarting)
                             {
@@ -285,25 +380,25 @@ namespace FantasyStatsApp.Controllers
             switch (playerExists.Position)
             {
                 case Position.GKP:
-                    if (myTeam.ContainsKey(Position.GKP) && myTeam[Position.GKP].Count == 2)
+                    if (myTeam.ContainsKey((int)Position.GKP) && myTeam[(int)Position.GKP].Count == 2)
                     {
                         return false;
                     }
                     break;
                 case Position.DEF:
-                    if (myTeam.ContainsKey(Position.DEF) && myTeam[Position.DEF].Count == 5)
+                    if (myTeam.ContainsKey((int)Position.DEF) && myTeam[(int)Position.DEF].Count == 5)
                     {
                         return false;
                     }
                     break;
                 case Position.MID:
-                    if (myTeam.ContainsKey(Position.MID) && myTeam[Position.MID].Count == 5)
+                    if (myTeam.ContainsKey((int)Position.MID) && myTeam[(int)Position.MID].Count == 5)
                     {
                         return false;
                     }
                     break;
                 case Position.FWD:
-                    if (myTeam.ContainsKey(Position.FWD) && myTeam[Position.FWD].Count == 3)
+                    if (myTeam.ContainsKey((int)Position.FWD) && myTeam[(int)Position.FWD].Count == 3)
                     {
                         return false;
                     }
@@ -324,6 +419,7 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult RemovePlayer(int id, int playerId)
         {
+            var game = this.Data.Games.GetById(id);
             decimal playerPrice = this.Data.Players.GetById(playerId).Price;
             decimal budget = 0;
             if (game.First_PlayerId == User.Identity.GetUserId())
@@ -350,8 +446,9 @@ namespace FantasyStatsApp.Controllers
             return PartialView("_TransferPitch", myPlayers);
         }
 
-        private Dictionary<Position, List<PlayerGameViewModel>> PopulateMyPlayers(int id)
+        private Dictionary<int, List<PlayerGameViewModel>> PopulateMyPlayers(int id)
         {
+            var game = this.Data.Games.GetById(id);
             GamePlayer gamePlayer;
             if (game.First_PlayerId == User.Identity.GetUserId())
             {
@@ -365,18 +462,18 @@ namespace FantasyStatsApp.Controllers
             var myPlayers = this.Data.PlayersGames.All().Where(p => p.GameId == id &&
                 p.GamePlayer == gamePlayer).Select(PlayerGameViewModel.FromPlayersGame).ToList();
 
-            Dictionary<Position, List<PlayerGameViewModel>> players =
-                new Dictionary<Position, List<PlayerGameViewModel>>();
+            Dictionary<int, List<PlayerGameViewModel>> players =
+                new Dictionary<int, List<PlayerGameViewModel>>();
 
             foreach (var player in myPlayers)
             {
-                if (!players.ContainsKey(player.Position))
+                if (!players.ContainsKey((int)player.Position))
                 {
-                    players.Add(player.Position, new List<PlayerGameViewModel>() { player });
+                    players.Add((int)player.Position, new List<PlayerGameViewModel>() { player });
                 }
                 else
                 {
-                    players[player.Position].Add(player);
+                    players[(int)player.Position].Add(player);
                 }
             }
 
@@ -384,7 +481,7 @@ namespace FantasyStatsApp.Controllers
         }
 
         private PlayerGameViewModel[] MyPlayersInArray(
-            Dictionary<Position, List<PlayerGameViewModel>> players)
+            Dictionary<int, List<PlayerGameViewModel>> players)
         {
             PlayerGameViewModel[] playersArr = new PlayerGameViewModel[15];
             foreach (var position in players)
@@ -446,11 +543,5 @@ namespace FantasyStatsApp.Controllers
                     break;
             }
         }
-
-        private void AddStartingPlayerInArray(PlayerGameViewModel[] playersArr, PlayerGameViewModel player)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

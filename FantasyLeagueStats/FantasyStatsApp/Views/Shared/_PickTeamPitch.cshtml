@@ -1,11 +1,11 @@
 ﻿@using FantasyStats.Model
 @using FantasyStatsApp.Models.GameModels
-@model SortedDictionary<Position, List<PlayerGameViewModel>>
+@model SortedDictionary<int, List<PlayerGameViewModel>>
 
 <div id="pitch">
     @foreach (var position in Model)
     {
-        if (position.Key == Position.SUB)
+        if ((int)position.Key == 5)
         {
             @Html.Raw("</div><div id=subs>")
             foreach (var player in position.Value)
@@ -25,6 +25,12 @@
         else
         {
             int playersCount = position.Value.Count;
+            if (playersCount == 0)
+            {
+                <div class="col-md-offset-5 cell">
+                    @Html.Partial("_PickTeamPlayer", new PlayerGameViewModel())
+                </div>
+            }
             int offset = 6 - playersCount;
             string classOffset = "row col-lg-offset-" + offset;
             @Html.Raw("<div class='" + classOffset + "'>")
@@ -44,3 +50,10 @@
             @Html.Raw("</div>")
         }
     }
+    @{
+        List<PlayerGameViewModel> players = Model.Values.SelectMany(x => x).ToList();
+    }
+    <div class="clearfix"></div>
+    <div id="confirm-form">
+        @Html.Partial("_ConfirmStartingTeam", players)
+    </div>

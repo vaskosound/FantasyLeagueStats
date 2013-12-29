@@ -539,8 +539,11 @@
     <Content Include="Views\Shared\_GameMenu.cshtml" />
     <Content Include="Views\GameInfo\PickTeam.cshtml" />
     <Content Include="Views\Shared\_TransferPitch.cshtml" />
-    <Content Include="Views\Shared\_PickTeamPlayer.cshtml" />
+    <Content Include="Views\Shared\_ValuablePlayer.cshtml" />
     <Content Include="Views\Shared\_PickTeamPitch.cshtml" />
+    <Content Include="Views\Shared\_PickTeamPlayer.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\PlayerGameViewModel.cshtml" />
+    <Content Include="Views\Shared\_ConfirmStartingTeam.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

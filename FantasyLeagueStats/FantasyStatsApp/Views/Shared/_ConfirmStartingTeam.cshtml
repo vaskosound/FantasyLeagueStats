@@ -1,0 +1,18 @@
+﻿@model List<FantasyStatsApp.Models.GameModels.PlayerGameViewModel>
+
+@using (Ajax.BeginForm("StartingTeam", "GameInfo", new AjaxOptions()
+{
+    HttpMethod = "POST",
+    InsertionMode = InsertionMode.Replace,
+    UpdateTargetId = "pick-team",
+    OnFailure = "error",
+    OnSuccess = "success"
+}))
+{
+    @Html.EditorFor(model => model)
+    <div class="form-actions no-color">
+        <input type="submit" value="Confirm" class="btn btn-primary" />
+    </div>
+}
+
+<div id="error-message" class="text-danger"></div>

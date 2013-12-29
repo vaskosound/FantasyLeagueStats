@@ -1,0 +1,9 @@
+﻿@model FantasyStatsApp.Models.PlayerValuableModel
+@{
+    string src = "/Images/" + @Model.Team + ".png";
+}
+<div class="text-center cell">
+    <img src=@src class="kit" alt=@Model.Team title=@Model.Team />
+    <span class="name">@Model.Name</span>
+    <span class="price">&pound;@Model.Weight</span>
+</div>

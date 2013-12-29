@@ -104,6 +104,7 @@ input[type="checkbox"].input-validation-error {
 #pitch {
     background: url(../Images/pitch.png) no-repeat center;
     padding-left: 25px;
+    height: 450px;
 }
 
 #matches, #players-stats {
