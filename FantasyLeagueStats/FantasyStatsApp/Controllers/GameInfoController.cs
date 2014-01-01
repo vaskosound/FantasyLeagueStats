@@ -17,6 +17,24 @@ namespace FantasyStatsApp.Controllers
         private static Dictionary<int, List<PlayerGameViewModel>> myTeam;
         private static SortedDictionary<int, List<PlayerGameViewModel>> pickTeamPlayers;
         private const int SUBSTITUTION = 5;
+
+        public ActionResult JoinGame(int id)
+        {
+            var game = this.Data.Games.GetById(id);
+
+            if (game.GameState != GameState.Created)
+            {
+                return RedirectToAction("JoinGames", "Games");
+            }
+
+            var userId = this.User.Identity.GetUserId();
+            game.Second_PlayerId = userId;
+            game.GameState = GameState.Full;
+            this.Data.SaveChanges();
+
+            return RedirectToAction("Transfers");
+        }
+
         public ActionResult PickTeam(int id)
         {
             var game = this.Data.Games.GetById(id);
@@ -27,9 +45,7 @@ namespace FantasyStatsApp.Controllers
                 return RedirectToAction("Transfers", new { id = id });
             }
 
-            pickTeamPlayers = GetStartingPlayers();
-
-            //var players = pickTeamPlayers.Values.SelectMany(x => x).ToList();
+            pickTeamPlayers = GetStartingPlayers(myTeam);
 
             return View(pickTeamPlayers);
         }
@@ -95,61 +111,14 @@ namespace FantasyStatsApp.Controllers
 
             return PartialView("_PickTeamPitch", pickTeamPlayers);
         }
-
-        private int CountPlayersAtPosition(Position position, List<PlayerGameViewModel> players)
-        {
-            int counter = 0;
-            foreach (var player in players)
-            {
-                if (player.Position == position)
-                {
-                    counter++;
-                }
-            }
-
-            return counter;
-        }
-
-        private static SortedDictionary<int, List<PlayerGameViewModel>> GetStartingPlayers()
-        {
-            SortedDictionary<int, List<PlayerGameViewModel>> players =
-                new SortedDictionary<int, List<PlayerGameViewModel>>();
-
-            foreach (var position in myTeam)
-            {
-                foreach (var player in position.Value)
-                {
-                    if (!players.ContainsKey(position.Key))
-                    {
-                        players.Add(position.Key, new List<PlayerGameViewModel>());
-                    }
-
-                    if (player.IsStarting)
-                    {
-                        players[position.Key].Add(player);
-                    }
-                    else
-                    {
-                        if (!players.ContainsKey(SUBSTITUTION))
-                        {
-                            players.Add(SUBSTITUTION, new List<PlayerGameViewModel>());
-                        }
-
-                        players[SUBSTITUTION].Add(player);
-                       // players[Position.SUB].OrderBy(x => (int)x.Position);
-                    }
-                }
-            }
-            return players;
-        }
-
+                
         public ActionResult OutPlayer(int playerId)
         {
             var player = myTeam.Values.FirstOrDefault(x => x.Any(p => p.Id == playerId))
                 .FirstOrDefault(y => y.Id == playerId);
             player.IsStarting = false;
 
-            pickTeamPlayers = GetStartingPlayers();
+            pickTeamPlayers = GetStartingPlayers(myTeam);
 
             return PartialView("_PickTeamPitch", pickTeamPlayers);
         }
@@ -160,7 +129,7 @@ namespace FantasyStatsApp.Controllers
                 .FirstOrDefault(y => y.Id == playerId);
             player.IsStarting = true;
 
-            pickTeamPlayers = GetStartingPlayers();
+            pickTeamPlayers = GetStartingPlayers(myTeam);
 
             return PartialView("_PickTeamPitch", pickTeamPlayers);
         }
@@ -303,6 +272,61 @@ namespace FantasyStatsApp.Controllers
             return PartialView("_TransferPitch", myPlayers);
         }
 
+        public ActionResult RemovePlayer(int id, int playerId)
+        {
+            var game = this.Data.Games.GetById(id);
+            decimal playerPrice = this.Data.Players.GetById(playerId).Price;
+            decimal budget = 0;
+            if (game.First_PlayerId == User.Identity.GetUserId())
+            {
+                game.FirstUserBudget += playerPrice;
+                budget = game.FirstUserBudget;
+            }
+            else
+            {
+                game.SecondUserBudget += playerPrice;
+                budget = game.SecondUserBudget;
+            }
+
+            ViewBag.Budget = budget;
+
+            var playerInGame = this.Data.PlayersGames.All()
+                .FirstOrDefault(p => p.GameId == id && p.PlayerId == playerId);
+            this.Data.PlayersGames.Delete(playerInGame);
+            this.Data.SaveChanges();
+
+            myTeam = PopulateMyPlayers(id);
+            var myPlayers = MyPlayersInArray(myTeam);
+
+            return PartialView("_TransferPitch", myPlayers);
+        }
+
+        public ActionResult OpponentTeam(int id)
+        {
+            var game = this.Data.Games.GetById(id);
+            string userId = this.User.Identity.GetUserId();
+            GamePlayer gamePlayer;
+            decimal opponentBudget = 0;
+            if (game.First_PlayerId != userId)
+            {
+                opponentBudget = game.FirstUserBudget;
+                gamePlayer = GamePlayer.FirstPlayer;
+            }
+            else
+            {
+                opponentBudget = game.SecondUserBudget;
+                gamePlayer = GamePlayer.SecondPlayer;
+            }
+
+            ViewBag.Budget = opponentBudget;
+            var opponentPlayers = this.Data.PlayersGames.All().Where(p => p.GameId == id &&
+                 p.GamePlayer == gamePlayer).Select(PlayerGameViewModel.FromPlayersGame).ToList();
+
+            Dictionary<int, List<PlayerGameViewModel>> players = PlayersInDictionary(opponentPlayers);
+
+            return View(GetStartingPlayers(players));
+        }
+
         private bool IsStarting(Player playerExists)
         {
             switch (playerExists.Position)
@@ -410,6 +434,54 @@ namespace FantasyStatsApp.Controllers
             return true;
         }
 
+        private int CountPlayersAtPosition(Position position, List<PlayerGameViewModel> players)
+        {
+            int counter = 0;
+            foreach (var player in players)
+            {
+                if (player.Position == position)
+                {
+                    counter++;
+                }
+            }
+
+            return counter;
+        }
+
+        private SortedDictionary<int, List<PlayerGameViewModel>> GetStartingPlayers(
+            Dictionary<int, List<PlayerGameViewModel>> team)
+        {
+            SortedDictionary<int, List<PlayerGameViewModel>> players =
+                new SortedDictionary<int, List<PlayerGameViewModel>>();
+
+            foreach (var position in team)
+            {
+                foreach (var player in position.Value)
+                {
+                    if (!players.ContainsKey(position.Key))
+                    {
+                        players.Add(position.Key, new List<PlayerGameViewModel>());
+                    }
+
+                    if (player.IsStarting)
+                    {
+                        players[position.Key].Add(player);
+                    }
+                    else
+                    {
+                        if (!players.ContainsKey(SUBSTITUTION))
+                        {
+                            players.Add(SUBSTITUTION, new List<PlayerGameViewModel>());
+                        }
+
+                        players[SUBSTITUTION].Add(player);
+                        players[SUBSTITUTION].OrderBy(x => (int)x.Position);
+                    }
+                }
+            }
+            return players;
+        }
+
         public ActionResult GameweekResult(int id)
         {
             var players = this.Data.PlayersGames.All().Where(p => p.GameId == id)
@@ -417,34 +489,6 @@ namespace FantasyStatsApp.Controllers
             return View(players);
         }
 
-        public ActionResult RemovePlayer(int id, int playerId)
-        {
-            var game = this.Data.Games.GetById(id);
-            decimal playerPrice = this.Data.Players.GetById(playerId).Price;
-            decimal budget = 0;
-            if (game.First_PlayerId == User.Identity.GetUserId())
-            {
-                game.FirstUserBudget += playerPrice;
-                budget = game.FirstUserBudget;
-            }
-            else
-            {
-                game.SecondUserBudget += playerPrice;
-                budget = game.SecondUserBudget;
-            }
-
-            ViewBag.Budget = budget;
-
-            var playerInGame = this.Data.PlayersGames.All()
-                .FirstOrDefault(p => p.GameId == id && p.PlayerId == playerId);
-            this.Data.PlayersGames.Delete(playerInGame);
-            this.Data.SaveChanges();
-
-            myTeam = PopulateMyPlayers(id);
-            var myPlayers = MyPlayersInArray(myTeam);
-
-            return PartialView("_TransferPitch", myPlayers);
-        }
 
         private Dictionary<int, List<PlayerGameViewModel>> PopulateMyPlayers(int id)
         {
@@ -462,22 +506,29 @@ namespace FantasyStatsApp.Controllers
             var myPlayers = this.Data.PlayersGames.All().Where(p => p.GameId == id &&
                 p.GamePlayer == gamePlayer).Select(PlayerGameViewModel.FromPlayersGame).ToList();
 
-            Dictionary<int, List<PlayerGameViewModel>> players =
+            Dictionary<int, List<PlayerGameViewModel>> players = PlayersInDictionary(myPlayers);
+
+            return players;
+        }
+
+        private static Dictionary<int, List<PlayerGameViewModel>> PlayersInDictionary(
+            List<PlayerGameViewModel> players)
+        {
+            Dictionary<int, List<PlayerGameViewModel>> playersInDictionary =
                 new Dictionary<int, List<PlayerGameViewModel>>();
 
-            foreach (var player in myPlayers)
+            foreach (var player in players)
             {
-                if (!players.ContainsKey((int)player.Position))
+                if (!playersInDictionary.ContainsKey((int)player.Position))
                 {
-                    players.Add((int)player.Position, new List<PlayerGameViewModel>() { player });
+                    playersInDictionary.Add((int)player.Position, new List<PlayerGameViewModel>() { player });
                 }
                 else
                 {
-                    players[(int)player.Position].Add(player);
+                    playersInDictionary[(int)player.Position].Add(player);
                 }
             }
-
-            return players;
+            return playersInDictionary;
         }
 
         private PlayerGameViewModel[] MyPlayersInArray(

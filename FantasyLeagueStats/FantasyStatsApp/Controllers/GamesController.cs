@@ -18,12 +18,14 @@ namespace FantasyStatsApp.Controllers
         public ActionResult MyGames()
         {
             var userId = this.User.Identity.GetUserId();
-            var myGames = this.Data.Games.All().Where(g => g.First_PlayerId == userId || g.Second_PlayerId == userId)
-              .Select(x => new GameBasicViewModel()
-              {
-                  Id = x.Id,
-                  Name = x.Name
-              }).ToList();
+            var myGames = this.Data.Games.All().Where(g => g.First_PlayerId == userId ||
+                g.Second_PlayerId == userId)
+                .Select(x => new GameBasicViewModel()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    GameState = x.GameState
+                }).ToList();
 
             return View(myGames);
         }
@@ -31,7 +33,7 @@ namespace FantasyStatsApp.Controllers
         public ActionResult JoinGames()
         {
             var userId = this.User.Identity.GetUserId();
-            var òpenGames = this.Data.Games.All()
+            var openGames = this.Data.Games.All()
                 .Where(g => g.First_PlayerId != userId && g.Second_PlayerId != userId &&
                     g.GameState == GameState.Created)
               .Select(x => new GameBasicViewModel()
@@ -41,7 +43,7 @@ namespace FantasyStatsApp.Controllers
                   GameState = x.GameState
               }).ToList();
 
-            return View(òpenGames);
+            return View(openGames);
         }
 
         public ActionResult Create()

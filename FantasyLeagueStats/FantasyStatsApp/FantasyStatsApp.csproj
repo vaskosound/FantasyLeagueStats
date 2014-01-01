@@ -544,6 +544,7 @@
     <Content Include="Views\Shared\_PickTeamPlayer.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\PlayerGameViewModel.cshtml" />
     <Content Include="Views\Shared\_ConfirmStartingTeam.cshtml" />
+    <Content Include="Views\GameInfo\OpponentTeam.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

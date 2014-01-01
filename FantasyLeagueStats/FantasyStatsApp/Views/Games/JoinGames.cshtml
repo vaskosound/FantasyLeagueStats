@@ -1,9 +1,15 @@
-﻿@{
+﻿@model IEnumerable<FantasyStatsApp.Models.GameModels.GameBasicViewModel>
+@{
     ViewBag.Title = "Join Games";
 }
 
-<h2>Join Game</h2>
-<div>
-    @Html.Partial("_GamesList")
-</div>
+<h2>ViewBag.Title</h2>
+<ul>
+    @foreach (var game in @Model)
+    {
+        <li>
+            @Html.ActionLink(@game.Name, "JoinGame", "GameInfo", new { id = @game.Id }, null)
+        </li>
+    }
+</ul>
 
