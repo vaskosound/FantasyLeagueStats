@@ -25,10 +25,12 @@ namespace FantasyStats.Data
 
         public DbSet<PlayersGame> PlayerGames { get; set; }
 
+        public DbSet<PlayersGamesGameweek> PlayersGamesGameweeks { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<PlayersGame>().HasKey(x => new { x.GameId, x.PlayerId });
+            modelBuilder.Entity<PlayersGame>().HasKey(x => new { x.GameId, x.PlayerId, x.GamePlayer });
         }
     }
 }

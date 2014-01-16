@@ -35,6 +35,7 @@ namespace FantasyStatsApp.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public JsonResult ReadPlayersStats([DataSourceRequest] DataSourceRequest request)
         {
             var result = this.Data.Players.All().Select(PlayerBasicModel.FromPlayersStats);

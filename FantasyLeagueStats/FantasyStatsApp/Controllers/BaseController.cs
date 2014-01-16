@@ -1,5 +1,6 @@
 ﻿using FantasyStats.Data;
 using FantasyStats.Model;
+using FantasyStatsApp.Models;
 using System;
 using System.Linq;
 using System.Web.Mvc;
@@ -38,5 +39,17 @@ namespace FantasyStatsApp.Controllers
 
             return String.Empty;
         }
+
+        protected IQueryable<MatchViewModel> PopulateCurrentMatches()
+        {
+            DateTime currentDate = DateTime.Now;
+            var currentGameweek = this.Data.Gameweeks.All()
+                .FirstOrDefault(g => g.StartDate <= currentDate && currentDate <= g.EndDate);
+
+            var currentMatches = this.Data.Matches.All().Where(m => m.Gameweek.Id == currentGameweek.Id)
+                .Select(MatchViewModel.FromMatches);
+            return currentMatches;
+        }
+
 	}
 }

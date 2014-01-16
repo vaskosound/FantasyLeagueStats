@@ -9,6 +9,7 @@ namespace FantasyStats.Model
     public class Gameweek
     {
         private HashSet<Match> matches;
+       // private HashSet<PlayersGame> playersGames;
 
         [KeyAttribute()]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -25,12 +26,19 @@ namespace FantasyStats.Model
         public Gameweek()
         {
             this.matches = new HashSet<Match>();
+         //   this.playersGames = new HashSet<PlayersGame>();
         }
 
-        public HashSet<Match> Matches
+        public virtual HashSet<Match> Matches
         {
             get { return this.matches; }
             set { this.matches = value; }
         }
+
+        //public virtual HashSet<PlayersGame> PlayersGames
+        //{
+        //    get { return this.playersGames; }
+        //    set { this.playersGames = value; }
+        //}
     }
 }

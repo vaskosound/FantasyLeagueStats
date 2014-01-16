@@ -48,5 +48,10 @@
             }
         }
     </div>
+    <div id="fixtures" class="col-lg-5">
+        <table id="current-fixtures" class="table table-striped">
+            @Html.Partial("_Fixtures", ViewData["Fixtures"])
+        </table>
+    </div>
 <div class="clearfix"></div>
 

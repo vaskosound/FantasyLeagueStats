@@ -13,7 +13,9 @@
         </ul>
     </div>
     <div id="fixtures" class="col-lg-4">
-        @Html.Partial("_Fixtures")        
+        <table id="current-fixtures">
+            @Html.Partial("_Fixtures")
+        </table>
     </div>
     <div class="col-lg-6">
         @Html.Partial("_Standings")

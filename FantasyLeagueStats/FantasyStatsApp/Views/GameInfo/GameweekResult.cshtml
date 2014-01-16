@@ -1,0 +1,80 @@
+﻿@using FantasyStats.Model
+@using FantasyStatsApp.Models.GameModels
+@model GameResultsViewModel
+@{
+    ViewBag.Title = "Gameweek Results";
+}
+
+@Html.Partial("_GameMenu")
+<div class="col-lg-6">
+    <div id="budget" class="col-lg-offset-8 text-danger">
+        <strong>Total points: @ViewBag.FirstPlayerPoints</strong>
+    </div>
+    <div id="pitch">
+        @foreach (var position in Model.FirstUserPlayers)
+        {
+            if ((int)position.Key == 5)
+            {
+                @Html.Raw("</div><h4 class='text-primary'>Subsitutions</h4><div id=subs>")
+                foreach (var player in position.Value)
+                {
+                    <div class="text-center cell">
+                        @Html.Partial("_PlayerGameweekResult", player)
+                    </div>
+                }
+                @Html.Raw("</div>")
+            }
+            else
+            {
+                int playersCount = position.Value.Count;
+                int offset = 6 - playersCount;
+                string classOffset = "row col-lg-offset-" + offset;
+                @Html.Raw("<div class='" + classOffset + "'>")
+                foreach (var player in position.Value)
+                {
+                    <div class="text-center cell">
+                        @Html.Partial("_PlayerGameweekResult", player)
+                        <span class="price btn-primary">@player.RoundScore</span>
+                    </div>
+                }
+
+                @Html.Raw("</div>")
+            }
+        }
+    </div>
+    <div class="col-lg-6">
+        <div id="budget" class="col-lg-offset-8 text-danger">
+            <strong>Total points: @ViewBag.SecondPlayerPoints</strong>
+        </div>
+        <div id="pitch">
+            @foreach (var position in Model.SecondUserPlayers)
+            {
+                if ((int)position.Key == 5)
+                {
+                    @Html.Raw("</div><h4 class='text-primary'>Subsitutions</h4><div id=subs>")
+                    foreach (var player in position.Value)
+                    {
+                        <div class="text-center cell">
+                            @Html.Partial("_PlayerGameweekResult", player)
+                        </div>
+                    }
+                    @Html.Raw("</div>")
+                }
+                else
+                {
+                    int playersCount = position.Value.Count;
+                    int offset = 6 - playersCount;
+                    string classOffset = "row col-lg-offset-" + offset;
+                    @Html.Raw("<div class='" + classOffset + "'>")
+                    foreach (var player in position.Value)
+                    {
+                        <div class="text-center cell">
+                            @Html.Partial("_PlayerGameweekResult", player)
+                            <span class="price btn-primary">@player.RoundScore</span>
+                        </div>
+                    }
+
+                    @Html.Raw("</div>")
+                }
+            }
+        </div>

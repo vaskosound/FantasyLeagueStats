@@ -86,5 +86,14 @@ namespace FantasyStats.Data
                 return this.GetRepository<PlayersGame>();
             }
         }
+
+
+        public IRepository<PlayersGamesGameweek> PlayersGamesGameweeks
+        {
+            get 
+            {
+                return this.GetRepository<PlayersGamesGameweek>();
+            }
+        }
     }
 }

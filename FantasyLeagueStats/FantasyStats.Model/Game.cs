@@ -38,6 +38,8 @@ namespace FantasyStats.Model
 
         public GameState GameState { get; set; }
 
+        public int StartedGameweek{ get; set; }
+
         public Game()
         {
             this.FirstUserBudget = 100;

@@ -204,6 +204,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GameModels\GameBasicViewModel.cs" />
     <Compile Include="Models\GameCreateModel.cs" />
+    <Compile Include="Models\GameModels\GameResultsViewModel.cs" />
     <Compile Include="Models\GameweekModel.cs" />
     <Compile Include="Data\Knapsack.cs" />
     <Compile Include="Models\GameModels\TransferViewModel.cs" />
@@ -545,6 +546,8 @@
     <Content Include="Views\Shared\EditorTemplates\PlayerGameViewModel.cshtml" />
     <Content Include="Views\Shared\_ConfirmStartingTeam.cshtml" />
     <Content Include="Views\GameInfo\OpponentTeam.cshtml" />
+    <Content Include="Views\GameInfo\GameweekResult.cshtml" />
+    <Content Include="Views\Shared\_PlayerGameweekResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

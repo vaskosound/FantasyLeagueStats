@@ -13,12 +13,7 @@ namespace FantasyStatsApp.Controllers
     {
         public ActionResult Index()
         {
-            DateTime currentDate = DateTime.Now;
-            var currentGameweek = this.Data.Gameweeks.All()
-                .FirstOrDefault(g => g.StartDate <= currentDate && currentDate <= g.EndDate);
-
-            var currentMatches = this.Data.Matches.All().Where(m => m.Gameweek.Id == currentGameweek.Id)
-                .Select(MatchViewModel.FromMatches);
+            var currentMatches = PopulateCurrentMatches();
 
             return View(currentMatches);
         }

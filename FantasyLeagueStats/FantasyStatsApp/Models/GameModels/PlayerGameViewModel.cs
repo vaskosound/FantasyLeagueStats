@@ -20,6 +20,18 @@ namespace FantasyStatsApp.Models.GameModels
                IsStarting = player.IsStarting,
                RoundScore = player.Player.RoundScore,
            };
+
+        public static Expression<Func<PlayersGamesGameweek, PlayerGameViewModel>> FromPlayersGameweek =
+           player => new PlayerGameViewModel()
+           {
+               Id = player.PlayersGame.PlayerId,
+               Name = player.PlayersGame.Player.Name,
+               Team = player.PlayersGame.Player.Team.Initials,
+               Price = player.PlayersGame.Player.Price,
+               Position = player.PlayersGame.Player.Position,
+               IsStarting = player.IsStarting,
+               RoundScore = player.Points,
+           };
         public int Id { get; set; }
 
         public string Name { get; set; }

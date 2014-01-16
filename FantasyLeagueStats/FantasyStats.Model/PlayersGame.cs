@@ -19,6 +19,7 @@ namespace FantasyStats.Model
         [Required]
         public GamePlayer GamePlayer { get; set; }
 
+        [Required]
         public bool IsStarting { get; set; }
 
         public virtual Player Player { get; set; }
