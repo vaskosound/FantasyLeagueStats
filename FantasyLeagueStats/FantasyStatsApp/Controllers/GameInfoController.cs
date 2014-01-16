@@ -37,7 +37,13 @@ namespace FantasyStatsApp.Controllers
         }
 
         public ActionResult PickTeam(int id)
-        {
+        {            
+            myTeam = PopulateMyPlayers(id);
+            if (myTeam == null || myTeam.Values.Sum(p => p.Count) < 15)
+            {
+                return RedirectToAction("Transfers", new { id = id });
+            }
+
             var game = this.Data.Games.GetById(id);
             var playersInGame = this.Data.PlayersGames.All().Where(p => p.GameId == game.Id).ToList();
 
@@ -62,12 +68,6 @@ namespace FantasyStatsApp.Controllers
             }
 
             this.Data.SaveChanges();
-
-            myTeam = PopulateMyPlayers(id);
-            if (myTeam == null || myTeam.Values.Sum(p => p.Count) < 15)
-            {
-                return RedirectToAction("Transfers", new { id = id });
-            }
 
             ViewData["Fixtures"] = PopulateCurrentMatches();
             pickTeamPlayers = GetStartingPlayers(myTeam);
