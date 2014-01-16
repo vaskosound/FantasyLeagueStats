@@ -111,7 +111,7 @@ namespace FantasyStatsApp.Data
             for (int i = 1; i < fixtures.Count; i += 4)
             {
                 int index = fixtures[i].LastIndexOf(' ');
-                string dateAsString = fixtures[i].Substring(0, index) + " " + DateTime.Now.Year;
+                string dateAsString = fixtures[i].Substring(0, index) + " " + 2013;
                 DateTime matchDate = DateTime.ParseExact(dateAsString, "dd MMM yyyy", CultureInfo.InvariantCulture);
                 matchDate = matchDate < startDate ? matchDate.AddYears(1) : matchDate;
                 string host = ConvertTeamName(fixtures[i + 1]);

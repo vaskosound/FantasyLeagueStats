@@ -21,7 +21,7 @@ namespace FantasyStats.Model
 
         public DateTime EndDate { get; set; }
 
-        public DateTime Deadline { get; set; }
+        public DateTime? Deadline { get; set; }
 
         public Gameweek()
         {

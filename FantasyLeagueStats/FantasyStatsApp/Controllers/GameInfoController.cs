@@ -37,7 +37,8 @@ namespace FantasyStatsApp.Controllers
         }
 
         public ActionResult PickTeam(int id)
-        {            
+        {
+            currentGameweekId = this.Data.Gameweeks.All().FirstOrDefault(g => DateTime.Now <= g.Deadline).Id;
             myTeam = PopulateMyPlayers(id);
             if (myTeam == null || myTeam.Values.Sum(p => p.Count) < 15)
             {
@@ -46,8 +47,7 @@ namespace FantasyStatsApp.Controllers
 
             var game = this.Data.Games.GetById(id);
             var playersInGame = this.Data.PlayersGames.All().Where(p => p.GameId == game.Id).ToList();
-
-            currentGameweekId = this.Data.Gameweeks.All().FirstOrDefault(g => DateTime.Now <= g.Deadline).Id;
+                        
             var gamePlayersInGameweek = this.Data.PlayersGamesGameweeks.All()
                 .Where(g => g.GameweekId == currentGameweekId && g.PlayersGame.GameId == game.Id)
                     .Select(x => x.PlayersGame).ToList();
