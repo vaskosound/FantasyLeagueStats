@@ -1,12 +1,13 @@
-﻿@model FantasyStatsApp.Models.GameModels.PlayerGameViewModel
+﻿@using FantasyStatsApp.Data
+@model FantasyStatsApp.Models.GameModels.PlayerGameViewModel
 <div class="col-lg-2 text-center cell" id="@Model.Id">
     @if (Model != null && Model.Name != null)
-{
-    string src = "/Images/" + @Model.Team + ".png";
-    <img src=@src class="kit" alt=@Model.Team title=@Model.Team />
-        <span class="name">@Model.Name</span>
-        <span class="price">&pound;@Model.Price</span>
-            @Ajax.ActionLink("Sell", "RemovePlayer", new { playerId = Model.Id }, new AjaxOptions()
+    {
+        string src = "/Images/" + @Model.Team + ".png";
+        <span></span>
+        @Ajax.RawActionLink(string.Format("<img src={0} class='kit' alt={1} title={1} />" +
+        "<span class='name'>{2}</span><span class='price'>&pound;{3}</span>", src, Model.Team, Model.Name, Model.Price),
+        "RemovePlayer", "GameInfo", new { playerId = Model.Id }, new AjaxOptions()
        {
            HttpMethod = "POST",
            InsertionMode = InsertionMode.Replace,

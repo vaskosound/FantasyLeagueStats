@@ -24,13 +24,14 @@ namespace FantasyStatsApp.Models.GameModels
         public static Expression<Func<PlayersGamesGameweek, PlayerGameViewModel>> FromPlayersGameweek =
            player => new PlayerGameViewModel()
            {
-               Id = player.PlayersGame.PlayerId,
-               Name = player.PlayersGame.Player.Name,
-               Team = player.PlayersGame.Player.Team.Initials,
-               Price = player.PlayersGame.Player.Price,
-               Position = player.PlayersGame.Player.Position,
+               Id = player.PlayerId,
+               Name = player.Player.Name,
+               Team = player.Player.Team.Initials,
+               Price = player.Player.Price,
+               Position = player.Player.Position,
                IsStarting = player.IsStarting,
                RoundScore = player.Points,
+               AgainstTeamInGameweek = player.TeamAgainst
            };
         public int Id { get; set; }
 
@@ -48,9 +49,6 @@ namespace FantasyStatsApp.Models.GameModels
 
         public bool IsStarting { get; set; }
 
-        public PlayerGameViewModel()
-        { 
-            
-        }
+        public string AgainstTeamInGameweek { get; set; }
     }
 }

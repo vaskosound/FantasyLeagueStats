@@ -16,7 +16,7 @@
                     "# if(data.HostScore != null ){ # #: HostScore # - #: VisitorScore # # }" +
                     "else{ # v # } #").Title("Result");
                 col.Bound(m => m.Visitor).EditorTemplateName("EditorTeam");
-                col.Bound(m => m.MatchDate).Title("Match Date").Format("{0:dd MMM yyyy}").EditorTemplateName("EditorMatchDate");
+                col.Bound(m => m.MatchDate).Title("Match Date").Format("{0:dd MMM yyyy HH:mm}").EditorTemplateName("EditorMatchDate");
                 col.Command(com =>
                             {
                                 com.Edit();

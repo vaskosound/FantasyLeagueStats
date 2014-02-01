@@ -4,6 +4,7 @@
     string currentGameweek = Model.First().Gameweek.ToUpper();
     string[] gameweekSplit = currentGameweek.Split(' ');
     int gameweekId = int.Parse(gameweekSplit[1]);
+    var matchDay = Model.First().MatchDate.Day;
 }
 
 <colgroup>
@@ -16,11 +17,25 @@
         @currentGameweek
     </th>
 </tr>
+<tr>
+    <th colspan="3" style="text-align:left">
+        @Model.First().MatchDate.ToString("d MMM yyyy")
+    </th>
+</tr>
 @foreach (var match in Model)
 {
+    if (matchDay < match.MatchDate.Day)
+    {
+        matchDay = match.MatchDate.Day;
+        <tr>
+            <th colspan="3" style="text-align:left">
+                @match.MatchDate.ToString("d MMM yyyy")
+            </th>
+        </tr>
+    }
     <tr>
         <td>@match.Host</td>
-        <td>@(match.HostScore == null ? "v" : match.HostScore + " - " + match.VisitorScore)</td>
+        <td>@(match.HostScore == null ? match.MatchDate.ToString("HH:mm") : match.HostScore + " - " + match.VisitorScore)</td>
         <td>@match.Visitor</td>
     </tr>
 }
@@ -33,7 +48,7 @@
                     {
                         HttpMethod = "GET",
                         InsertionMode = InsertionMode.Replace,
-                        UpdateTargetId = "fixtures",
+                        UpdateTargetId = "current-fixtures",
                     },
                     new { @class = "text-left" })
         }
@@ -42,12 +57,12 @@
     <td id="next-fixtures">
         @if (@gameweekId < 38)
         {
-            @Ajax.ActionLink("Gameweek " + (@gameweekId + 1) + " >>", "ChangeGameweek", new { gameweek = @gameweekId + 1 },
+            @Ajax.ActionLink("Gameweek " + (@gameweekId + 1) + " >>", "ChangeGameweek", "Home", new { gameweek = @gameweekId + 1 },
                     new AjaxOptions()
                     {
                         HttpMethod = "GET",
                         InsertionMode = InsertionMode.Replace,
-                        UpdateTargetId = "fixtures",
+                        UpdateTargetId = "current-fixtures",
                     },
                     new { @class = "text-right" })
         }

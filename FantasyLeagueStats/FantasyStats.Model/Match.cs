@@ -25,6 +25,8 @@ namespace FantasyStats.Model
 
         public int? VistorScore { get; set; }
 
+        public int GameweekId { get; set; }
+
         public virtual Gameweek Gameweek { get; set; }
 
         public DateTime MatchDate { get; set; }

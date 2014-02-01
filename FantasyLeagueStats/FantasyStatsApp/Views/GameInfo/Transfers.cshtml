@@ -1,13 +1,14 @@
 ﻿@using FantasyStatsApp.Models.GameModels
-@model TransferViewModel
+@model PlayerGameViewModel[]
 @{
     ViewBag.Title = "Transfers";
 }
-
-@Html.Partial("_GameMenu")
+<div class="col-md-offset-1">
+    @Html.Partial("_GameMenu")
+</div>
 <h3 class="text-primary">@ViewBag.Title</h3>
 <div id="transfers" class="col-lg-6">
-    @Html.Partial("_TransferPitch", Model.Team)
+    @Html.Partial("_TransferPitch", Model)
 </div>
 <div id="players" class="col-lg-6">
     @(Html.Kendo().Grid<FantasyStatsApp.Models.PlayerBasicModel>()
@@ -27,7 +28,7 @@
     {
         data.Ajax()
         .ServerOperation(true)
-        .PageSize(10)
+        .PageSize(15)
         .Sort(sort => sort.Add(stat => stat.Points).Descending())
         .Model(m =>
         {
@@ -48,14 +49,20 @@
         };
     }
 
-    function error(e)
-    {
+    function errorAddPlayer(e) {
+        $("#error-add-player-message").html(e.statusText);
+    }
+
+    function successAddPlayer() {
+        $("#error-add-player-message").empty();
+    }
+
+    function error(e) {
         $("#error-message").html(e.statusText);
     }
 
-    function success()
-    {
-        $("#error-message").empty();
+    function success() {
+        $("#error-message").html("Тransfers are confirmed");
     }
 
 </script>

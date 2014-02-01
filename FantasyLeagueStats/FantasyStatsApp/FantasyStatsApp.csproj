@@ -198,6 +198,7 @@
     <Compile Include="Controllers\MoneyBallController.cs" />
     <Compile Include="Controllers\StatisticsController.cs" />
     <Compile Include="Data\DataJob.cs" />
+    <Compile Include="Data\HelperExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -207,7 +208,6 @@
     <Compile Include="Models\GameModels\GameResultsViewModel.cs" />
     <Compile Include="Models\GameweekModel.cs" />
     <Compile Include="Data\Knapsack.cs" />
-    <Compile Include="Models\GameModels\TransferViewModel.cs" />
     <Compile Include="Models\MatchViewModel.cs" />
     <Compile Include="Data\DataManager.cs" />
     <Compile Include="Models\PlayerBasicModel.cs">
@@ -548,6 +548,7 @@
     <Content Include="Views\GameInfo\OpponentTeam.cshtml" />
     <Content Include="Views\GameInfo\GameweekResult.cshtml" />
     <Content Include="Views\Shared\_PlayerGameweekResult.cshtml" />
+    <Content Include="Views\Shared\_ConfirmTransfers.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

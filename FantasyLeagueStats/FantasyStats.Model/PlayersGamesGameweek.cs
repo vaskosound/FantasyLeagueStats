@@ -10,19 +10,30 @@ namespace FantasyStats.Model
 {
     public class PlayersGamesGameweek
     {
-        [Key]
-        public int Id { get; set; }
-
+        [Key, ForeignKey("Gameweek")]
         public int GameweekId { get; set; }
+
+        public virtual Gameweek Gameweek { get; set; }
+        
+        [Key, ForeignKey("Player")]
+        public int PlayerId { get; set; }
+
+        [Key, ForeignKey("Game")]
+        public int GameId { get; set; }
+
+        [Required]
+        public GamePlayer GamePlayer { get; set; }
 
         [Required]
         public bool IsStarting { get; set; }
 
-        public virtual PlayersGame PlayersGame { get; set; }
+        public virtual Player Player { get; set; }
 
-        public virtual Gameweek Gameweek { get; set; }
+        public virtual Game Game { get; set; }
 
         public int Points { get; set; }
+
+        public string TeamAgainst { get; set; }
 
         public PlayersGamesGameweek()
         {

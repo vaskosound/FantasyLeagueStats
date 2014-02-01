@@ -14,7 +14,9 @@ namespace FantasyStatsApp.Models
           {
               Id = match.Id,
               Host = match.Host.Name,
+              HostInitials = match.Host.Initials,
               Visitor = match.Visitor.Name,
+              VisitorInitials = match.Visitor.Initials,
               HostScore = match.HostScore,
               VisitorScore = match.VistorScore,
               Gameweek = match.Gameweek.Name,
@@ -27,8 +29,12 @@ namespace FantasyStatsApp.Models
         [UIHint("EditorTeam")]
         public string Host { get; set; }
 
+        public string HostInitials { get; set; }
+
         [UIHint("EditorTeam")]
         public string Visitor { get; set; }
+
+        public string VisitorInitials { get; set; }
 
         public int? HostScore { get; set; }
 

@@ -4,7 +4,9 @@
 @{
     ViewBag.Title = "My Team";
 }
-@Html.Partial("_GameMenu")
+<div class="col-md-offset-1">
+    @Html.Partial("_GameMenu")
+</div>
 <h3 class="text-primary">@ViewBag.Title</h3>
 <div id="pick-team" class="col-lg-6">
     @Html.Partial("_PickTeamPitch", Model)

@@ -4,11 +4,18 @@
 @{
     ViewBag.Title = "Gameweek Results";
 }
-
-@Html.Partial("_GameMenu")
+<div class="col-md-offset-1">
+    @Html.Partial("_GameMenu")
+</div>
+@if (Model.FirstUserPlayers == null || Model.SecondUserPlayers == null)
+{
+    <h2 class="text-danger">The Game is not started yet</h2>
+    return;
+}
 <div class="col-lg-6">
-    <div id="budget" class="col-lg-offset-8 text-danger">
-        <strong>Total points: @ViewBag.FirstPlayerPoints</strong>
+    <h3 class="text-center text-warning">Total Points - @ViewBag.FirstPlayerPoints</h3>
+    <div id="budget" class="col-lg-offset-7 text-danger">
+        <strong>Gameweek Points: @ViewBag.FirstPlayerGWPoints</strong>
     </div>
     <div id="pitch">
         @foreach (var position in Model.FirstUserPlayers)
@@ -32,9 +39,28 @@
                 @Html.Raw("<div class='" + classOffset + "'>")
                 foreach (var player in position.Value)
                 {
+                    bool isStarting = false;
+                    foreach (var match in ViewBag.GameweekMatches)
+                    {
+                        if (match.HostInitials == player.Team || match.VisitorInitials == player.Team)
+                        {
+                            if (match.MatchDate < DateTime.Now)
+                            {
+                                isStarting = true;
+                            }
+                            break;
+                        }
+                    }
                     <div class="text-center cell">
                         @Html.Partial("_PlayerGameweekResult", player)
-                        <span class="price btn-primary">@player.RoundScore</span>
+                        @if (isStarting)
+                        {
+                            <span class="price btn-primary">@player.RoundScore</span>
+                        }
+                        else
+                        {
+                            <span class="price btn-primary">@player.AgainstTeamInGameweek</span>
+                        }
                     </div>
                 }
 
@@ -43,8 +69,9 @@
         }
     </div>
     <div class="col-lg-6">
-        <div id="budget" class="col-lg-offset-8 text-danger">
-            <strong>Total points: @ViewBag.SecondPlayerPoints</strong>
+        <h3 class="text-center text-warning">Total Points - @ViewBag.SecondPlayerPoints</h3>
+        <div id="budget" class="col-lg-offset-7 text-danger">
+            <strong>Gameweek Points: @ViewBag.SecondPlayerGWPoints</strong>
         </div>
         <div id="pitch">
             @foreach (var position in Model.SecondUserPlayers)

@@ -166,9 +166,9 @@ namespace FantasyStatsApp.Controllers
             }
             else
             {
-                DateTime currentDate = DateTime.Now;
-                var remainingGameweeks = gameweeks.Where(g => g.StartDate >= currentDate);
-                foreach (var gameweek in remainingGameweeks)
+                //DateTime currentDate = DateTime.Now;
+                //var remainingGameweeks = gameweeks.Where(g => g.StartDate >= currentDate);
+                foreach (var gameweek in gameweeks)
                 {
                     List<string> fixtures = this.Statistics.GetGameweek(gameweek.Id);
                     this.DataManager.UpdateFixtures(fixtures);

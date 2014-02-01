@@ -110,9 +110,9 @@ namespace FantasyStatsApp.Data
             var context = new FantasyStatsDbContext();
             for (int i = 1; i < fixtures.Count; i += 4)
             {
-                int index = fixtures[i].LastIndexOf(' ');
-                string dateAsString = fixtures[i].Substring(0, index) + " " + 2013;
-                DateTime matchDate = DateTime.ParseExact(dateAsString, "dd MMM yyyy", CultureInfo.InvariantCulture);
+                string[] dateParts = fixtures[i].Split(' ');
+                string dateAsString = string.Format("{0} {1} 2013 {2}", dateParts[0], dateParts[1], dateParts[2]);
+                DateTime matchDate = DateTime.ParseExact(dateAsString, "dd MMM yyyy HH:mm", CultureInfo.InvariantCulture);
                 matchDate = matchDate < startDate ? matchDate.AddYears(1) : matchDate;
                 string host = ConvertTeamName(fixtures[i + 1]);
                 string visitor = ConvertTeamName(fixtures[i + 3]);
@@ -228,6 +228,7 @@ namespace FantasyStatsApp.Data
             {
                 matchExists.HostScore = matchModel.HostScore;
                 matchExists.VistorScore = matchModel.VisitorScore;
+                matchExists.MatchDate = matchModel.MatchDate;
             }
         }
 

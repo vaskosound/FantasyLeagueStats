@@ -1,17 +1,17 @@
-﻿@model List<FantasyStatsApp.Models.GameModels.PlayerGameViewModel>
+﻿@model FantasyStatsApp.Models.GameModels.PlayerGameViewModel[]
 
-@using (Ajax.BeginForm("StartingTeam", "GameInfo", new AjaxOptions()
+@using (Ajax.BeginForm("ConfirmTransfers", "GameInfo", new AjaxOptions()
 {
     HttpMethod = "POST",
     InsertionMode = InsertionMode.Replace,
-    UpdateTargetId = "pick-team",
+    UpdateTargetId = "transfers",
     OnFailure = "error",
     OnSuccess = "success"
 }))
 {
     @Html.EditorFor(model => model)
     <div class="form-actions no-color">
-        <input type="submit" value="Confirm Team" class="btn btn-success" />
+        <input type="submit" value="Confirm Transfers" class="btn btn-success" />
     </div>
 }
 

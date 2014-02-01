@@ -4,10 +4,11 @@
 @{
     ViewBag.Title = "Opponent Team";
 }
-
-@Html.Partial("_GameMenu")
-<h3 class="text-primary">@ViewBag.Title</h3>
+<div class="col-md-offset-1">
+    @Html.Partial("_GameMenu")
+</div>
 <div class="col-lg-6">
+    <h3 class="text-primary text-center">@ViewBag.OpponentUserName Team</h3>
     <div id="budget" class="col-lg-offset-8 text-danger">
         <strong>Budget: &pound;@ViewBag.Budget</strong>
     </div>
@@ -20,7 +21,7 @@
                 foreach (var player in position.Value)
                 {
                     <div class="text-center cell">
-                        @Html.Partial("_PickTeamPlayer", player)                       
+                        @Html.Partial("_PickTeamPlayer", player)
                     </div>
                 }
                 @Html.Raw("</div>")
@@ -40,7 +41,7 @@
                 foreach (var player in position.Value)
                 {
                     <div class="text-center cell">
-                        @Html.Partial("_PickTeamPlayer", player)                     
+                        @Html.Partial("_PickTeamPlayer", player)
                     </div>
                 }
 
@@ -53,5 +54,8 @@
             @Html.Partial("_Fixtures", ViewData["Fixtures"])
         </table>
     </div>
-<div class="clearfix"></div>
+    <div class="clearfix"></div>
 
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

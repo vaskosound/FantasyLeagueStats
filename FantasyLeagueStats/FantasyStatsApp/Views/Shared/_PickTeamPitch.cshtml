@@ -17,7 +17,7 @@
                             HttpMethod = "POST",
                             InsertionMode = InsertionMode.Replace,
                             UpdateTargetId = "pick-team"
-                        }, new { @class = "text-danger" })
+                        }, new { @class = "text-danger" })                    
                 </div>
             }
             @Html.Raw("</div>")
@@ -54,6 +54,7 @@
         List<PlayerGameViewModel> players = Model.Values.SelectMany(x => x).ToList();
     }
     <div class="clearfix"></div>
+    <br />
     <div id="confirm-form">
         @Html.Partial("_ConfirmStartingTeam", players)
     </div>
