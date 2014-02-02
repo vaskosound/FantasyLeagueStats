@@ -267,6 +267,10 @@ namespace FantasyStatsApp.Controllers
 
 
             ViewBag.Budget = budget;
+            if (!myTeam.ContainsKey((int)newPlayer.Position))
+            {
+                myTeam.Add((int)newPlayer.Position, new List<PlayerGameViewModel>());
+            }
 
             myTeam[(int)newPlayer.Position].Add(newPlayer);
             myPlayers = MyPlayersInArray(myTeam);

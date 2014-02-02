@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<FantasyStatsApp.Models.MatchViewModel>
 
 @{
+    if (Model == null)
+    {
+        return;
+    }
     string currentGameweek = Model.First().Gameweek.ToUpper();
     string[] gameweekSplit = currentGameweek.Split(' ');
     int gameweekId = int.Parse(gameweekSplit[1]);
