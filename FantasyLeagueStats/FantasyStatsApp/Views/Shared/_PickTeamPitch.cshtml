@@ -1,4 +1,5 @@
-﻿@using FantasyStats.Model
+﻿@using FantasyStatsApp.Data
+@using FantasyStats.Model
 @using FantasyStatsApp.Models.GameModels
 @model SortedDictionary<int, List<PlayerGameViewModel>>
 
@@ -11,8 +12,8 @@
             foreach (var player in position.Value)
             {
                 <div class="text-center cell">
-                    @Html.Partial("_PickTeamPlayer", player)
-                    @Ajax.ActionLink("In", "InPlayer", new { playerId = player.Id }, new AjaxOptions()
+                    @Ajax.RawActionLink(Html.Partial("_PickTeamPlayer", player).ToString(), "InPlayer", "GameInfo",
+                    new { playerId = player.Id }, new AjaxOptions()
                         {
                             HttpMethod = "POST",
                             InsertionMode = InsertionMode.Replace,
@@ -37,8 +38,8 @@
             foreach (var player in position.Value)
             {
                 <div class="text-center cell">
-                    @Html.Partial("_PickTeamPlayer", player)
-                    @Ajax.ActionLink("Out", "OutPlayer", new { playerId = player.Id }, new AjaxOptions()
+                    @Ajax.RawActionLink(Html.Partial("_PickTeamPlayer", player).ToString(),
+                    "OutPlayer", "GameInfo", new { playerId = player.Id }, new AjaxOptions()
                        {
                            HttpMethod = "POST",
                            InsertionMode = InsertionMode.Replace,
