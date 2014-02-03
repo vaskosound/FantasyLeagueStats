@@ -47,29 +47,34 @@ namespace FantasyStatsApp.Controllers
             }
 
             var game = this.Data.Games.GetById(id);
-            var playersInGame = this.Data.PlayersGames.All().Where(p => p.GameId == game.Id).ToList();
+            var playersInGame = this.Data.PlayersGames.All().Where(p => p.GameId == game.Id);
 
-            var gamePlayersInGameweek = this.Data.PlayersGamesGameweeks.All()
-                .Where(g => g.GameweekId == currentGameweekId && g.GameId == game.Id).ToList();
+            var playersInGameId = playersInGame.Select(x => x.PlayerId).ToList();
 
-            //gamePlayersInGameweek.RemoveAll(p => !playersInGame.Contains(p));
-            //foreach (var playerInGame in playersInGame)
-            //{              
-            //    if (!gamePlayersInGameweek.Contains(playerInGame))
-            //    {
-            //        string aginstTeam = GetTeamAgainstInGameweek(playerInGame);
+            var gamePlayersInGameweekId = this.Data.PlayersGamesGameweeks.All()
+                .Where(g => g.GameweekId == currentGameweekId && g.GameId == game.Id)
+                    .Select(x => x.PlayerId).ToList();
 
-            //        PlayersGamesGameweek newPlayerInGameweek = new PlayersGamesGameweek()
-            //        {
-            //            GameweekId = currentGameweekId.Value,
-            //            PlayersGame = playerInGame,
-            //            IsStarting = playerInGame.IsStarting,
-            //            TeamAgainst = aginstTeam
-            //        };
+            this.Data.PlayersGamesGameweeks.DeleteRange(p => !playersInGameId.Contains(p.PlayerId));
+            foreach (var playerInGame in playersInGame)
+            {
+                if (!gamePlayersInGameweekId.Contains(playerInGame.PlayerId))
+                {                    
+                    string aginstTeam = GetTeamAgainstInGameweek(playerInGame.Player);
 
-            //        this.Data.PlayersGamesGameweeks.Add(newPlayerInGameweek);
-            //    }
-            //}
+                    PlayersGamesGameweek newPlayerInGameweek = new PlayersGamesGameweek()
+                    {
+                        GameweekId = currentGameweekId.Value,
+                        PlayerId = playerInGame.PlayerId,
+                        IsStarting = playerInGame.IsStarting,
+                        GameId = game.Id,
+                        GamePlayer = playerInGame.GamePlayer,
+                        TeamAgainst = aginstTeam
+                    };
+
+                    this.Data.PlayersGamesGameweeks.Add(newPlayerInGameweek);
+                }
+            }
 
             this.Data.SaveChanges();
 
@@ -458,7 +463,8 @@ namespace FantasyStatsApp.Controllers
         {
             var game = this.Data.Games.GetById(id);
             currentGameweekId = this.Data.Gameweeks.All()
-                .FirstOrDefault(g => g.StartDate <= DateTime.Now && DateTime.Now <= g.Deadline).Id;
+                .FirstOrDefault(g => g.StartDate <= DateTime.Now && 
+                    DateTime.Now <= g.Deadline).Id;
             int previousGameweekId = currentGameweekId.Value - 1;
             if (currentGameweekId == 1)
             {
@@ -509,16 +515,7 @@ namespace FantasyStatsApp.Controllers
             game.SecondUserPoints -= game.SecondUserGWPoints;
             game.SecondUserGWPoints = CalculateTotalPoints(secondUserPlayersList);
             game.SecondUserPoints += game.SecondUserGWPoints;
-            //var firstUserPlayersInGameweeks = this.Data.PlayersGamesGameweeks.All()
-            //    .Where(g => g.PlayersGame.GameId == game.Id && g.IsStarting &&
-            //        g.PlayersGame.GamePlayer == GamePlayer.FirstPlayer)
-            //        .Select(PlayerGameViewModel.FromPlayersGameweek).ToList();
-            //var secondUserPlayersInGameweeks = this.Data.PlayersGamesGameweeks.All()
-            //    .Where(g => g.PlayersGame.GameId == game.Id && g.IsStarting &&
-            //        g.PlayersGame.GamePlayer == GamePlayer.SecondPlayer)
-            //            .Select(PlayerGameViewModel.FromPlayersGameweek).ToList();
-            //game.FirstUserPoints = CalculateTotalPoints(firstUserPlayersInGameweeks);
-            //game.SecondUserPoints = CalculateTotalPoints(secondUserPlayersInGameweeks);
+            
             this.Data.SaveChanges();
             ViewBag.FirstPlayerPoints = game.FirstUserPoints;
             ViewBag.SecondPlayerPoints = game.SecondUserPoints;
@@ -529,7 +526,8 @@ namespace FantasyStatsApp.Controllers
             results.FirstUserPlayers = firstUserStartingPlayers;
             results.SecondUserPlayers = secondUserStartingPlayers;
             ViewBag.GameweekMatches = this.Data.Matches.All()
-                .Where(m => m.GameweekId == previousGameweekId).Select(MatchViewModel.FromMatches).ToList();
+                .Where(m => m.GameweekId == previousGameweekId)
+                .Select(MatchViewModel.FromMatches).ToList();
 
             return View(results);
         }
