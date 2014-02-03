@@ -13,7 +13,8 @@ namespace FantasyStatsApp.Data
         private const string INJURED_ICON = "infowarn.png";
         private const string МAN_UNITED = "Man Utd";
         private const string МAN_CITY = "Man City";
-        private static DateTime startDate = new DateTime(2013, 7, 15);
+        private static DateTime startSeason = new DateTime(2013, 7, 15);
+        private static DateTime startDate;
 
         public void UpdateBasicData(List<string> stats)
         {
@@ -108,6 +109,7 @@ namespace FantasyStatsApp.Data
         public void UpdateFixtures(List<string> fixtures)
         {
             var context = new FantasyStatsDbContext();
+            startDate = startSeason;
             for (int i = 1; i < fixtures.Count; i += 4)
             {
                 string[] dateParts = fixtures[i].Split(' ');
@@ -140,6 +142,7 @@ namespace FantasyStatsApp.Data
         public void UpdateDeadlines(List<string> deadlines)
         {
             var context = new FantasyStatsDbContext();
+            startDate = startSeason;
             for (int i = 0; i < deadlines.Count; i += 2)
             {
                 int gamewekIndex = deadlines[i].LastIndexOf(' ');
