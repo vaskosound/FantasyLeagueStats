@@ -414,7 +414,7 @@
     <Content Include="Content\Kendo\Themes\Uniform\sprite.png" />
     <Content Include="Content\Kendo\Themes\Uniform\sprite_2x.png" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Data\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Images\ARS.png" />
@@ -554,9 +554,9 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Data\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Data\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Data\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
   </ItemGroup>

@@ -157,6 +157,12 @@ namespace FantasyStatsApp.Data
                     {
                        gameweek.Deadline = deadline.AddYears(1);
                     }
+
+                    var nextGameweek = context.Gameweeks.Find(gameweekNumber + 1);
+                    if (nextGameweek != null)
+                    {
+                        nextGameweek.StartDate = gameweek.Deadline.Value;
+                    }
                 }
             }
 

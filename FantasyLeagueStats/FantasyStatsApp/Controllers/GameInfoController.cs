@@ -458,7 +458,7 @@ namespace FantasyStatsApp.Controllers
         {
             var game = this.Data.Games.GetById(id);
             currentGameweekId = this.Data.Gameweeks.All()
-                .FirstOrDefault(g => DateTime.Now <= g.Deadline).Id;
+                .FirstOrDefault(g => g.StartDate <= DateTime.Now && DateTime.Now <= g.Deadline).Id;
             int previousGameweekId = currentGameweekId.Value - 1;
             if (currentGameweekId == 1)
             {
