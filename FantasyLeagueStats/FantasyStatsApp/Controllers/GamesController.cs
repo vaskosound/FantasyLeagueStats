@@ -11,6 +11,7 @@ using FantasyStats.Model;
 
 namespace FantasyStatsApp.Controllers
 {
+    [Authorize]
     public class GamesController : BaseController
     {
         //

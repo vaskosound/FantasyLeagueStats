@@ -12,6 +12,7 @@ using System.Net;
 
 namespace FantasyStatsApp.Controllers
 {
+    [Authorize]
     public class GameInfoController : BaseController
     {
         private static Dictionary<int, List<PlayerGameViewModel>> myTeam;
@@ -39,7 +40,8 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult PickTeam(int id)
         {
-            currentGameweekId = this.Data.Gameweeks.All().FirstOrDefault(g => DateTime.Now <= g.Deadline).Id;
+            currentGameweekId = this.Data.Gameweeks.All()
+                .FirstOrDefault(g => DateTime.Now <= g.Deadline).Id;
             myTeam = PopulateMyPlayers(id);
             if (myTeam == null || myTeam.Values.Sum(p => p.Count) < 15)
             {
@@ -59,7 +61,7 @@ namespace FantasyStatsApp.Controllers
             foreach (var playerInGame in playersInGame)
             {
                 if (!gamePlayersInGameweekId.Contains(playerInGame.PlayerId))
-                {                    
+                {
                     string aginstTeam = GetTeamAgainstInGameweek(playerInGame.Player);
 
                     PlayersGamesGameweek newPlayerInGameweek = new PlayersGamesGameweek()
@@ -214,7 +216,8 @@ namespace FantasyStatsApp.Controllers
 
         public JsonResult GetPlayers(int id, int? teams)
         {
-            var gamePlayers = this.Data.PlayersGames.All().Where(x => x.GameId == id).Select(p => p.Player);
+            var gamePlayers = this.Data.PlayersGames.All()
+                .Where(x => x.GameId == id).Select(p => p.Player);
 
             var players = this.Data.Players.All().Where(x => !gamePlayers.Contains(x));
 
@@ -352,14 +355,21 @@ namespace FantasyStatsApp.Controllers
                 .Where(p => !playersModelId.Contains(p.PlayerId));
             this.Data.PlayersGamesGameweeks.DeleteRange(g => gamePlayersInGameweekToRemove.Contains(g));
 
-            this.Data.SaveChanges();
-
             foreach (var player in myPlayersToConfirm)
             {
                 var playerFromModel = playersModel.FirstOrDefault(p => p.Id == player.Id);
 
                 if (!myPlayersInGame.Contains(player))
-                {                    
+                {
+                    var playerExists = this.Data.PlayersGames.All().Where(g => g.GameId == game.Id)
+                        .FirstOrDefault(p => p.PlayerId == player.Id);
+                    if (playerExists != null)
+                    {
+                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        Response.StatusDescription = string.Format("Your opponent already bought {0}", player.Name);
+                        return PartialView("_TransferPitch", playersModel);
+                    }
+
                     var playerInGame = new PlayersGame()
                     {
                         GameId = id,
@@ -420,7 +430,7 @@ namespace FantasyStatsApp.Controllers
             int myPlayersCount = 0;
             foreach (var cell in playersModel)
             {
-                if (cell != null)
+                if (cell.Name != null)
                 {
                     myPlayersCount++;
                 }
@@ -454,6 +464,12 @@ namespace FantasyStatsApp.Controllers
             var opponentPlayers = this.Data.PlayersGames.All().Where(p => p.GameId == id &&
                  p.GamePlayer == gamePlayer).Select(PlayerGameViewModel.FromPlayersGame).ToList();
 
+            foreach (var opponentPlayer in opponentPlayers)
+            {
+                Player player = this.Data.Players.GetById(opponentPlayer.Id);
+                opponentPlayer.AgainstTeamInGameweek = GetTeamAgainstInGameweek(player);
+            }
+
             Dictionary<int, List<PlayerGameViewModel>> players = PlayersInDictionary(opponentPlayers);
 
             return View(GetStartingPlayers(players));
@@ -463,7 +479,7 @@ namespace FantasyStatsApp.Controllers
         {
             var game = this.Data.Games.GetById(id);
             currentGameweekId = this.Data.Gameweeks.All()
-                .FirstOrDefault(g => g.StartDate <= DateTime.Now && 
+                .FirstOrDefault(g => g.StartDate <= DateTime.Now &&
                     DateTime.Now <= g.Deadline).Id;
             int previousGameweekId = currentGameweekId.Value - 1;
             if (currentGameweekId == 1)
@@ -515,7 +531,7 @@ namespace FantasyStatsApp.Controllers
             game.SecondUserPoints -= game.SecondUserGWPoints;
             game.SecondUserGWPoints = CalculateTotalPoints(secondUserPlayersList);
             game.SecondUserPoints += game.SecondUserGWPoints;
-            
+
             this.Data.SaveChanges();
             ViewBag.FirstPlayerPoints = game.FirstUserPoints;
             ViewBag.SecondPlayerPoints = game.SecondUserPoints;

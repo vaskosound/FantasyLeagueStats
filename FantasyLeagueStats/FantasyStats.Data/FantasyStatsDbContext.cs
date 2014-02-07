@@ -30,9 +30,9 @@ namespace FantasyStats.Data
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<PlayersGame>().HasKey(x => new { x.GameId, x.PlayerId, x.GamePlayer });
+            modelBuilder.Entity<PlayersGame>().HasKey(x => new { x.GameId, x.PlayerId });
             modelBuilder.Entity<PlayersGamesGameweek>().HasKey(x => 
-                new {x.GameweekId, x.GameId, x.PlayerId, x.GamePlayer });
+                new {x.GameweekId, x.GameId, x.PlayerId });
         }
     }
 }
