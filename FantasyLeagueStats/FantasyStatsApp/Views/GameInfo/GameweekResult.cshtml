@@ -17,91 +17,12 @@
     <div id="budget" class="col-lg-offset-7 text-danger">
         <strong>Gameweek Points: @ViewBag.FirstPlayerGWPoints</strong>
     </div>
-    <div id="pitch">
-        @foreach (var position in Model.FirstUserPlayers)
-        {
-            if ((int)position.Key == 5)
-            {
-                @Html.Raw("</div><h4 class='text-primary'>Subsitutions</h4><div id=subs>")
-                foreach (var player in position.Value)
-                {
-                    <div class="text-center cell">
-                        @Html.Partial("_PlayerGameweekResult", player)
-                    </div>
-                }
-                @Html.Raw("</div>")
-            }
-            else
-            {
-                int playersCount = position.Value.Count;
-                int offset = 6 - playersCount;
-                string classOffset = "row col-lg-offset-" + offset;
-                @Html.Raw("<div class='" + classOffset + "'>")
-                foreach (var player in position.Value)
-                {
-                    bool isStarting = false;
-                    foreach (var match in ViewBag.GameweekMatches)
-                    {
-                        if (match.HostInitials == player.Team || match.VisitorInitials == player.Team)
-                        {
-                            if (match.MatchDate < DateTime.Now)
-                            {
-                                isStarting = true;
-                            }
-                            break;
-                        }
-                    }
-                    <div class="text-center cell">
-                        @Html.Partial("_PlayerGameweekResult", player)
-                        @if (isStarting)
-                        {
-                            <span class="price btn-primary">@player.RoundScore</span>
-                        }
-                        else
-                        {
-                            <span class="price btn-primary">@player.AgainstTeamInGameweek</span>
-                        }
-                    </div>
-                }
-
-                @Html.Raw("</div>")
-            }
-        }
+    @Html.Partial("_TeamResults", Model.FirstUserPlayers)
+</div>
+<div class="col-lg-6">
+    <h3 class="text-center text-warning">Total Points - @ViewBag.SecondPlayerPoints</h3>
+    <div id="budget" class="col-lg-offset-7 text-danger">
+        <strong>Gameweek Points: @ViewBag.SecondPlayerGWPoints</strong>
     </div>
-    <div class="col-lg-6">
-        <h3 class="text-center text-warning">Total Points - @ViewBag.SecondPlayerPoints</h3>
-        <div id="budget" class="col-lg-offset-7 text-danger">
-            <strong>Gameweek Points: @ViewBag.SecondPlayerGWPoints</strong>
-        </div>
-        <div id="pitch">
-            @foreach (var position in Model.SecondUserPlayers)
-            {
-                if ((int)position.Key == 5)
-                {
-                    @Html.Raw("</div><h4 class='text-primary'>Subsitutions</h4><div id=subs>")
-                    foreach (var player in position.Value)
-                    {
-                        <div class="text-center cell">
-                            @Html.Partial("_PlayerGameweekResult", player)
-                        </div>
-                    }
-                    @Html.Raw("</div>")
-                }
-                else
-                {
-                    int playersCount = position.Value.Count;
-                    int offset = 6 - playersCount;
-                    string classOffset = "row col-lg-offset-" + offset;
-                    @Html.Raw("<div class='" + classOffset + "'>")
-                    foreach (var player in position.Value)
-                    {
-                        <div class="text-center cell">
-                            @Html.Partial("_PlayerGameweekResult", player)
-                            <span class="price btn-primary">@player.RoundScore</span>
-                        </div>
-                    }
-
-                    @Html.Raw("</div>")
-                }
-            }
-        </div>
+    @Html.Partial("_TeamResults", Model.SecondUserPlayers)
+</div>

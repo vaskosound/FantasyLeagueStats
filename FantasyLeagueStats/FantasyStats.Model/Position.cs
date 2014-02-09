@@ -8,7 +8,6 @@ namespace FantasyStats.Model
         GKP,
         DEF,
         MID,
-        FWD,
-        SUB
+        FWD
     }
 }

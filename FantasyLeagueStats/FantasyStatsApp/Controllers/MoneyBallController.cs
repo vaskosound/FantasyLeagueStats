@@ -25,6 +25,7 @@ namespace FantasyStatsApp.Controllers
                     Weight = x.Price,
                     Position = x.Position,
                     Team = x.Team.Initials,
+                    ClubName = x.Team.Name,
                     IsInjured = x.IsInjured
                 }).ToArray();
 
@@ -51,6 +52,7 @@ namespace FantasyStatsApp.Controllers
                     Weight = x.Price,
                     Position = x.Position,
                     Team = x.Team.Initials,
+                    ClubName = x.Team.Name,
                     IsInjured = x.IsInjured
                 }).ToArray();
 
@@ -77,6 +79,7 @@ namespace FantasyStatsApp.Controllers
                     Weight = x.Price,
                     Position = x.Position,
                     Team = x.Team.Initials,
+                    ClubName = x.Team.Name,
                     IsInjured = x.IsInjured
                 }).ToArray();
 
@@ -103,6 +106,7 @@ namespace FantasyStatsApp.Controllers
                     Weight = x.Price,
                     Position = x.Position,
                     Team = x.Team.Initials,
+                    ClubName = x.Team.Name,
                     IsInjured = x.IsInjured
                 }).ToArray();
 
@@ -113,20 +117,20 @@ namespace FantasyStatsApp.Controllers
             return PartialView("_ValuableTeam", bestTeam);
         }
 
-        private void GetOpponentsTeamsRatio()
-        {
-            var players = this.Data.Players.All().Select(PlayerBasicModel.FromPlayersStats).ToList();
-            DateTime currentDate = DateTime.Now;
-            foreach (var player in players)
-            {
-                var playerMatches = this.Data.Matches.All().Where(m => (m.MatchDate > currentDate) &&
-                    (m.Visitor.Initials == player.Team || m.Host.Initials == player.Team)).Take(3);
+        //private void GetOpponentsTeamsRatio()
+        //{
+        //    var players = this.Data.Players.All().Select(PlayerBasicModel.FromPlayersStats).ToList();
+        //    DateTime currentDate = DateTime.Now;
+        //    foreach (var player in players)
+        //    {
+        //        var playerMatches = this.Data.Matches.All().Where(m => (m.MatchDate > currentDate) &&
+        //            (m.Visitor.Initials == player.Team || m.Host.Initials == player.Team)).Take(3);
 
-                var teamAsVisitor = playerMatches.Where(v => v.Visitor.Initials == player.Team)
-                    .Select(HostTeamModel.FromMatch).Sum(x => (double)(x.GoalsFor * x.Points) / x.Position);
-                var teamAsHost = playerMatches.Where(v => v.Host.Initials == player.Team)
-                    .Select(VisitorTeamModel.FromMatch).ToList();
-            }       
-        }
+        //        var teamAsVisitor = playerMatches.Where(v => v.Visitor.Initials == player.Team)
+        //            .Select(HostTeamModel.FromMatch).Sum(x => (double)(x.GoalsFor * x.Points) / x.Position);
+        //        var teamAsHost = playerMatches.Where(v => v.Host.Initials == player.Team)
+        //            .Select(VisitorTeamModel.FromMatch).ToList();
+        //    }       
+        //}
     }
 }

@@ -2,7 +2,7 @@
 @if (Model.Name != null)
 {
     string src = "/Images/" + @Model.Team + ".png";
-    <img src=@src class="kit" alt=@Model.Team title=@Model.Team />
+    <img src=@src class="kit" alt="@Model.ClubName" title="@Model.ClubName" />
     <span class="name btn-primary">@Model.Name</span>
     <span class="price btn-primary">@Model.AgainstTeamInGameweek</span>
 }

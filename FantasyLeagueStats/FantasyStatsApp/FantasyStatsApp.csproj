@@ -553,6 +553,7 @@
     <Content Include="Views\GameInfo\GameweekResult.cshtml" />
     <Content Include="Views\Shared\_PlayerGameweekResult.cshtml" />
     <Content Include="Views\Shared\_ConfirmTransfers.cshtml" />
+    <Content Include="Views\Shared\_TeamResults.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

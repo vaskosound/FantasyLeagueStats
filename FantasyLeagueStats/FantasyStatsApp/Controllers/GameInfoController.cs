@@ -181,6 +181,8 @@ namespace FantasyStatsApp.Controllers
         {
             var game = this.Data.Games.GetById(id);
             myTeam = PopulateMyPlayers(id);
+            currentGameweekId = this.Data.Gameweeks.All()
+               .FirstOrDefault(g => DateTime.Now <= g.Deadline).Id;
 
             if (game.First_PlayerId == User.Identity.GetUserId())
             {
@@ -303,6 +305,8 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult ConfirmTransfers(int id, PlayerGameViewModel[] playersModel)
         {
+            ViewBag.Budget = budget;
+
             var game = this.Data.Games.GetById(id);
             if (budget < 0)
             {
@@ -317,7 +321,10 @@ namespace FantasyStatsApp.Controllers
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 Response.StatusDescription = string.Format("You have only {0} players", myPlayersCount);
-                return PartialView("_TransferPitch", playersModel);
+                myTeam = PopulateMyPlayers(id);
+                var myPlayers = MyPlayersInArray(myTeam);
+
+                return PartialView("_TransferPitch", myPlayers);
             }
 
             GamePlayer gamePlayer;
@@ -714,10 +721,12 @@ namespace FantasyStatsApp.Controllers
                         }
 
                         players[SUBSTITUTION].Add(player);
-                        players[SUBSTITUTION].OrderBy(x => (int)x.Position);
+                        players[SUBSTITUTION] = players[SUBSTITUTION]
+                            .OrderBy(p => (int)p.Position).ToList();
                     }
                 }
             }
+
             return players;
         }
 

@@ -15,6 +15,7 @@ namespace FantasyStatsApp.Models.GameModels
                Id = player.PlayerId,
                Name = player.Player.Name,
                Team = player.Player.Team.Initials,
+               ClubName = player.Player.Team.Name,
                Price = player.Player.Price,
                Position = player.Player.Position,
                IsStarting = player.IsStarting,
@@ -27,6 +28,7 @@ namespace FantasyStatsApp.Models.GameModels
                Id = player.PlayerId,
                Name = player.Player.Name,
                Team = player.Player.Team.Initials,
+               ClubName = player.Player.Team.Name,
                Price = player.Player.Price,
                Position = player.Player.Position,
                IsStarting = player.IsStarting,
@@ -38,6 +40,8 @@ namespace FantasyStatsApp.Models.GameModels
         public string Name { get; set; }
 
         public string Team { get; set; }
+
+        public string ClubName { get; set; }
 
         public Position Position { get; set; }
 

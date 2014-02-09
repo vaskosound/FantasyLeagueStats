@@ -5,8 +5,8 @@
     {
         string src = "/Images/" + @Model.Team + ".png";
         <span></span>
-        @Ajax.RawActionLink(string.Format("<img src={0} class='kit' alt={1} title={1} />" +
-        "<span class='name'>{2}</span><span class='price'>&pound;{3}</span>", src, Model.Team, Model.Name, Model.Price),
+        @Ajax.RawActionLink(string.Format("<img src={0} class='kit' alt='{1}' title='{1}' />" +
+        "<span class='name'>{2}</span><span class='price'>&pound;{3}</span>", src, Model.ClubName, Model.Name, Model.Price),
         "RemovePlayer", "GameInfo", new { playerId = Model.Id }, new AjaxOptions()
        {
            HttpMethod = "POST",

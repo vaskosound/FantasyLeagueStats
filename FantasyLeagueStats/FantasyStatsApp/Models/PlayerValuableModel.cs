@@ -18,6 +18,8 @@ namespace FantasyStatsApp.Models
 
         public string Team { get; set; }
 
+        public string ClubName { get; set; }
+
         public bool IsInjured { get; set; }
     }
 }

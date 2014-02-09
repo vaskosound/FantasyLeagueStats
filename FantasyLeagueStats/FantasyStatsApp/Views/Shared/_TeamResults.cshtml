@@ -1,0 +1,53 @@
+﻿@using FantasyStatsApp.Models.GameModels
+@model SortedDictionary<int, List<PlayerGameViewModel>>
+<div id="pitch">
+    @foreach (var position in Model)
+    {
+        if ((int)position.Key == 5)
+        {
+            @Html.Raw("</div><h4 class='text-primary'>Subsitutions</h4><div id=subs>")
+            foreach (var player in position.Value)
+            {
+                <div class="text-center cell">
+                    @Html.Partial("_PlayerGameweekResult", player)
+                </div>
+            }
+            @Html.Raw("</div>")
+        }
+        else
+        {
+            int playersCount = position.Value.Count;
+            int offset = 6 - playersCount;
+            string classOffset = "row col-lg-offset-" + offset;
+            @Html.Raw("<div class='" + classOffset + "'>")
+            foreach (var player in position.Value)
+            {
+                bool isStarting = false;
+                foreach (var match in ViewBag.GameweekMatches)
+                {
+                    if (match.HostInitials == player.Team || match.VisitorInitials == player.Team)
+                    {
+                        if (match.MatchDate < DateTime.Now)
+                        {
+                            isStarting = true;
+                        }
+                        break;
+                    }
+                }
+                <div class="text-center cell">
+                    @Html.Partial("_PlayerGameweekResult", player)
+                    @if (isStarting)
+                    {
+                        <span class="price btn-primary">@player.RoundScore</span>
+                    }
+                    else
+                    {
+                        <span class="price btn-primary">@player.AgainstTeamInGameweek</span>
+                    }
+                </div>
+            }
+
+            @Html.Raw("</div>")
+        }
+    }
+
