@@ -351,7 +351,8 @@ namespace FantasyStatsApp.Controllers
             var myPlayersInGame = myPlayersGame.Select(p => p.Player).ToList();
 
             var gamePlayersGameweek = this.Data.PlayersGamesGameweeks.All()
-                .Where(g => g.GameweekId == currentGameweekId && g.GameId == game.Id);
+                .Where(g => g.GameweekId == currentGameweekId && g.GameId == game.Id &&
+                    g.GamePlayer == gamePlayer);
             var gamePlayersInGameweek = gamePlayersGameweek.Select(p => p.Player).ToList();
 
             var myPlayerInGameToRemove = myPlayersGame
@@ -360,7 +361,8 @@ namespace FantasyStatsApp.Controllers
 
             var gamePlayersInGameweekToRemove = gamePlayersGameweek
                 .Where(p => !playersModelId.Contains(p.PlayerId));
-            this.Data.PlayersGamesGameweeks.DeleteRange(g => gamePlayersInGameweekToRemove.Contains(g));
+            this.Data.PlayersGamesGameweeks.DeleteRange(g => g.GameweekId == currentGameweekId &&
+                g.GamePlayer == gamePlayer && gamePlayersInGameweekToRemove.Contains(g));
 
             foreach (var player in myPlayersToConfirm)
             {
