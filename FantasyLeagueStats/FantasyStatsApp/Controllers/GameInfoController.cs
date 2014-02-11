@@ -53,14 +53,11 @@ namespace FantasyStatsApp.Controllers
 
             var playersInGameId = playersInGame.Select(x => x.PlayerId).ToList();
 
-            var gamePlayersInGameweekId = this.Data.PlayersGamesGameweeks.All()
-                .Where(g => g.GameweekId == currentGameweekId && g.GameId == game.Id)
-                    .Select(x => x.PlayerId).ToList();
-
-            this.Data.PlayersGamesGameweeks.DeleteRange(p => !playersInGameId.Contains(p.PlayerId));
-            foreach (var playerInGame in playersInGame)
+            var gamePlayersInGameweek = this.Data.PlayersGamesGameweeks.All()
+                .Where(g => g.GameweekId == currentGameweekId && g.GameId == game.Id);
+            if (gamePlayersInGameweek.Count() == 0)
             {
-                if (!gamePlayersInGameweekId.Contains(playerInGame.PlayerId))
+                foreach (var playerInGame in playersInGame)
                 {
                     string aginstTeam = GetTeamAgainstInGameweek(playerInGame.Player);
 
@@ -76,9 +73,9 @@ namespace FantasyStatsApp.Controllers
 
                     this.Data.PlayersGamesGameweeks.Add(newPlayerInGameweek);
                 }
-            }
 
-            this.Data.SaveChanges();
+                this.Data.SaveChanges();
+            }
 
             ViewData["Fixtures"] = PopulateCurrentMatches();
 
@@ -548,6 +545,8 @@ namespace FantasyStatsApp.Controllers
             ViewBag.FirstPlayerGWPoints = game.FirstUserGWPoints;
             ViewBag.SecondPlayerGWPoints = game.SecondUserGWPoints;
 
+            results.FirstUser = game.FirstUser.UserName;
+            results.SecondUser = game.SecondUser.UserName;
             results.FirstUserPlayers = firstUserStartingPlayers;
             results.SecondUserPlayers = secondUserStartingPlayers;
             ViewBag.GameweekMatches = this.Data.Matches.All()

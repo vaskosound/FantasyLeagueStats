@@ -4,10 +4,7 @@
 
 @{
     ViewBag.Title = "Games";
-}
 
-<h2>IN PROGRESS</h2>
-@{
     List<GameBasicViewModel> startedGames = new List<GameBasicViewModel>();
     List<GameBasicViewModel> fullGames = new List<GameBasicViewModel>();
     List<GameBasicViewModel> createdGames = new List<GameBasicViewModel>();
@@ -27,29 +24,30 @@
         }
     }
 }
-<div class="row">
-    <div class="col-lg-3">
-        <h3>Games In Progress</h3>
-        @Html.Partial("_GamesList", startedGames)
-    </div>
-    <div class="col-lg-3">
-        <h3>Full Games</h3>
-        @Html.Partial("_GamesList", fullGames)
-    </div>
-    <div class="col-lg-3">
-        <h3>Created Games</h3>
-        @Html.Partial("_GamesList", createdGames)
-    </div>
-    <div class="col-lg-3">
-        @Ajax.ActionLink("Create Game", "Create", new AjaxOptions()
+<div>
+    @Ajax.ActionLink("Create Game", "Create", null, new AjaxOptions()
    {
        HttpMethod = "GET",
        InsertionMode = InsertionMode.Replace,
        UpdateTargetId = "create-game"
-   })
-        <div id="create-game">
-        </div>
+   }, new { @class="btn btn-primary"})
+    <div id="create-game">
     </div>
+</div>
+<div class="row">
+    <div class="col-lg-4">
+        <h3>Games In Progress</h3>
+        @Html.Partial("_GamesList", startedGames)
+    </div>
+    <div class="col-lg-4">
+        <h3>Full Games</h3>
+        @Html.Partial("_GamesList", fullGames)
+    </div>
+    <div class="col-lg-4">
+        <h3>Created Games</h3>
+        @Html.Partial("_GamesList", createdGames)
+    </div>
+    
 </div>
 
 @section Scripts {

@@ -1,9 +1,9 @@
 ﻿@model IEnumerable<FantasyStatsApp.Models.GameModels.GameBasicViewModel>
 
-<ul>
+<ul class="list-unstyled">
     @foreach (var game in @Model)
     {
-        <li>
+        <li class="col-md-offset-1">
             @Html.ActionLink(@game.Name, "PickTeam", "GameInfo",  new { id = @game.Id }, null)
         </li>
     }

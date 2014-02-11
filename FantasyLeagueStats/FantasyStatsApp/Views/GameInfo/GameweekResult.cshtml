@@ -13,14 +13,14 @@
     return;
 }
 <div class="col-lg-6">
-    <h3 class="text-center text-warning">Total Points - @ViewBag.FirstPlayerPoints</h3>
+    <h3 class="text-center text-primary">@Model.FirstUser: Total Result - @ViewBag.FirstPlayerPoints</h3>
     <div id="budget" class="col-lg-offset-7 text-danger">
         <strong>Gameweek Points: @ViewBag.FirstPlayerGWPoints</strong>
     </div>
     @Html.Partial("_TeamResults", Model.FirstUserPlayers)
 </div>
 <div class="col-lg-6">
-    <h3 class="text-center text-warning">Total Points - @ViewBag.SecondPlayerPoints</h3>
+    <h3 class="text-center text-primary">@Model.SecondUser: Total Result - @ViewBag.SecondPlayerPoints</h3>
     <div id="budget" class="col-lg-offset-7 text-danger">
         <strong>Gameweek Points: @ViewBag.SecondPlayerGWPoints</strong>
     </div>
