@@ -238,6 +238,7 @@ namespace FantasyStatsApp.Data
                 matchExists.HostScore = matchModel.HostScore;
                 matchExists.VistorScore = matchModel.VisitorScore;
                 matchExists.MatchDate = matchModel.MatchDate;
+                matchExists.Gameweek = gameweekEntity;
             }
         }
 

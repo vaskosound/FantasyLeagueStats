@@ -239,7 +239,7 @@ namespace FantasyStatsApp.Controllers
                 Response.StatusDescription = "Select any player";
                 return View("_TransferPitch", myPlayers);
             }
-
+          
             var playerExists = this.Data.Players.GetById(selectPlayerId.Value);
 
             if (!IsValidPosition(playerExists))
@@ -250,8 +250,7 @@ namespace FantasyStatsApp.Controllers
                 return View("_TransferPitch", myPlayers);
             }
 
-            budget -= playerExists.Price;
-
+           
             PlayerGameViewModel newPlayer = new PlayerGameViewModel()
             {
                 Id = playerExists.Id,
@@ -263,6 +262,15 @@ namespace FantasyStatsApp.Controllers
                 Team = playerExists.Team.Initials,
                 IsStarting = true
             };
+
+            if (myPlayers.Contains(newPlayer))
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.StatusDescription = "You already bought " + playerExists.Name;
+                return View("_TransferPitch", myPlayers);
+            }
+
+             budget -= playerExists.Price;
 
             int startingPlayers = myTeam.Values.Select(x => x.Where(y => y.IsStarting))
                 .Sum(p => p.Count());
@@ -562,16 +570,20 @@ namespace FantasyStatsApp.Controllers
                 .Where(m => m.GameweekId == currentGameweekId)
                     .FirstOrDefault(x => x.Host_TeamId == player.TeamId ||
                         x.Visitor_TeamId == player.TeamId);
-            string aginstTeam;
+
+            if (playerMatchInGameweek == null)
+            {
+                return "-";
+            }
+
             if (player.TeamId == playerMatchInGameweek.Host_TeamId)
             {
-                aginstTeam = "(H)" + playerMatchInGameweek.Visitor.Initials;
+                return "(H)" + playerMatchInGameweek.Visitor.Initials;
             }
             else
             {
-                aginstTeam = "(A)" + playerMatchInGameweek.Host.Initials;
+                return "(A)" + playerMatchInGameweek.Host.Initials;
             }
-            return aginstTeam;
         }
 
         private bool IsStarting(Player myPlayer)

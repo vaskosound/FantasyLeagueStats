@@ -28,7 +28,7 @@ namespace FantasyStatsApp.Controllers
         public ActionResult ChangeGameweek(int gameweek)
         {
             var gameweekFixtures = this.Data.Matches.All().Where(m => m.Gameweek.Id == gameweek)
-                .Select(MatchViewModel.FromMatches);
+                .OrderBy(d => d.MatchDate).Select(MatchViewModel.FromMatches);
 
             return PartialView("_Fixtures", gameweekFixtures);
         }
