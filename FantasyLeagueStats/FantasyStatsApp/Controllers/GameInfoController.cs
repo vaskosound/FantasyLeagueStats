@@ -74,6 +74,9 @@ namespace FantasyStatsApp.Controllers
                     this.Data.PlayersGamesGameweeks.Add(newPlayerInGameweek);
                 }
 
+                game.FirstUserGWPoints = 0;
+                game.SecondUserGWPoints = 0;
+
                 this.Data.SaveChanges();
             }
 
