@@ -110,6 +110,8 @@ namespace FantasyStatsApp.Data
         {
             var context = new FantasyStatsDbContext();
             startDate = startSeason;
+            List<Match> gameweekMatches = new List<Match>();
+            string gameweek = fixtures[0];
             for (int i = 1; i < fixtures.Count; i += 4)
             {
                 string[] dateParts = fixtures[i].Split(' ');
@@ -123,7 +125,7 @@ namespace FantasyStatsApp.Data
                 {
                     Host = host,
                     Visitor = visitor,
-                    Gameweek = fixtures[0],
+                    Gameweek = gameweek,
                     MatchDate = matchDate
                 };
                 if (fixtures[i + 2] != "v")
@@ -133,7 +135,17 @@ namespace FantasyStatsApp.Data
                     matchModel.VisitorScore = int.Parse(result[1]);
                 }
 
-                AddOrUpdateMatch(context, matchModel);
+                Match match = AddOrUpdateMatch(context, matchModel);
+                gameweekMatches.Add(match);
+            }
+
+            Gameweek currentGameweek = context.Gameweeks.FirstOrDefault(g => g.Name == gameweek);
+            var currentGameweekMatches = context.Matches.Where(m => m.GameweekId == currentGameweek.Id ).ToList()
+                .Except(gameweekMatches);
+
+            if (currentGameweekMatches.Count() > 0)
+            {
+                context.Matches.RemoveRange(currentGameweekMatches);
             }
 
             context.SaveChanges();
@@ -208,7 +220,7 @@ namespace FantasyStatsApp.Data
             context.SaveChanges();
         }
 
-        private void AddOrUpdateMatch(FantasyStatsDbContext context,
+        private Match AddOrUpdateMatch(FantasyStatsDbContext context,
            MatchViewModel matchModel)
         {
             var matchExists = context.Matches
@@ -232,6 +244,8 @@ namespace FantasyStatsApp.Data
                 };
 
                 context.Matches.Add(newMatch);
+                context.SaveChanges();
+                return newMatch;
             }
             else
             {
@@ -239,6 +253,9 @@ namespace FantasyStatsApp.Data
                 matchExists.VistorScore = matchModel.VisitorScore;
                 matchExists.MatchDate = matchModel.MatchDate;
                 matchExists.Gameweek = gameweekEntity;
+
+                context.SaveChanges();
+                return matchExists;
             }
         }
 

@@ -30,5 +30,41 @@ namespace FantasyStats.Model
         public virtual Gameweek Gameweek { get; set; }
 
         public DateTime MatchDate { get; set; }
+
+        public override bool Equals(Object obj)
+        {
+            // If parameter is null return false.
+            if (obj == null)
+            {
+                return false;
+            }
+
+            // If parameter cannot be cast to Point return false.
+            Match match = obj as Match;
+            if ((Object)match == null)
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return (Host_TeamId == match.Host_TeamId) && (Visitor_TeamId == match.Visitor_TeamId);
+        }
+
+        public bool Equals(Match match)
+        {
+            // If parameter is null return false:
+            if ((object)match == null)
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return (Host_TeamId == match.Host_TeamId) && (Visitor_TeamId == match.Visitor_TeamId);
+        }
+
+        //public override int GetHashCode()
+        //{
+        //    return Host.Initials ^ Visitor.Initials;
+        //}
     }
 }
