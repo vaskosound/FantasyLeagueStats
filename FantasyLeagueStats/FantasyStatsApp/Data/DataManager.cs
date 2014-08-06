@@ -14,7 +14,7 @@ namespace FantasyStatsApp.Data
         private const string МAN_UNITED = "Man Utd";
         private const string МAN_CITY = "Man City";
         private const string TOTTENHAM = "Spurs";
-        private static DateTime startSeason = new DateTime(2013, 7, 15);
+        private static DateTime startSeason = new DateTime(2014, 7, 15);
         private static DateTime startDate;
 
         public void UpdateBasicData(List<string> stats)
