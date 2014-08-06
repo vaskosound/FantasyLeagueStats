@@ -18,6 +18,8 @@ namespace FantasyStatsApp.Controllers
         private static Dictionary<int, List<PlayerGameViewModel>> myTeam;
         private static SortedDictionary<int, List<PlayerGameViewModel>> pickTeamPlayers;
         private static int? currentGameweekId;
+        private static DateTime currentSeason = DateTime.Now.Month >= 7 ? new DateTime(DateTime.Now.Year, 7, 1) :
+                new DateTime(DateTime.Now.Year - 1, 7, 1);
         private static decimal budget;
         private const int SUBSTITUTION = 5;
 
@@ -38,10 +40,15 @@ namespace FantasyStatsApp.Controllers
             return RedirectToAction("Transfers");
         }
 
+
+        #region Pick Team
+
         public ActionResult PickTeam(int id)
         {
-            currentGameweekId = this.Data.Gameweeks.All()
-                .FirstOrDefault(g => DateTime.Now <= g.Deadline).Id;
+            var currentGameweek = this.Data.Gameweeks.All()
+                .FirstOrDefault(g => DateTime.Now <= g.Deadline);
+            currentGameweekId = currentGameweek == null ? 38 : currentGameweek.Id;
+
             myTeam = PopulateMyPlayers(id);
             if (myTeam == null || myTeam.Values.Sum(p => p.Count) < 15)
             {
@@ -177,12 +184,30 @@ namespace FantasyStatsApp.Controllers
             return PartialView("_PickTeamPitch", pickTeamPlayers);
         }
 
+        private int CountPlayersAtPosition(Position position, List<PlayerGameViewModel> players)
+        {
+            int counter = 0;
+            foreach (var player in players)
+            {
+                if (player.Position == position)
+                {
+                    counter++;
+                }
+            }
+
+            return counter;
+        }
+
+        #endregion
+
+        #region Transfers
         public ActionResult Transfers(int id)
         {
             var game = this.Data.Games.GetById(id);
             myTeam = PopulateMyPlayers(id);
-            currentGameweekId = this.Data.Gameweeks.All()
-               .FirstOrDefault(g => DateTime.Now <= g.Deadline).Id;
+            var currentGameweek = this.Data.Gameweeks.All()
+                .FirstOrDefault(g => DateTime.Now <= g.Deadline);
+            currentGameweekId = currentGameweek == null ? 38 : currentGameweek.Id;
 
             if (game.First_PlayerId == User.Identity.GetUserId())
             {
@@ -242,7 +267,7 @@ namespace FantasyStatsApp.Controllers
                 Response.StatusDescription = "Select any player";
                 return View("_TransferPitch", myPlayers);
             }
-          
+
             var playerExists = this.Data.Players.GetById(selectPlayerId.Value);
 
             if (!IsValidPosition(playerExists))
@@ -253,7 +278,7 @@ namespace FantasyStatsApp.Controllers
                 return View("_TransferPitch", myPlayers);
             }
 
-           
+
             PlayerGameViewModel newPlayer = new PlayerGameViewModel()
             {
                 Id = playerExists.Id,
@@ -273,7 +298,7 @@ namespace FantasyStatsApp.Controllers
                 return View("_TransferPitch", myPlayers);
             }
 
-             budget -= playerExists.Price;
+            budget -= playerExists.Price;
 
             int startingPlayers = myTeam.Values.Select(x => x.Where(y => y.IsStarting))
                 .Sum(p => p.Count());
@@ -455,140 +480,6 @@ namespace FantasyStatsApp.Controllers
             return myPlayersCount;
         }
 
-        public ActionResult OpponentTeam(int id)
-        {
-            var game = this.Data.Games.GetById(id);
-            string userId = this.User.Identity.GetUserId();
-            GamePlayer gamePlayer;
-            decimal opponentBudget = 0;
-            string opponentName;
-            if (game.First_PlayerId != userId)
-            {
-                opponentBudget = game.FirstUserBudget;
-                opponentName = game.FirstUser.UserName;
-                gamePlayer = GamePlayer.FirstPlayer;
-            }
-            else
-            {
-                opponentBudget = game.SecondUserBudget;
-                opponentName = game.SecondUser.UserName;
-                gamePlayer = GamePlayer.SecondPlayer;
-            }
-
-            ViewBag.OpponentUserName = opponentName;
-            ViewBag.Budget = opponentBudget;
-            ViewData["Fixtures"] = PopulateCurrentMatches();
-            var opponentPlayers = this.Data.PlayersGames.All().Where(p => p.GameId == id &&
-                 p.GamePlayer == gamePlayer).Select(PlayerGameViewModel.FromPlayersGame).ToList();
-
-            foreach (var opponentPlayer in opponentPlayers)
-            {
-                Player player = this.Data.Players.GetById(opponentPlayer.Id);
-                opponentPlayer.AgainstTeamInGameweek = GetTeamAgainstInGameweek(player);
-            }
-
-            Dictionary<int, List<PlayerGameViewModel>> players = PlayersInDictionary(opponentPlayers);
-
-            return View(GetStartingPlayers(players));
-        }
-
-        public ActionResult GameweekResult(int id)
-        {
-            var game = this.Data.Games.GetById(id);
-            currentGameweekId = this.Data.Gameweeks.All()
-                .FirstOrDefault(g => g.StartDate <= DateTime.Now &&
-                    DateTime.Now <= g.Deadline).Id;
-            int previousGameweekId = currentGameweekId.Value - 1;
-            if (currentGameweekId == 1)
-            {
-                previousGameweekId = currentGameweekId.Value;
-            }
-
-            if (currentGameweekId == null)
-            {
-                previousGameweekId = 38;
-            }
-
-            GameResultsViewModel results = new GameResultsViewModel();
-            var playersInGameweek = this.Data.PlayersGamesGameweeks.All()
-                .Where(p => p.GameId == id && p.GameweekId == previousGameweekId);
-
-            if (game.GameState != GameState.InProgress || playersInGameweek.Count() == 0)
-            {
-                return View(results);
-            }
-
-            var playersList = playersInGameweek.Select(g => g.Player).ToList();
-
-            var playersInGameweekToList = playersInGameweek.ToList();
-            for (int i = 0; i < playersInGameweekToList.Count; i++)
-            {
-                var currentPlayer = playersList.FirstOrDefault(p => p.Id ==
-                    playersInGameweekToList[i].PlayerId);
-                playersInGameweekToList[i].Points = currentPlayer.RoundScore;
-            }
-
-            this.Data.SaveChanges();
-
-            var firstUserPlayersList = playersInGameweek.Where(u => u.GamePlayer ==
-                GamePlayer.FirstPlayer).Select(PlayerGameViewModel.FromPlayersGameweek).ToList();
-            var secondUserPlayersList = playersInGameweek.Where(u => u.GamePlayer ==
-                GamePlayer.SecondPlayer).Select(PlayerGameViewModel.FromPlayersGameweek).ToList();
-
-            Dictionary<int, List<PlayerGameViewModel>> firstUserPlayers =
-                PlayersInDictionary(firstUserPlayersList);
-            var firstUserStartingPlayers = GetStartingPlayers(firstUserPlayers);
-
-            Dictionary<int, List<PlayerGameViewModel>> secondUserPlayers =
-                PlayersInDictionary(secondUserPlayersList);
-            var secondUserStartingPlayers = GetStartingPlayers(secondUserPlayers);
-            game.FirstUserPoints -= game.FirstUserGWPoints;
-            game.FirstUserGWPoints = CalculateTotalPoints(firstUserPlayersList);
-            game.FirstUserPoints += game.FirstUserGWPoints;
-            game.SecondUserPoints -= game.SecondUserGWPoints;
-            game.SecondUserGWPoints = CalculateTotalPoints(secondUserPlayersList);
-            game.SecondUserPoints += game.SecondUserGWPoints;
-
-            this.Data.SaveChanges();
-            ViewBag.FirstPlayerPoints = game.FirstUserPoints;
-            ViewBag.SecondPlayerPoints = game.SecondUserPoints;
-
-            ViewBag.FirstPlayerGWPoints = game.FirstUserGWPoints;
-            ViewBag.SecondPlayerGWPoints = game.SecondUserGWPoints;
-
-            results.FirstUser = game.FirstUser.UserName;
-            results.SecondUser = game.SecondUser.UserName;
-            results.FirstUserPlayers = firstUserStartingPlayers;
-            results.SecondUserPlayers = secondUserStartingPlayers;
-            ViewBag.GameweekMatches = this.Data.Matches.All()
-                .Where(m => m.GameweekId == previousGameweekId)
-                .Select(MatchViewModel.FromMatches).ToList();
-
-            return View(results);
-        }
-
-        private string GetTeamAgainstInGameweek(Player player)
-        {
-            var playerMatchInGameweek = this.Data.Matches.All()
-                .Where(m => m.GameweekId == currentGameweekId)
-                    .FirstOrDefault(x => x.Host_TeamId == player.TeamId ||
-                        x.Visitor_TeamId == player.TeamId);
-
-            if (playerMatchInGameweek == null)
-            {
-                return "-";
-            }
-
-            if (player.TeamId == playerMatchInGameweek.Host_TeamId)
-            {
-                return "(H)" + playerMatchInGameweek.Visitor.Initials;
-            }
-            else
-            {
-                return "(A)" + playerMatchInGameweek.Host.Initials;
-            }
-        }
-
         private bool IsStarting(Player myPlayer)
         {
             switch (myPlayer.Position)
@@ -696,20 +587,168 @@ namespace FantasyStatsApp.Controllers
             return true;
         }
 
-        private int CountPlayersAtPosition(Position position, List<PlayerGameViewModel> players)
+
+        #endregion
+
+        #region Opponent Team
+
+        public ActionResult OpponentTeam(int id)
         {
-            int counter = 0;
-            foreach (var player in players)
+            var game = this.Data.Games.GetById(id);
+            string userId = this.User.Identity.GetUserId();
+            GamePlayer gamePlayer;
+            decimal opponentBudget = 0;
+            string opponentName;
+            if (game.First_PlayerId != userId)
             {
-                if (player.Position == position)
+                opponentBudget = game.FirstUserBudget;
+                opponentName = game.FirstUser.UserName;
+                gamePlayer = GamePlayer.FirstPlayer;
+            }
+            else
+            {
+                opponentBudget = game.SecondUserBudget;
+                opponentName = game.SecondUser.UserName;
+                gamePlayer = GamePlayer.SecondPlayer;
+            }
+
+            ViewBag.OpponentUserName = opponentName;
+            ViewBag.Budget = opponentBudget;
+            ViewData["Fixtures"] = PopulateCurrentMatches();
+            var opponentPlayers = this.Data.PlayersGames.All().Where(p => p.GameId == id &&
+                 p.GamePlayer == gamePlayer).Select(PlayerGameViewModel.FromPlayersGame).ToList();
+
+            foreach (var opponentPlayer in opponentPlayers)
+            {
+                Player player = this.Data.Players.GetById(opponentPlayer.Id);
+                opponentPlayer.AgainstTeamInGameweek = GetTeamAgainstInGameweek(player);
+            }
+
+            Dictionary<int, List<PlayerGameViewModel>> players = PlayersInDictionary(opponentPlayers);
+
+            return View(GetStartingPlayers(players));
+        }
+
+        #endregion
+
+        #region Gameweek Results
+        public ActionResult GameweekResult(int id)
+        {
+            var game = this.Data.Games.GetById(id);
+            var currentGameweek = this.Data.Gameweeks.All()
+                 .FirstOrDefault(g => DateTime.Now <= g.Deadline);
+            currentGameweekId = currentGameweek == null ? 38 : currentGameweek.Id;
+
+            int previousGameweekId = currentGameweekId.Value - 1;
+            if (currentGameweekId == 1)
+            {
+                previousGameweekId = currentGameweekId.Value;
+            }
+
+            if (currentGameweekId == null)
+            {
+                previousGameweekId = 38;
+            }
+
+            GameResultsViewModel results = new GameResultsViewModel();
+            var playersInGameweek = this.Data.PlayersGamesGameweeks.All()
+                .Where(p => p.GameId == id && p.GameweekId == previousGameweekId);
+
+            if (game.GameState != GameState.InProgress || playersInGameweek.Count() == 0)
+            {
+                return View(results);
+            }
+
+            var playersList = playersInGameweek.Select(g => g.Player).ToList();
+
+            var playersInGameweekToList = playersInGameweek.ToList();
+            for (int i = 0; i < playersInGameweekToList.Count; i++)
+            {
+                var currentPlayer = playersList.FirstOrDefault(p => p.Id ==
+                    playersInGameweekToList[i].PlayerId);
+                playersInGameweekToList[i].Points = currentPlayer.RoundScore;
+            }
+
+            this.Data.SaveChanges();
+
+            var firstUserPlayersList = playersInGameweek.Where(u => u.GamePlayer ==
+                GamePlayer.FirstPlayer).Select(PlayerGameViewModel.FromPlayersGameweek).ToList();
+            var secondUserPlayersList = playersInGameweek.Where(u => u.GamePlayer ==
+                GamePlayer.SecondPlayer).Select(PlayerGameViewModel.FromPlayersGameweek).ToList();
+
+            Dictionary<int, List<PlayerGameViewModel>> firstUserPlayers =
+                PlayersInDictionary(firstUserPlayersList);
+            var firstUserStartingPlayers = GetStartingPlayers(firstUserPlayers);
+
+            Dictionary<int, List<PlayerGameViewModel>> secondUserPlayers =
+                PlayersInDictionary(secondUserPlayersList);
+            var secondUserStartingPlayers = GetStartingPlayers(secondUserPlayers);
+            game.FirstUserPoints -= game.FirstUserGWPoints;
+            game.FirstUserGWPoints = CalculateTotalPoints(firstUserPlayersList);
+            game.FirstUserPoints += game.FirstUserGWPoints;
+            game.SecondUserPoints -= game.SecondUserGWPoints;
+            game.SecondUserGWPoints = CalculateTotalPoints(secondUserPlayersList);
+            game.SecondUserPoints += game.SecondUserGWPoints;
+
+            this.Data.SaveChanges();
+            ViewBag.FirstPlayerPoints = game.FirstUserPoints;
+            ViewBag.SecondPlayerPoints = game.SecondUserPoints;
+
+            ViewBag.FirstPlayerGWPoints = game.FirstUserGWPoints;
+            ViewBag.SecondPlayerGWPoints = game.SecondUserGWPoints;
+
+            results.FirstUser = game.FirstUser.UserName;
+            results.SecondUser = game.SecondUser.UserName;
+            results.FirstUserPlayers = firstUserStartingPlayers;
+            results.SecondUserPlayers = secondUserStartingPlayers;
+            ViewBag.GameweekMatches = this.Data.Matches.All()
+                .Where(m => m.GameweekId == previousGameweekId)
+                .Select(MatchViewModel.FromMatches).ToList();
+
+            return View(results);
+        }
+
+        private int CalculateTotalPoints(List<PlayerGameViewModel> teamPlayers)
+        {
+            int totalPoints = 0;
+            foreach (var player in teamPlayers)
+            {
+                if (player.IsStarting)
                 {
-                    counter++;
+                    totalPoints += player.RoundScore;
                 }
             }
 
-            return counter;
+            return totalPoints;
         }
 
+
+        #endregion
+
+        #region Helpers
+
+        private string GetTeamAgainstInGameweek(Player player)
+        {
+            var playerMatchInGameweek = this.Data.Matches.All()
+                .Where(m => m.GameweekId == currentGameweekId)
+                    .FirstOrDefault(x => x.Host_TeamId == player.TeamId ||
+                        x.Visitor_TeamId == player.TeamId);
+
+            if (playerMatchInGameweek == null)
+            {
+                return "-";
+            }
+
+            if (player.TeamId == playerMatchInGameweek.Host_TeamId)
+            {
+                return "(H)" + playerMatchInGameweek.Visitor.Initials;
+            }
+            else
+            {
+                return "(A)" + playerMatchInGameweek.Host.Initials;
+            }
+        }
+               
         private SortedDictionary<int, List<PlayerGameViewModel>> GetStartingPlayers(
             Dictionary<int, List<PlayerGameViewModel>> team)
         {
@@ -744,21 +783,6 @@ namespace FantasyStatsApp.Controllers
             }
 
             return players;
-        }
-
-
-        private int CalculateTotalPoints(List<PlayerGameViewModel> teamPlayers)
-        {
-            int totalPoints = 0;
-            foreach (var player in teamPlayers)
-            {
-                if (player.IsStarting)
-                {
-                    totalPoints += player.RoundScore;
-                }
-            }
-
-            return totalPoints;
         }
 
         private Dictionary<int, List<PlayerGameViewModel>> PopulateMyPlayers(int id)
@@ -873,5 +897,7 @@ namespace FantasyStatsApp.Controllers
                     break;
             }
         }
+
+        #endregion
     }
 }

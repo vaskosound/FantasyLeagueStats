@@ -37,6 +37,8 @@ namespace FantasyStats.Model
         public decimal PlayerForm { get; set; }
 
         public int RoundScore { get; set; }
+
+        public DateTime UpadetedDate { get; set; }
     }
 }
 

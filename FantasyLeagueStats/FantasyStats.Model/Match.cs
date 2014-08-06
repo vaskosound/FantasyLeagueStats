@@ -61,10 +61,5 @@ namespace FantasyStats.Model
             // Return true if the fields match:
             return (Host_TeamId == match.Host_TeamId) && (Visitor_TeamId == match.Visitor_TeamId);
         }
-
-        //public override int GetHashCode()
-        //{
-        //    return Host.Initials ^ Visitor.Initials;
-        //}
     }
 }

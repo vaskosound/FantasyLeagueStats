@@ -46,8 +46,11 @@ namespace FantasyStatsApp.Controllers
             var currentGameweek = this.Data.Gameweeks.All()
                 .FirstOrDefault(g => g.StartDate <= currentDate && currentDate <= g.EndDate);
 
-            var currentMatches = this.Data.Matches.All().Where(m => m.Gameweek.Id == currentGameweek.Id)
-                .Select(MatchViewModel.FromMatches);
+            int currentGameweekId = currentGameweek == null ? 38 : currentGameweek.Id;
+
+            var currentMatches = this.Data.Matches.All().Where(m => m.Gameweek.Id == currentGameweekId)
+                .OrderBy(d => d.MatchDate).Select(MatchViewModel.FromMatches);
+
             return currentMatches;
         }
 

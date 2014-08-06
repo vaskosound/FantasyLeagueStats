@@ -28,7 +28,7 @@ namespace FantasyStatsApp.Data
                     Team = stats[i + 2],
                     RoundScore = int.Parse(stats[i + 6]),
                     MinutesPlayed = int.Parse(stats[i + 8].Replace(",", "")),
-                    IsInjured = stats[i].Contains(INJURED_ICON) ? true : false
+                    IsInjured = stats[i].Contains(INJURED_ICON) ? true : false,                   
                 };
 
                 playerModel.SetPosition(stats[i + 3]);
@@ -187,9 +187,11 @@ namespace FantasyStatsApp.Data
         private void AddOrUpdatePlayer(PlayerModel playerModel)
         {
             var context = new FantasyStatsDbContext();
-
+            DateTime currentSeason = DateTime.Now.Month >= 7 ? new DateTime(DateTime.Now.Year, 7, 1) :
+                new DateTime(DateTime.Now.Year - 1, 7, 1);
             var playerExists = context.Players
-                .FirstOrDefault(x => x.Name == playerModel.Name && x.Team.Initials == playerModel.Team);
+                .FirstOrDefault(x => x.Name == playerModel.Name && x.Team.Initials == playerModel.Team &&
+                    x.UpadetedDate >= currentSeason);
             var team = context.Teams.FirstOrDefault(x => x.Initials == playerModel.Team);
             if (playerExists == null)
             {
@@ -202,7 +204,8 @@ namespace FantasyStatsApp.Data
                     RoundScore = playerModel.RoundScore,
                     Points = playerModel.Points,
                     MinutesPlayed = playerModel.MinutesPlayed,
-                    IsInjured = playerModel.IsInjured
+                    IsInjured = playerModel.IsInjured,
+                    UpadetedDate = DateTime.Now
                 };
                 team.Players.Add(newPlayer);
             }
@@ -215,6 +218,7 @@ namespace FantasyStatsApp.Data
                 playerExists.RoundScore = playerModel.RoundScore;
                 playerExists.MinutesPlayed = playerModel.MinutesPlayed;
                 playerExists.IsInjured = playerModel.IsInjured;
+                playerExists.UpadetedDate = DateTime.Now;
             }
 
             context.SaveChanges();

@@ -18,6 +18,8 @@ namespace FantasyStatsApp.Controllers
     public class AdminController : BaseController
     {
         private const int PAGE_COUNT = 15;
+        private static DateTime currentSeason = DateTime.Now.Month >= 7 ? new DateTime(DateTime.Now.Year, 7, 1) :
+                new DateTime(DateTime.Now.Year - 1, 7, 1);
 
         public ExternalData Statistics { get; set; }
 
@@ -38,7 +40,8 @@ namespace FantasyStatsApp.Controllers
         [AllowAnonymous]
         public JsonResult ReadPlayersStats([DataSourceRequest] DataSourceRequest request)
         {
-            var result = this.Data.Players.All().Select(PlayerBasicModel.FromPlayersStats);
+            var result = this.Data.Players.All().Where(p => p.UpadetedDate > currentSeason)
+                .Select(PlayerBasicModel.FromPlayersStats);
 
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }

@@ -8,7 +8,9 @@ namespace FantasyStatsApp.Controllers
 {
     [Authorize]
     public class MoneyBallController : BaseController
-    {      
+    {
+        private static DateTime currentSeason = DateTime.Now.Month >= 7 ? new DateTime(DateTime.Now.Year, 7, 1) :
+                new DateTime(DateTime.Now.Year - 1, 7, 1);
         public ActionResult TeamByPoints()
         {
             return View();
@@ -16,8 +18,9 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult GetTeamByPoints(SubmitTeamPriceModel price)
         {
-            var players = this.Data.Players.All().OrderByDescending(p => p.Points)
-                .Take(100).Select(x => new PlayerValuableModel() 
+            var players = this.Data.Players.All().Where(p => p.UpadetedDate >= currentSeason)
+                .OrderByDescending(p => p.Points)
+                .Take(100).Select(x => new PlayerValuableModel()
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -32,7 +35,7 @@ namespace FantasyStatsApp.Controllers
             Knapsack knapsack = new Knapsack(players, price.TeamPrice);
             knapsack.KnapsackProblem();
             var bestTeam = knapsack.OutputSolution().OrderBy(p => p.Position).ToList();
-  
+
             return PartialView("_ValuableTeam", bestTeam);
         }
 
@@ -43,7 +46,8 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult GetTeamByPointsPerGame(SubmitTeamPriceModel price)
         {
-            var players = this.Data.Players.All().OrderByDescending(p => p.PointsPerGame)
+            var players = this.Data.Players.All().Where(p => p.UpadetedDate >= currentSeason)
+                .OrderByDescending(p => p.PointsPerGame)
                 .Take(100).Select(x => new PlayerValuableModel()
                 {
                     Id = x.Id,
@@ -70,7 +74,8 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult GetTeamByPointsPerPrice(SubmitTeamPriceModel price)
         {
-            var players = this.Data.Players.All().OrderByDescending(p => p.Points / p.Price)
+            var players = this.Data.Players.All().Where(p => p.UpadetedDate >= currentSeason)
+                .OrderByDescending(p => p.Points / p.Price)
                 .Take(100).Select(x => new PlayerValuableModel()
                 {
                     Id = x.Id,
@@ -86,7 +91,7 @@ namespace FantasyStatsApp.Controllers
             Knapsack knapsack = new Knapsack(players, price.TeamPrice);
             knapsack.KnapsackProblem();
             var bestTeam = knapsack.OutputSolution().OrderBy(p => p.Position).ToList();
-            
+
             return PartialView("_ValuableTeam", bestTeam);
         }
 
@@ -97,7 +102,8 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult GetTeamByPPPPerGame(SubmitTeamPriceModel price)
         {
-            var players = this.Data.Players.All().OrderByDescending(x => x.PointsPerGame / x.Price)
+            var players = this.Data.Players.All().Where(p => p.UpadetedDate >= currentSeason)
+                .OrderByDescending(x => x.PointsPerGame / x.Price)
                 .Take(100).Select(x => new PlayerValuableModel()
                 {
                     Id = x.Id,

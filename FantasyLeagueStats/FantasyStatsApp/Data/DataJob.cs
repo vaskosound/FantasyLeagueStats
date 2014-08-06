@@ -15,6 +15,8 @@ namespace FantasyStatsApp.Data
         { }
         public void Execute(IJobExecutionContext context)
         {
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
             JobDataMap dataMap = context.JobDetail.JobDataMap;
             ExternalData statistics = (ExternalData) dataMap["data"];
             DataManager dataManager = (DataManager) dataMap["dataManager"];
