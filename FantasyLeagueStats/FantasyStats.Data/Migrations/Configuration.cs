@@ -3,6 +3,7 @@ namespace FantasyStats.Data.Migrations
     using FantasyStats.Model;
     using Microsoft.AspNet.Identity.EntityFramework;
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
@@ -43,150 +44,195 @@ namespace FantasyStats.Data.Migrations
                 context.Users.Add(userAdmin);
                 context.SaveChanges();
             }
-            if (context.Teams.Count() > 0)
-            {
-                return;
-            }
+            //if (teams.Count() > 0)
+            //{
+            //    return;
+            //}
+
+            List<Team> teams = new List<Team>();
 
             Team arsenal = new Team()
             {
                 Name = "Arsenal",
-                Initials = "ARS"
+                Initials = "ARS",
+                Season = 2014
             };
-            context.Teams.Add(arsenal);
+            teams.Add(arsenal);
 
             Team astonVilla = new Team()
             {
                 Name = "Aston Villa",
-                Initials = "AVL"
+                Initials = "AVL",
+                Season = 2014
             };
-            context.Teams.Add(astonVilla);
+            teams.Add(astonVilla);
 
             Team chelsea = new Team()
             {
                 Name = "Chelsea",
-                Initials = "CHE"
+                Initials = "CHE",
+                Season = 2014
             };
-            context.Teams.Add(chelsea);
+            teams.Add(chelsea);
 
             Team cardiff = new Team()
             {
                 Name = "Cardiff City",
                 Initials = "CAR"
             };
-            context.Teams.Add(cardiff);
+            //teams.Add(cardiff);
 
             Team crystalPalace = new Team()
             {
                 Name = "Crystal Palace",
-                Initials = "CRY"
+                Initials = "CRY",
+                Season = 2014
             };
-            context.Teams.Add(crystalPalace);
+            teams.Add(crystalPalace);
 
             Team everton = new Team()
             {
                 Name = "Everton",
-                Initials = "EVE"
+                Initials = "EVE",
+                Season = 2014
             };
-            context.Teams.Add(everton);
+            teams.Add(everton);
 
             Team fulham = new Team()
             {
                 Name = "Fulham",
                 Initials = "FUL"
             };
-            context.Teams.Add(fulham);
+            //teams.Add(fulham);
 
             Team hull = new Team()
             {
                 Name = "Hull City",
-                Initials = "HUL"
+                Initials = "HUL",
+                Season = 2014
             };
-            context.Teams.Add(hull);
+            teams.Add(hull);
 
             Team liverpool = new Team()
             {
                 Name = "Liverpool",
-                Initials = "LIV"
+                Initials = "LIV",
+                Season = 2014
             };
-            context.Teams.Add(liverpool);
+            teams.Add(liverpool);
 
             Team manCity = new Team()
             {
                 Name = "Manchester City",
-                Initials = "MCI"
+                Initials = "MCI",
+                Season = 2014
             };
-            context.Teams.Add(manCity);
+            teams.Add(manCity);
 
             Team manUnited = new Team()
             {
                 Name = "Manchester United",
-                Initials = "MUN"
+                Initials = "MUN",
+                Season = 2014
             };
-            context.Teams.Add(manUnited);
+            teams.Add(manUnited);
 
             Team newcastle = new Team()
             {
                 Name = "Newcastle United",
-                Initials = "NEW"
+                Initials = "NEW",
+                Season = 2014
             };
-            context.Teams.Add(newcastle);
+            teams.Add(newcastle);
 
             Team norwich = new Team()
             {
                 Name = "Norwich City",
                 Initials = "NOR"
             };
-            context.Teams.Add(norwich);
+            //teams.Add(norwich);
 
             Team southampton = new Team()
             {
                 Name = "Southampton",
-                Initials = "SOU"
+                Initials = "SOU",
+                Season = 2014
             };
-            context.Teams.Add(southampton);
+            teams.Add(southampton);
 
             Team stoke = new Team()
             {
                 Name = "Stoke City",
-                Initials = "STK"
+                Initials = "STK",
+                Season = 2014
             };
-            context.Teams.Add(stoke);
+            teams.Add(stoke);
 
             Team sundelrland = new Team()
             {
                 Name = "Sunderland",
-                Initials = "SUN"
+                Initials = "SUN",
+                Season = 2014
             };
-            context.Teams.Add(sundelrland);
+            teams.Add(sundelrland);
 
             Team swansea = new Team()
             {
                 Name = "Swansea City",
-                Initials = "SWA"
+                Initials = "SWA",
+                Season = 2014
             };
-            context.Teams.Add(swansea);
+            teams.Add(swansea);
 
             Team tottenham = new Team()
             {
                 Name = "Tottenham Hotspur",
-                Initials = "TOT"
+                Initials = "TOT",
+                Season = 2014
             };
-            context.Teams.Add(tottenham);
+            teams.Add(tottenham);
 
             Team westBrom = new Team()
             {
                 Name = "West Bromwich Albion",
-                Initials = "WBA"
+                Initials = "WBA",
+                Season = 2014
             };
-            context.Teams.Add(westBrom);
+            teams.Add(westBrom);
 
             Team westHam = new Team()
             {
                 Name = "West Ham United",
-                Initials = "WHU"
+                Initials = "WHU",
+                Season = 2014
             };
-            context.Teams.Add(westHam);
+            teams.Add(westHam);
+
+            Team bunley = new Team()
+            {
+                Name = "Burnley",
+                Initials = "BUR",
+                Season = 2014
+            };
+            teams.Add(bunley);
+
+            Team leicester = new Team()
+            {
+                Name = "Leicester",
+                Initials = "LEI",
+                Season = 2014
+            };
+            teams.Add(leicester);
+
+            Team qpr = new Team()
+            {
+                Name = "QPR",
+                Initials = "QPR",
+                Season = 2014
+            };
+            teams.Add(qpr);
+
+            context.Teams.AddOrUpdate(t => t.Initials, teams.ToArray());
         }
     }
 }

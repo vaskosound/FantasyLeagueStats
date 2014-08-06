@@ -13,6 +13,7 @@ namespace FantasyStatsApp.Data
         private const string INJURED_ICON = "infowarn.png";
         private const string МAN_UNITED = "Man Utd";
         private const string МAN_CITY = "Man City";
+        private const string TOTTENHAM = "Spurs";
         private static DateTime startSeason = new DateTime(2013, 7, 15);
         private static DateTime startDate;
 
@@ -309,6 +310,11 @@ namespace FantasyStatsApp.Data
             if (name == МAN_CITY)
             {
                 return "Manchester City";
+            }
+
+            if (name == TOTTENHAM)
+            {
+                return "Tottenham Hotspur";
             }
 
             return name;

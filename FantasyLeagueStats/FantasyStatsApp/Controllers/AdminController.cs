@@ -187,8 +187,8 @@ namespace FantasyStatsApp.Controllers
         private void PopulateTeams()
         {
             var dataContext = this.Data;
-            var teams = dataContext.Teams.All().OrderBy(e => e.Name)
-                        .Select(SelectTeamModel.FromTeams);
+            var teams = dataContext.Teams.All().Where(s => s.Season == currentSeason.Year)
+                .OrderBy(e => e.Name).Select(SelectTeamModel.FromTeams);
 
             ViewData["teams"] = teams;
         }

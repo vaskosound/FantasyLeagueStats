@@ -236,7 +236,8 @@ namespace FantasyStatsApp.Controllers
 
         public JsonResult GetClubs()
         {
-            var clubs = this.Data.Teams.All().Select(SelectTeamModel.FromTeams);
+            var clubs = this.Data.Teams.All().Where(s => s.Season == currentSeason.Year)
+                .OrderBy(t => t.Name).Select(SelectTeamModel.FromTeams);
 
             return Json(clubs, JsonRequestBehavior.AllowGet);
         }

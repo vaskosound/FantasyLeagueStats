@@ -21,6 +21,7 @@
                 .ServerOperation(true)
                 .PageSize(10)
                 .Sort(sort => sort.Add(s => s.Position))
+                .Sort(sort => sort.Add(s => s.Name))
                 .Model(m =>
                     {
                         m.Id(p => p.Id);

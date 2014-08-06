@@ -20,7 +20,10 @@ namespace FantasyStatsApp.Controllers
 
         public JsonResult ReadStandings([DataSourceRequest] DataSourceRequest request)
         {
-            var result = this.Data.Teams.All().OrderBy(x => x.Position).Select(TeamViewModel.FromTeams);
+            DateTime currentSeason = DateTime.Now.Month >= 7 ? new DateTime(DateTime.Now.Year, 7, 1) :
+               new DateTime(DateTime.Now.Year - 1, 7, 1);
+            var result = this.Data.Teams.All().Where(s => s.Season == currentSeason.Year)
+                .Select(TeamViewModel.FromTeams);
 
             return Json(result.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }

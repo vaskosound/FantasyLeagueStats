@@ -29,6 +29,8 @@ namespace FantasyStats.Model
         public int GoalsAgainst { get; set; }
 
         public int Points { get; set; }
+
+        public int Season { get; set; }
     
         public Team()
         {

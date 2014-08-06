@@ -9,7 +9,7 @@ namespace FantasyStatsApp.Data
 {
     public class DataJob : IJob
     {
-        private const int PAGE_COUNT = 10;
+        private const int PAGE_COUNT = 20;
 
         public DataJob()
         { }
