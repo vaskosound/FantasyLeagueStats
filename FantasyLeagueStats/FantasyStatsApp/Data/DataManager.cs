@@ -14,11 +14,20 @@ namespace FantasyStatsApp.Data
         private const string МAN_UNITED = "Man Utd";
         private const string МAN_CITY = "Man City";
         private const string TOTTENHAM = "Spurs";
+        private const string QPR = "QPR";
         private static DateTime startSeason = new DateTime(2014, 7, 15);
         private static DateTime startDate;
+        private IUowData data;
+
+        public DataManager()
+        {
+            data = new UowData();
+        }
 
         public void UpdateBasicData(List<string> stats)
         {
+            List<Player> players = new List<Player>();
+            DateTime currentDate = DateTime.Today;
             for (int i = 0; i < stats.Count; i += 9)
             {
                 var playerModel = new PlayerModel()
@@ -29,20 +38,28 @@ namespace FantasyStatsApp.Data
                     Team = stats[i + 2],
                     RoundScore = int.Parse(stats[i + 6]),
                     MinutesPlayed = int.Parse(stats[i + 8].Replace(",", "")),
-                    IsInjured = stats[i].Contains(INJURED_ICON) ? true : false,                   
+                    IsInjured = stats[i].Contains(INJURED_ICON) ? true : false,   
+                    UpadatedDate = DateTime.Today
                 };
 
+
+                playerModel.UpadatedDate = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day);
                 playerModel.SetPosition(stats[i + 3]);
                 playerModel.SetPrice(stats[i + 5]);
 
-                AddOrUpdatePlayer(playerModel);
+                Player player = AddOrUpdatePlayer(playerModel);
+                players.Add(player);
             }
+
+            List<int> playerIds = players.Select(p => p.Id).ToList();
+
+            data.Players.DeleteRange(p => !playerIds.Contains(p.Id));
+            data.SaveChanges();
         }
 
         public void UpdatePointsPerGameData(
             List<string> stats)
         {
-            var context = new FantasyStatsDbContext();
             for (int i = 0; i < stats.Count; i += 9)
             {
                 var playerModel = new PlayerModel()
@@ -52,7 +69,7 @@ namespace FantasyStatsApp.Data
                     PointsPerGame = decimal.Parse(stats[i + 8])
                 };
 
-                var playerExists = context.Players
+                var playerExists = data.Players.All()
                     .FirstOrDefault(x => x.Name == playerModel.Name && x.Team.Initials == playerModel.Team);
                 if (playerExists != null)
                 {
@@ -60,13 +77,12 @@ namespace FantasyStatsApp.Data
                 }
             }
 
-            context.SaveChanges();
+            data.SaveChanges();
         }
 
         public void UpdatePlayersForm(
             List<string> stats)
         {
-            var context = new FantasyStatsDbContext();
             for (int i = 0; i < stats.Count; i += 9)
             {
                 var playerModel = new PlayerModel()
@@ -76,7 +92,7 @@ namespace FantasyStatsApp.Data
                     PlayerForm = decimal.Parse(stats[i + 8])
                 };
 
-                var playerExists = context.Players
+                var playerExists = data.Players.All()
                     .FirstOrDefault(x => x.Name == playerModel.Name && x.Team.Initials == playerModel.Team);
                 if (playerExists != null)
                 {
@@ -84,16 +100,19 @@ namespace FantasyStatsApp.Data
                 }
             }
 
-            context.SaveChanges();
+            data.SaveChanges();
         }
 
         public void UpdateStandings(List<string> statsStandings)
         {
-            var context = new FantasyStatsDbContext();
             for (int i = 14; i < statsStandings.Count; i += 12)
             {
                 string teamName = statsStandings[i + 3];
-                var team = context.Teams.FirstOrDefault(t => t.Name == teamName);
+                var team = data.Teams.All().FirstOrDefault(t => t.Name == teamName);
+                if (team == null)
+                {
+                    continue;
+                }
                 team.Position = int.Parse(statsStandings[i]);
                 team.GamesPlayed = int.Parse(statsStandings[i + 4]);
                 team.Wins = int.Parse(statsStandings[i + 5]);
@@ -104,12 +123,11 @@ namespace FantasyStatsApp.Data
                 team.Points = int.Parse(statsStandings[i + 11]);
             }
 
-            context.SaveChanges();
+            data.SaveChanges();
         }
 
         public void UpdateFixtures(List<string> fixtures)
         {
-            var context = new FantasyStatsDbContext();
             startDate = startSeason;
             List<Match> gameweekMatches = new List<Match>();
             string gameweek = fixtures[0];
@@ -136,31 +154,29 @@ namespace FantasyStatsApp.Data
                     matchModel.VisitorScore = int.Parse(result[1]);
                 }
 
-                Match match = AddOrUpdateMatch(context, matchModel);
-                gameweekMatches.Add(match);
+                Match match = AddOrUpdateMatch(matchModel);
+                if (match != null)
+                {
+                    this.data.SaveChanges();
+                    gameweekMatches.Add(match);
+                }
             }
 
-            Gameweek currentGameweek = context.Gameweeks.FirstOrDefault(g => g.Name == gameweek);
-            var currentGameweekMatches = context.Matches.Where(m => m.GameweekId == currentGameweek.Id ).ToList()
-                .Except(gameweekMatches);
+            Gameweek currentGameweek = data.Gameweeks.All().FirstOrDefault(g => g.Name == gameweek);
+            List<int> gameweekMatchesIds = gameweekMatches.Select(g => g.Id).ToList();
+            data.Matches.DeleteRange(m => m.GameweekId == currentGameweek.Id && !gameweekMatchesIds.Contains(m.Id));
 
-            if (currentGameweekMatches.Count() > 0)
-            {
-                context.Matches.RemoveRange(currentGameweekMatches);
-            }
-
-            context.SaveChanges();
+            data.SaveChanges();
         }
 
         public void UpdateDeadlines(List<string> deadlines)
         {
-            var context = new FantasyStatsDbContext();
             startDate = startSeason;
             for (int i = 0; i < deadlines.Count; i += 2)
             {
                 int gamewekIndex = deadlines[i].LastIndexOf(' ');
                 int gameweekNumber = int.Parse(deadlines[i].Substring(gamewekIndex + 1));
-                var gameweek = context.Gameweeks.Find(gameweekNumber);
+                var gameweek = data.Gameweeks.GetById(gameweekNumber);
                 if (gameweek != null)
                 {
                     int index = deadlines[i + 1].LastIndexOf(' ');
@@ -174,7 +190,7 @@ namespace FantasyStatsApp.Data
                        gameweek.Deadline = deadline.AddYears(1);
                     }
 
-                    var nextGameweek = context.Gameweeks.Find(gameweekNumber + 1);
+                    var nextGameweek = data.Gameweeks.GetById(gameweekNumber + 1);
                     if (nextGameweek != null)
                     {
                         nextGameweek.StartDate = gameweek.Deadline.Value;
@@ -182,18 +198,17 @@ namespace FantasyStatsApp.Data
                 }
             }
 
-            context.SaveChanges();
+            data.SaveChanges();
         }
 
-        private void AddOrUpdatePlayer(PlayerModel playerModel)
+        private Player AddOrUpdatePlayer(PlayerModel playerModel)
         {
-            var context = new FantasyStatsDbContext();
             DateTime currentSeason = DateTime.Now.Month >= 7 ? new DateTime(DateTime.Now.Year, 7, 1) :
                 new DateTime(DateTime.Now.Year - 1, 7, 1);
-            var playerExists = context.Players
+            var playerExists = data.Players.All()
                 .FirstOrDefault(x => x.Name == playerModel.Name && x.Team.Initials == playerModel.Team &&
                     x.UpadetedDate >= currentSeason);
-            var team = context.Teams.FirstOrDefault(x => x.Initials == playerModel.Team);
+            var team = data.Teams.All().FirstOrDefault(x => x.Initials == playerModel.Team);
             if (playerExists == null)
             {
                 Player newPlayer = new Player()
@@ -206,9 +221,11 @@ namespace FantasyStatsApp.Data
                     Points = playerModel.Points,
                     MinutesPlayed = playerModel.MinutesPlayed,
                     IsInjured = playerModel.IsInjured,
-                    UpadetedDate = DateTime.Now
+                    UpadetedDate = playerModel.UpadatedDate
                 };
                 team.Players.Add(newPlayer);
+                playerExists = newPlayer;
+
             }
             else
             {
@@ -219,22 +236,27 @@ namespace FantasyStatsApp.Data
                 playerExists.RoundScore = playerModel.RoundScore;
                 playerExists.MinutesPlayed = playerModel.MinutesPlayed;
                 playerExists.IsInjured = playerModel.IsInjured;
-                playerExists.UpadetedDate = DateTime.Now;
+                playerExists.UpadetedDate = playerModel.UpadatedDate;
             }
 
-            context.SaveChanges();
+            data.SaveChanges();
+            return playerExists;
         }
 
-        private Match AddOrUpdateMatch(FantasyStatsDbContext context,
-           MatchViewModel matchModel)
+        private Match AddOrUpdateMatch(MatchViewModel matchModel)
         {
-            var matchExists = context.Matches
+            var matchExists = data.Matches.All()
                 .FirstOrDefault(m => (m.Host.Name.Contains(matchModel.Host)) &&
                     (m.Visitor.Name.Contains(matchModel.Visitor)));
 
-            var hostTeam = context.Teams.FirstOrDefault(x => x.Name.Contains(matchModel.Host));
-            var visitorTeam = context.Teams.FirstOrDefault(x => x.Name.Contains(matchModel.Visitor));
-            var gameweekEntity = AddOrUpdateGameweek(context, matchModel);
+            var hostTeam = data.Teams.All().FirstOrDefault(x => x.Name.Contains(matchModel.Host));
+            var visitorTeam = data.Teams.All().FirstOrDefault(x => x.Name.Contains(matchModel.Visitor));
+            if (hostTeam == null || visitorTeam == null)
+            {
+                return null;
+            }
+
+            var gameweekEntity = AddOrUpdateGameweek(matchModel);
 
             if (matchExists == null)
             {
@@ -248,8 +270,7 @@ namespace FantasyStatsApp.Data
                     MatchDate = matchModel.MatchDate
                 };
 
-                context.Matches.Add(newMatch);
-                context.SaveChanges();
+                data.Matches.Add(newMatch);
                 return newMatch;
             }
             else
@@ -259,19 +280,17 @@ namespace FantasyStatsApp.Data
                 matchExists.MatchDate = matchModel.MatchDate;
                 matchExists.Gameweek = gameweekEntity;
 
-                context.SaveChanges();
                 return matchExists;
             }
         }
 
-        private Gameweek AddOrUpdateGameweek(FantasyStatsDbContext context,
-            MatchViewModel matchModel)
+        private Gameweek AddOrUpdateGameweek(MatchViewModel matchModel)
         {
-            var gameweek = context.Gameweeks.FirstOrDefault(g => g.Name == matchModel.Gameweek);
+            var gameweek = data.Gameweeks.All().FirstOrDefault(g => g.Name == matchModel.Gameweek);
 
             int gamewekIndex = matchModel.Gameweek.LastIndexOf(' ');
             int gameweekNumber = int.Parse(matchModel.Gameweek.Substring(gamewekIndex + 1));
-            var previousGameweek = context.Gameweeks.Find(gameweekNumber - 1);
+            var previousGameweek = data.Gameweeks.GetById(gameweekNumber - 1);
             if (previousGameweek != null)
             {
                 startDate = previousGameweek.EndDate;
@@ -287,9 +306,9 @@ namespace FantasyStatsApp.Data
                     EndDate = matchModel.MatchDate.AddDays(1)
                 };
 
-                context.Gameweeks.Add(newGameweek);
-                context.SaveChanges();
-                gameweek = context.Gameweeks.Find(newGameweek.Id);
+                data.Gameweeks.Add(newGameweek);
+                data.SaveChanges();
+                gameweek = data.Gameweeks.GetById(newGameweek.Id);
             }
             else
             {
@@ -315,6 +334,11 @@ namespace FantasyStatsApp.Data
             if (name == TOTTENHAM)
             {
                 return "Tottenham Hotspur";
+            }
+
+            if (name == QPR)
+            {
+                return "Queens Park Rangers";
             }
 
             return name;

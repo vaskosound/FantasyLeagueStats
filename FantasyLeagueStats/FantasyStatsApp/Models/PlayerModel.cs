@@ -28,6 +28,8 @@ namespace FantasyStatsApp.Models
 
         public int RoundScore { get; set; }
 
+        public DateTime? UpadatedDate { get; set; }
+
         public void SetPosition(string position)
         {
             switch (position)

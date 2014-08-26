@@ -9,7 +9,7 @@ namespace FantasyStatsApp
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
-            StartSchedule();
+            //StartSchedule();
         }
     }
 }

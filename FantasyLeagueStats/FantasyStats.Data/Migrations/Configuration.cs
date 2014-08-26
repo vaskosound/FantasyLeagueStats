@@ -218,7 +218,7 @@ namespace FantasyStats.Data.Migrations
 
             Team leicester = new Team()
             {
-                Name = "Leicester",
+                Name = "Leicester City",
                 Initials = "LEI",
                 Season = 2014
             };
@@ -226,7 +226,7 @@ namespace FantasyStats.Data.Migrations
 
             Team qpr = new Team()
             {
-                Name = "QPR",
+                Name = "Queens Park Rangers",
                 Initials = "QPR",
                 Season = 2014
             };

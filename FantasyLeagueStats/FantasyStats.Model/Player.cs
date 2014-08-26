@@ -38,7 +38,7 @@ namespace FantasyStats.Model
 
         public int RoundScore { get; set; }
 
-        public DateTime UpadetedDate { get; set; }
+        public DateTime? UpadetedDate { get; set; }
     }
 }
 

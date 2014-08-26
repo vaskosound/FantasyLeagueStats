@@ -48,6 +48,8 @@ namespace FantasyStatsApp.Controllers
 
         public ActionResult UpdateData()
         {
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
             List<string> stats = new List<string>(); 
             List<string> statsPointsPerGame = new List<string>();
             List<string> statsForm = new List<string>();
@@ -59,7 +61,7 @@ namespace FantasyStatsApp.Controllers
                 statsForm.AddRange(this.Statistics.GetStatsByForm(i));
             }
 
-            this.DataManager.UpdateBasicData(stats);            
+            this.DataManager.UpdateBasicData(stats);
             this.DataManager.UpdatePointsPerGameData(statsPointsPerGame);
             this.DataManager.UpdatePlayersForm(statsForm);
 
